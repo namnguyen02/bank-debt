@@ -1,12 +1,5 @@
-import supabase from 'utils/supabase/client'
+import Action from '@/api/v1/models'
 
-export async function GET(_, { params }) {
-  const { count, data, error } = await supabase
-    .from('ket_qua')
-    .select('*', { count: 'exact' })
-    .eq('ma_hanh_dong', params.code)
-
-  if (error) return Response.json(error, { status: 400 })
-
-  return Response.json({ count: count, next: null, previous: null, results: data })
+export function GET(_, { params }) {
+  return Action.read({ table: 'ket_qua', query: '*', column: 'ma_hanh_dong', value: params.code })
 }

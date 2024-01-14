@@ -1,19 +1,10 @@
-import supabase from 'utils/supabase/client'
+import Action from '@/api/v1/models'
 
-export async function GET() {
-  const { count, data, error } = await supabase.from('hanh_dong').select('*', { count: 'exact' })
-
-  if (error) return Response.json(error, { status: 400 })
-
-  return Response.json({ count: count, next: null, previous: null, results: data })
+export function GET() {
+  return Action.read({ table: 'hanh_dong', query: '*' })
 }
 
 export async function POST(request) {
   const res = await request.json()
-
-  const { data, error } = await supabase.from('hanh_dong').insert(res).select().single()
-
-  if (error) return Response.json(error, { status: 400 })
-
-  return Response.json(data)
+  return Action.create({ table: 'hanh_dong', values: res })
 }

@@ -1,24 +1,15 @@
-import supabase from 'utils/supabase/client'
+import Action from '@/api/v1/models'
 
 export async function PATCH(request, { params }) {
   const res = await request.json()
-
-  const { data, error } = await supabase
-    .from('hanh_dong')
-    .update(res)
-    .eq('ma_hanh_dong', params.code)
-    .select()
-    .single()
-
-  if (error) return Response.json(error, { status: 400 })
-
-  return Response.json(data)
+  return Action.update({
+    table: 'hanh_dong',
+    values: res,
+    column: 'ma_hanh_dong',
+    value: params.code,
+  })
 }
 
-export async function DELETE(_, { params }) {
-  const { error } = await supabase.from('hanh_dong').delete().eq('ma_hanh_dong', params.code)
-
-  if (error) return Response.json(error, { status: 400 })
-
-  return Response.json({ message: 'xoa thanh cong' })
+export function DELETE(_, { params }) {
+  return Action.delete({ table: 'hanh_dong', column: 'ma_hanh_dong', value: params.code })
 }

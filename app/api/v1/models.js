@@ -1,59 +1,47 @@
-import { NextResponse } from 'next/server'
 import supabase from 'utils/supabase/client'
 
 const Action = {
-  create: async (table, values) => {
-    const { error } = await supabase.from(table).insert(values)
+  create: async ({ table, values }) => {
+    const { data, error } = await supabase.from(table).insert(values).select().single()
 
-    if (error) {
-      return NextResponse.json(error, { status: 400 })
-    }
+    if (error) return Response.json(error, { status: 400 })
 
-    return NextResponse.json({ message: 'Tạo thành công' }, { status: 201 })
+    return Response.json(data)
   },
-  read: async (table, column = null, value = null, query = null) => {
-    if (column && value) {
-      const { data, error } = await supabase.from(table).select('*').eq(column, value)
+  read: async ({ table, query, column = null, value = null }) => {
+    const { count, data, error } = await (column && value
+      ? supabase
+          .from(table)
+          .select(query, {
+            count: 'exact',
+          })
+          .eq(column, value)
+      : supabase.from(table).select(query, {
+          count: 'exact',
+        }))
 
-      if (error) {
-        return NextResponse.json(error, { status: 400 })
-      }
+    if (error) return Response.json(error, { status: 400 })
 
-      if (data.length === 0) {
-        return NextResponse.json({ message: 'Không tìm thấy' }, { status: 404 })
-      }
-
-      return NextResponse.json(data[0])
-    }
-
-    const { count, data, error } = await supabase
+    return Response.json({ count: count, next: null, previous: null, results: data })
+  },
+  update: async ({ table, values, column, value }) => {
+    const { data, error } = await supabase
       .from(table)
-      .select('*', { count: 'exact' })
-      .range(query?.offset || 0, query?.offset + query?.limit - 1 || 9)
+      .update(values)
+      .eq(column, value)
+      .select()
+      .single()
 
-    if (error) {
-      return NextResponse.json(error, { status: 400 })
-    }
+    if (error) return Response.json(error, { status: 400 })
 
-    return NextResponse.json({ count: count, next: null, previous: null, results: data })
+    return Response.json(data)
   },
-  update: async (table, values, column, value) => {
-    const { error } = await supabase.from(table).update(values).eq(column, value)
-
-    if (error) {
-      return NextResponse.json(error, { status: 400 })
-    }
-
-    return NextResponse.json({ message: 'Cập nhật thành công' })
-  },
-  delete: async (table, column, value) => {
+  delete: async ({ table, column, value }) => {
     const { error } = await supabase.from(table).delete().eq(column, value)
 
-    if (error) {
-      return NextResponse.json(error, { status: 400 })
-    }
+    if (error) return Response.json(error, { status: 400 })
 
-    return NextResponse.json({ message: 'Xóa thành công' })
+    return Response.json({ message: 'xoa thanh cong' })
   },
 }
 
