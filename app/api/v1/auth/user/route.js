@@ -1,20 +1,28 @@
 import supabase from 'utils/supabase/auth/admin'
 import createServer from 'utils/supabase/auth/route'
 
-async function addToTable(userId) {
-  const supabase = createServer()
-
-  const { error } = await supabase
-    .from('profiles')
-    .insert({ id: userId, ho: last_name, ten: first_name, ...other })
+export async function GET() {
+  const { data, error } = await supabase.auth.admin.listUsers()
 
   if (error) return Response.json(error, { status: error.status || 400 })
+
+  return Response.json({ count: null, next: null, previous: null, results: data.users })
+}
+
+async function addToTable(userId, other) {
+  const supabase = createServer()
+
+  const { error } = await supabase.from('nhan_vien').insert({ auth_id: userId, ...other })
+
+  if (error) return Response.json(error, { status: 400 })
+
+  return null
 }
 
 export async function POST(request) {
   const res = await request.json()
 
-  const { email, password, phone, last_name, first_name, ...other } = res
+  const { email, password, phone, ...other } = res
 
   const { data, error } = await supabase.auth.admin.createUser({
     email,
@@ -22,12 +30,14 @@ export async function POST(request) {
     phone,
     email_confirm: true,
     phone_confirm: true,
-    user_metadata: { last_name, first_name, ...other },
+    user_metadata: { ...other },
   })
 
   if (error) return Response.json(error, { status: error.status || 400 })
 
-  addToTable(data.user.id)
+  const isSuccess = addToTable(data.user.id, { ...other })
+
+  if (!isSuccess) return isSuccess
 
   return Response.json(data)
 }
