@@ -66,31 +66,25 @@ const LawsuitFileCustomerInfo = (props) => {
             <label>Mã khách hàng</label>
           </div>
           <div className={styles.inputContainer}>
-            {/* <InputText /> */}
-            <AutoComplete
-              placeholder="Search"
-              id="dd"
-              dropdown
-              value={selectedAutoValue}
-              onChange={(e) => {
-                setSelectedAutoValue(e.value)
-                if (typeof e.value === 'object') {
-                  props.setForm({ ...props.form, IDKhachHang: e.value.IDKhachHang })
-                }
-              }}
-              suggestions={autoFilteredValue}
-              completeMethod={searchID}
-              field="IDKhachHang"
-            />
-          </div>
-        </div>
-
-        <div className="col-12 xl:col-4 md:col-6 pl-0">
-          <div className="mb-2">
-            <label>Họ và tên</label>
-          </div>
-          <div className={styles.inputContainer}>
-            <InputText value={selectedAutoValue ? selectedAutoValue.Ho_ten : ''} disabled />
+            {props.isCreateNew ? (
+              <AutoComplete
+                placeholder="Search"
+                id="dd"
+                dropdown
+                value={selectedAutoValue}
+                onChange={(e) => {
+                  setSelectedAutoValue(e.value)
+                  if (typeof e.value === 'object') {
+                    props.setForm({ ...props.form, IDKhachHang: e.value.IDKhachHang })
+                  }
+                }}
+                suggestions={autoFilteredValue}
+                completeMethod={searchID}
+                field="IDKhachHang"
+              />
+            ) : (
+              <InputText value={props.data.IDKhachHang} disabled />
+            )}
           </div>
         </div>
 
@@ -99,22 +93,38 @@ const LawsuitFileCustomerInfo = (props) => {
             <label>Căn cước công dân</label>
           </div>
           <div className={styles.inputContainer}>
-            {/* <InputText /> */}
-            <AutoComplete
-              placeholder="Search"
-              id="dd"
-              dropdown
-              value={selectedAutoValue}
-              onChange={(e) => {
-                setSelectedAutoValue(e.value)
-                if (typeof e.value === 'object') {
-                  props.setForm({ ...props.form, IDKhachHang: e.value.IDKhachHang })
-                }
-              }}
-              suggestions={autoFilteredValue}
-              completeMethod={searchCCCD}
-              field="CCCD"
-            />
+            {props.isCreateNew ? (
+              <AutoComplete
+                placeholder="Search"
+                id="dd"
+                dropdown
+                value={selectedAutoValue}
+                onChange={(e) => {
+                  setSelectedAutoValue(e.value)
+                  if (typeof e.value === 'object') {
+                    props.setForm({ ...props.form, IDKhachHang: e.value.IDKhachHang })
+                  }
+                }}
+                suggestions={autoFilteredValue}
+                completeMethod={searchCCCD}
+                field="CCCD"
+              />
+            ) : (
+              <InputText value={props.data.KhachHang?.CCCD} disabled />
+            )}
+          </div>
+        </div>
+
+        <div className="col-12 xl:col-4 md:col-6 pl-0">
+          <div className="mb-2">
+            <label>Họ và tên</label>
+          </div>
+          <div className={styles.inputContainer}>
+            {props.isCreateNew ? (
+              <InputText value={selectedAutoValue ? selectedAutoValue.Ho_ten : ''} disabled />
+            ) : (
+              <InputText value={props.data.KhachHang?.Ho_ten} disabled />
+            )}
           </div>
         </div>
 
@@ -132,10 +142,14 @@ const LawsuitFileCustomerInfo = (props) => {
             <label>Địa chỉ thường trú</label>
           </div>
           <div className={styles.inputContainer}>
-            <InputText
-              value={selectedAutoValue ? selectedAutoValue.DiaChiThuongTru : ''}
-              disabled
-            />
+            {props.isCreateNew ? (
+              <InputText
+                value={selectedAutoValue ? selectedAutoValue.DiaChiThuongTru : ''}
+                disabled
+              />
+            ) : (
+              <InputText value={props.data.KhachHang?.DiaChiThuongTru} disabled />
+            )}
           </div>
         </div>
 
@@ -144,7 +158,11 @@ const LawsuitFileCustomerInfo = (props) => {
             <label>Địa chỉ tạm trú</label>
           </div>
           <div className={styles.inputContainer}>
-            <InputText value={selectedAutoValue ? selectedAutoValue.DiaChiTamTru : ''} disabled />
+            {props.isCreateNew ? (
+              <InputText value={selectedAutoValue ? selectedAutoValue.DiaChiTamTru : ''} disabled />
+            ) : (
+              <InputText value={props.data.KhachHang?.DiaChiTamTru} disabled />
+            )}
           </div>
         </div>
 
@@ -154,16 +172,20 @@ const LawsuitFileCustomerInfo = (props) => {
           </div>
           <div className={styles.inputContainer}>
             {/* <InputText /> */}
-            <Dropdown
-              value={province}
-              onChange={(e) => {
-                setProvince(e.value)
-                props.setForm({ ...props.form, tinh_tp: e.value.name })
-              }}
-              options={provinces}
-              optionLabel="name"
-              placeholder="Select"
-            />
+            {props.isCreateNew ? (
+              <Dropdown
+                value={province}
+                onChange={(e) => {
+                  setProvince(e.value)
+                  props.setForm({ ...props.form, tinh_tp: e.value.name })
+                }}
+                options={provinces}
+                optionLabel="name"
+                placeholder="Select"
+              />
+            ) : (
+              <InputText value={props.data.tinh_tp} disabled />
+            )}
           </div>
         </div>
 
@@ -173,16 +195,20 @@ const LawsuitFileCustomerInfo = (props) => {
           </div>
           <div className={styles.inputContainer}>
             {/* <InputText /> */}
-            <Dropdown
-              value={district}
-              onChange={(e) => {
-                setDistrict(e.value)
-                props.setForm({ ...props.form, quan_huyen: e.value.name })
-              }}
-              options={districts[province.name]}
-              optionLabel="name"
-              placeholder="Select"
-            />
+            {props.isCreateNew ? (
+              <Dropdown
+                value={district}
+                onChange={(e) => {
+                  setDistrict(e.value)
+                  props.setForm({ ...props.form, quan_huyen: e.value.name })
+                }}
+                options={districts[province.name]}
+                optionLabel="name"
+                placeholder="Select"
+              />
+            ) : (
+              <InputText value={props.data.quan_huyen} disabled />
+            )}
           </div>
         </div>
       </div>

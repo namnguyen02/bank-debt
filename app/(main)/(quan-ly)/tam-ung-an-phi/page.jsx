@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { Accordion, AccordionTab } from 'primereact/accordion'
 import { Button } from 'primereact/button'
@@ -7,9 +7,23 @@ import { Button } from 'primereact/button'
 import AppointmentSearch from '@/components/lawsuitAndExecution/search/appointmentSearch'
 import ManageAdvanceCourtFeeTable from '@/components/lawsuitAndExecution/manageAdvanceCourtFeeTable/ManageAdvanceCourtFeeTable'
 
+import { getListTUAP } from 'actions/tam-ung-an-phi/tam-ung-an-phi'
+
 const ManageAdvanceCourtFee = () => {
   const [checkedList, setCheckedList] = useState([])
+  const [data, setData] = useState([])
 
+  const getTUAP = () => {
+    getListTUAP('offset=0&limit=10').then((res) => {
+      if (res && !res.error) {
+        setData(res.results)
+      }
+    })
+  }
+
+  useEffect(() => {
+    getTUAP()
+  }, [])
   return (
     <div className="card">
       <div>
@@ -27,7 +41,11 @@ const ManageAdvanceCourtFee = () => {
           )}
         </div>
 
-        <ManageAdvanceCourtFeeTable checkedList={checkedList} setCheckedList={setCheckedList} />
+        <ManageAdvanceCourtFeeTable
+          checkedList={checkedList}
+          setCheckedList={setCheckedList}
+          data={data}
+        />
       </div>
     </div>
   )

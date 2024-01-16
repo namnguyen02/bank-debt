@@ -164,7 +164,7 @@ const LawsuitFileAppointment = (props) => {
           emptyMessage="Không có dữ liệu"
           // header={header1}
         >
-          <Column header="STT" style={{ minWidth: '3rem' }} body={renderSTT} />
+          <Column header="STT" style={{ minWidth: '6rem' }} body={renderSTT} />
           <Column
             field="trang_thai_ho_so"
             header="Trạng thái hồ sơ"
