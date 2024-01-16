@@ -4,7 +4,9 @@ import { NextResponse } from 'next/server'
 export async function GET(request, { params }) {
   const { data, error } = await supabase
     .from('tien_do_khoi_kien')
-    .select(`*, NhanVien (HoTen, CCCD, ChucDanh, SDT)`)
+    .select(
+      `*, NhanVien (HoTen, CCCD, ChucDanh, SDT), KhachHang (Ho_ten, CCCD, DiaChiThuongTru, DiaChiTamTru)`
+    )
     .eq('id', params.id)
 
   if (error) {
@@ -24,7 +26,7 @@ export async function GET(request, { params }) {
     .from('thong_tin_log_khoi_kien')
     .select(`*`)
     .eq('id_khoi_kien', params.id)
-    .order('last_edited_at', { ascending: false })
+    .order('created_at', { ascending: false })
   if (logs && !logs.error) {
     returnData.logs = logs.data
   }
@@ -36,6 +38,15 @@ export async function GET(request, { params }) {
     .order('thoi_gian_cap_nhat', { ascending: false })
   if (appointments && !appointments.error) {
     returnData.lich_hen = appointments.data
+  }
+
+  const tuap = await supabase
+    .from('tam_ung_an_phi')
+    .select(`*`)
+    .eq('id_khoi_kien', params.id)
+    .order('thoi_gian_thuc_hien', { ascending: false })
+  if (tuap && !tuap.error) {
+    returnData.tuap = tuap.data
   }
 
   return NextResponse.json({ result: returnData, status: 200 })
