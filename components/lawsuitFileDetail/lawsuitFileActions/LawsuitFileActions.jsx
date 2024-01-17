@@ -75,7 +75,13 @@ const LawsuitFileActions = (props) => {
           label="Chuyển trạng thái"
           className="mr-4"
           style={{ height: '36px' }}
-          onClick={() => handleTransformState()}
+          onClick={() => {
+            handleTransformState()
+            window.scroll({
+              top: 0,
+              behavior: 'smooth',
+            })
+          }}
         />
       )}
 
