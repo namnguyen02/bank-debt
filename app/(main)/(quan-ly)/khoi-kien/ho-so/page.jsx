@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/navigation'
 
@@ -24,9 +24,11 @@ import { addTUAP } from 'actions/tam-ung-an-phi/tam-ung-an-phi'
 
 import { Button } from 'primereact/button'
 import { Dialog } from 'primereact/dialog'
+import { Toast } from 'primereact/toast'
 import 'primeicons/primeicons.css'
 
 const LawsuitFile = () => {
+  const toast = useRef(null)
   const [checkedList, setCheckedList] = useState([])
   const [form, setForm] = useState({})
   const [data, setData] = useState({})
@@ -64,16 +66,76 @@ const LawsuitFile = () => {
         }
       })
     } else {
-      updateLawsuit(id, { body: bodyToUpdate }).then((res) => console.log(res))
-    }
+      if (operation) {
+        updateLawsuit(id, { body: bodyToUpdate }).then((res) => {
+          if (!res || res.message !== 'Updated') {
+            showError1()
+            return 'stop'
+          }
+          setOperation('')
+        })
+      }
 
-    if (appointments.length > 0) {
-      handleCreateAppointment()
-    }
+      if (appointments.length > 0) {
+        const result = handleCreateAppointment()
+        if (!result) {
+          return 'stop'
+        }
+        setAppointments([])
+      }
 
-    if (tuapForm.length > 0) {
-      handleCreateTUAP()
+      if (tuapForm.length > 0) {
+        const result = handleCreateTUAP()
+        if (!result) {
+          return 'stop'
+        }
+        setTuapForm([])
+      }
+
+      showSuccess()
+
+      getDetailLawsuit(id).then((res) => {
+        if (res && res.status == 200) {
+          setData(res.result)
+        }
+      })
     }
+  }
+
+  const showSuccess = () => {
+    toast.current?.show({
+      severity: 'success',
+      summary: 'Thành công',
+      detail: 'Cập nhật thành công',
+      life: 3000,
+    })
+  }
+
+  const showError1 = () => {
+    toast.current?.show({
+      severity: 'error',
+      summary: 'Lỗi',
+      detail: 'Cập nhật trạng thái thất bại',
+      life: 3000,
+    })
+  }
+
+  const showError2 = () => {
+    toast.current?.show({
+      severity: 'error',
+      summary: 'Lỗi',
+      detail: 'Cập nhật lịch hẹn thất bại',
+      life: 3000,
+    })
+  }
+
+  const showError3 = () => {
+    toast.current?.show({
+      severity: 'error',
+      summary: 'Lỗi',
+      detail: 'Cập nhật TUAP thất bại',
+      life: 3000,
+    })
   }
 
   const getState = () => {
@@ -84,11 +146,23 @@ const LawsuitFile = () => {
   }
 
   const handleCreateAppointment = () => {
-    addAppointment({ body: appointments }).then((res) => console.log(res))
+    addAppointment({ body: appointments }).then((res) => {
+      if (!res || res.body !== 'Inserted') {
+        showError2()
+        return false
+      }
+    })
+    return true
   }
 
   const handleCreateTUAP = () => {
-    addTUAP({ body: tuapForm }).then((res) => console.log(res))
+    addTUAP({ body: tuapForm }).then((res) => {
+      if (!res || res.body !== 'Inserted') {
+        showError3()
+        return false
+      }
+    })
+    return true
   }
 
   useEffect(() => {
@@ -127,6 +201,7 @@ const LawsuitFile = () => {
 
   return (
     <div className="card">
+      <Toast ref={toast} />
       <Dialog
         header="Cảnh báo"
         visible={displayConfirmation}
@@ -206,9 +281,9 @@ const LawsuitFile = () => {
           setOperation={setOperation}
         />
       )}
-      {!isCreateNew && (
+      {/* {!isCreateNew && (
         <LawsuitFileNotification checkedList={checkedList} setCheckedList={setCheckedList} />
-      )}
+      )} */}
       {!isCreateNew && <LogInfo data={data} />}
       {!isCreateNew && (
         <LawsuitFileTUAP
