@@ -8,7 +8,15 @@ const Action = {
 
     return Response.json(data)
   },
-  read: async ({ table, query, column = null, value = null }) => {
+  read: async ({ table, query, column = null, value = null }, single = false) => {
+    if (single) {
+      const { data, error } = await supabase.from(table).select(query).eq(column, value).single()
+
+      if (error) return Response.json(error, { status: 400 })
+
+      return Response.json(data)
+    }
+
     const { count, data, error } = await (column && value
       ? supabase
           .from(table)
