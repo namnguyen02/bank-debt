@@ -123,9 +123,7 @@ const LawsuitFileTUAP = (props) => {
         </div>
 
         <div className="field">
-          <label htmlFor="ngay_hen">
-            Số tiền đóng TUAP <span style={{ color: 'red' }}>*</span>
-          </label>
+          <label htmlFor="ngay_hen">Số tiền đóng TUAP</label>
           <InputNumber
             value={newTUAPForm.so_tien_dong_tuap}
             onChange={(e) => setNewTUAPForm({ ...newTUAPForm, so_tien_dong_tuap: e.value })}
@@ -134,9 +132,7 @@ const LawsuitFileTUAP = (props) => {
         </div>
 
         <div className="field">
-          <label>
-            Ngày đóng TUAP <span style={{ color: 'red' }}>*</span>
-          </label>
+          <label>Ngày đóng TUAP</label>
           <Calendar
             showIcon
             showButtonBar
@@ -147,9 +143,7 @@ const LawsuitFileTUAP = (props) => {
         </div>
 
         <div className="field">
-          <label htmlFor="so_bien_lai">
-            Số biên lai <span style={{ color: 'red' }}>*</span>
-          </label>
+          <label htmlFor="so_bien_lai">Số biên lai</label>
           <InputText
             id="so_bien_lai"
             placeholder="Nhập số biên lai"
@@ -159,9 +153,7 @@ const LawsuitFileTUAP = (props) => {
         </div>
 
         <div className="field">
-          <label htmlFor="so_tien_hoan">
-            Số tiền hoàn <span style={{ color: 'red' }}>*</span>
-          </label>
+          <label htmlFor="so_tien_hoan">Số tiền hoàn</label>
           <InputNumber
             value={newTUAPForm.so_tien_hoan_tuap}
             onChange={(e) => setNewTUAPForm({ ...newTUAPForm, so_tien_hoan_tuap: e.value })}
@@ -170,9 +162,7 @@ const LawsuitFileTUAP = (props) => {
         </div>
 
         <div className="field">
-          <label>
-            Ngày hoàn TUAP <span style={{ color: 'red' }}>*</span>
-          </label>
+          <label>Ngày hoàn TUAP</label>
           <Calendar
             showIcon
             showButtonBar

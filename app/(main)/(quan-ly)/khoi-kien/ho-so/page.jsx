@@ -270,8 +270,13 @@ const LawsuitFile = () => {
         isCreateNew={isCreateNew}
         data={data}
       />
-      <LawsuitFileCreditInfo form={form} />
-      <LawsuitFileConsumerCreditInfo form={form} />
+      {((isCreateNew && form.IDKhachHang) || !isCreateNew) && (
+        <>
+          <LawsuitFileCreditInfo form={form} />
+          <LawsuitFileConsumerCreditInfo form={form} />
+        </>
+      )}
+
       <AuthorizedStaffInfo form={form} setForm={setForm} isCreateNew={isCreateNew} data={data} />
       {!isCreateNew && (
         <LawsuitFileActions
