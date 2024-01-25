@@ -5,7 +5,8 @@
       "@/demo/*": ["demo/*"],
       "@/layout/*": ["layout/*"],
       "@/styles/*": ["styles/*"],
-      "@/components/*": ["components/*"]
+      "@/components/*": ["components/*"],
+      "@/api/*": ["app/api/*"]
     }
   }
 }
