@@ -61,7 +61,7 @@ export async function POST(request) {
       "noi_dung_hen" = '',
       "nguoi_tao_lich_hen" = '',
       "id_khoi_kien" = '',
-      ""
+      "id_thi_hanh_an" = '',
       }]
       */
   // Check params
@@ -77,9 +77,6 @@ export async function POST(request) {
     }
     if (!item['nguoi_tao_lich_hen']) {
       return NextResponse.json({ body: 'Missing "nguoi_tao_lich_hen" parameter' }, { status: 400 })
-    }
-    if (!item['id_khoi_kien']) {
-      return NextResponse.json({ body: 'Missing "id_khoi_kien" parameter' }, { status: 400 })
     }
   })
 
