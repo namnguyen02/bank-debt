@@ -59,7 +59,15 @@ const LawsuitFile = () => {
     }
 
     if (isCreateNew) {
-      addLawsuit({ body: bodyToCreate }).then((res) => {
+      const fakeData = {
+        ma_khach_hang: 403078,
+        tinh_tp: 'Đăk Lăk',
+        quan_huyen: 'Ea Kar',
+        id_nguoi_duoc_uq: 'SHB-12052002',
+        nguoi_thuc_hien: 'Lê Văn Bằng',
+      }
+
+      addLawsuit(fakeData).then((res) => {
         if (res && res.body === 'Inserted') {
           localStorage.setItem('addLawsuit', 'success')
           router.push('/khoi-kien')
@@ -258,18 +266,18 @@ const LawsuitFile = () => {
         {Object.keys(form).length > 0 ||
         operation ||
         appointments.length > 0 ||
-        tuapForm.length > 0 ? (
+        tuapForm.length === 0 ? (
           <Button label="Lưu thay đổi" style={{ height: '36px' }} onClick={() => handleSave()} />
         ) : (
           <Button label="Lưu thay đổi" style={{ height: '36px' }} disabled />
         )}
       </div>
-      <LawsuitFileCustomerInfo
+      {/* <LawsuitFileCustomerInfo
         form={form}
         setForm={setForm}
         isCreateNew={isCreateNew}
         data={data}
-      />
+        /> */}
       {((isCreateNew && form.IDKhachHang) || !isCreateNew) && (
         <>
           <LawsuitFileCreditInfo form={form} />
@@ -277,7 +285,7 @@ const LawsuitFile = () => {
         </>
       )}
 
-      <AuthorizedStaffInfo form={form} setForm={setForm} isCreateNew={isCreateNew} data={data} />
+      {/* <AuthorizedStaffInfo form={form} setForm={setForm} isCreateNew={isCreateNew} data={data} /> */}
       {!isCreateNew && (
         <LawsuitFileActions
           data={data}
