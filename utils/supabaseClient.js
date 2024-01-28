@@ -1,13 +1,13 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = 'https://sxzwzgblvfdjwphlmdqx.supabase.co'
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY
 
 export const supabase = createClient(supabaseUrl, supabaseKey, {
   db: {
-    schema: 'public'
+    schema: 'public',
   },
   auth: {
-    persistSession: true
-  }
+    persistSession: true,
+  },
 })
