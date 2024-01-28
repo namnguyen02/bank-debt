@@ -7,21 +7,24 @@ export async function GET(request, { params }) {
   if (!id || isNaN(parseInt(id))) {
     return NextResponse.json(
       {
-        body: 'Invalid or missing "IDKhachHang" parameter'
+        body: 'Invalid or missing "ma_khach_hang" parameter',
       },
       {
-        status: 400
+        status: 400,
       }
     )
   }
-  const { count, data, error } = await supabase.from('KhachHang').select('*', { count: 'exact' }).eq('IDKhachHang', id)
+  const { count, data, error } = await supabase
+    .from('khach_hang')
+    .select('*', { count: 'exact' })
+    .eq('ma_khach_hang', id)
   if (error) {
     return NextResponse.json(
       {
-        body: JSON.stringify(error)
+        body: JSON.stringify(error),
       },
       {
-        status: 500
+        status: 500,
       }
     )
   }
@@ -34,10 +37,10 @@ export async function PATCH(request, { params }) {
     if (!id || isNaN(parseInt(id))) {
       return NextResponse.json(
         {
-          body: 'Invalid or missing "IDKhachHang" parameter'
+          body: 'Invalid or missing "ma_khach_hang" parameter',
         },
         {
-          status: 400
+          status: 400,
         }
       )
     }
@@ -54,7 +57,7 @@ export async function PATCH(request, { params }) {
     } catch (error) {
       return error
     }
-    const { error } = await supabase.from('KhachHang').update(dataToUpdate).eq('IDKhachHang', id)
+    const { error } = await supabase.from('khach_hang').update(dataToUpdate).eq('ma_khach_hang', id)
 
     if (error) {
       return NextResponse.json({ body: JSON.stringify(error) }, { status: 500 })
@@ -63,10 +66,10 @@ export async function PATCH(request, { params }) {
     return NextResponse.json({ body: 'Updated' }, { status: 200 })
   } catch (error) {
     let error_response = {
-      body: error.message
+      body: error.message,
     }
     return NextResponse.json(JSON.stringify(error_response), {
-      status: 500
+      status: 500,
     })
   }
 }
@@ -77,35 +80,21 @@ export async function PUT(request, { params }) {
     if (!id || isNaN(parseInt(id))) {
       return NextResponse.json(
         {
-          body: 'Invalid or missing "IDKhachHang" parameter'
+          body: 'Invalid or missing "ma_khach_hang" parameter',
         },
         {
-          status: 400
+          status: 400,
         }
       )
     }
     const res = await request.json()
     const dataToUpdate = res.body
-    /* 
-    res.body sent from FE and we have
-    dataToUpdate = {
-      Ho_ten: '', 
-      CCCD: '', 
-      Email: '',
-      SDT: '', 
-      DiaChiThuongTru: '',
-      DiaChiTamTru: '',
-      TenCongTy: '',
-      DiaChiCongTy: ''
-    }
-    */
     try {
       const checkLogic = checkLogicParams(dataToUpdate)
     } catch (error) {
       return error
     }
-
-    const { error } = await supabase.from('KhachHang').update(dataToUpdate).eq('IDKhachHang', id)
+    const { error } = await supabase.from('khach_hang').update(dataToUpdate).eq('ma_khach_hang', id)
 
     if (error) {
       return NextResponse.json({ body: JSON.stringify(error) }, { status: 500 })
@@ -114,10 +103,10 @@ export async function PUT(request, { params }) {
     return NextResponse.json({ body: 'Updated' }, { status: 200 })
   } catch (error) {
     let error_response = {
-      body: error.message
+      body: error.message,
     }
     return NextResponse.json(JSON.stringify(error_response), {
-      status: 500
+      status: 500,
     })
   }
 }
@@ -127,10 +116,13 @@ export async function DELETE(request, { params }) {
     const idToDelete = params.id
 
     if (!idToDelete || isNaN(parseInt(idToDelete))) {
-      return NextResponse.json({ body: 'Invalid or missing "IDKhachHang" parameter' }, { status: 400 })
+      return NextResponse.json(
+        { body: 'Invalid or missing "ma_khach_hang" parameter' },
+        { status: 400 }
+      )
     }
     // Construct and execute the Supabase delete query
-    const { error } = await supabase.from('KhachHang').delete().eq('IDKhachHang', idToDelete) //
+    const { error } = await supabase.from('khach_hang').delete().eq('ma_khach_hang', idToDelete) //
 
     if (error) {
       return NextResponse.json({ body: JSON.stringify(error) }, { status: 500 })
@@ -139,10 +131,13 @@ export async function DELETE(request, { params }) {
     return NextResponse.json(
       { body: 'Record deleted successfully' },
       {
-        status: 200
+        status: 200,
       }
     )
   } catch (error) {
-    return NextResponse.json({ body: JSON.stringify({ error: 'Internal server error' }) }, { status: 500 })
+    return NextResponse.json(
+      { body: JSON.stringify({ error: 'Internal server error' }) },
+      { status: 500 }
+    )
   }
 }

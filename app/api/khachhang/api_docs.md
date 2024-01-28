@@ -38,13 +38,13 @@ GET /api/khachhang?offset=0&limit=2
     "previous": null,
     "results": [
     {
-        "IDKhachHang": 1,
-        "Ho_ten": "John Doe",
+        "ma_khach_hang": 1,
+        "ho_ten": "John Doe",
         // etc
     },
     {
-        "IDKhachHang": 2,
-        "Ho_ten": "Jane Doe",
+        "ma_khach_hang": 2,
+        "ho_ten": "Jane Doe",
         // etc
     }
     ]
@@ -73,15 +73,23 @@ Retrieves a specific employee record by ID.
 - results (object): Employee data
 
 ```json
-GET /api/khachhang/10001
+GET /api/khachhang/570359
 
 {
-  "count": 1,
-  "results": {
-    "IDKhachHang": 10001,
-    "Ho_ten": "John Doe",
-    // etc
-  }
+    "count": 1,
+    "results": [
+        {
+            "ma_khach_hang": 570359,
+            "ho_ten": "Kiều Linh Giang",
+            "can_cuoc": "046202003670",
+            "ngay_sinh": "17/11/1968",
+            "thuong_tru": "Thừa Thiên Huế",
+            "tam_tru": "Hồ Chí Minh",
+            "email": null,
+            "dien_thoai": "+84 355 538 474",
+            "cong_ty": null
+        }
+    ]
 }
 ```
 ---
@@ -91,21 +99,20 @@ Create a new employee record in the database.
 
 **Request Body**
 - Employee object containing all fields
-- **"IDKhachHang"**: Employee ID is **required**
+- **"ma_khach_hang"**: Employee ID is **optional**
 - Request body must have more than one field. 
 ```json
 {
   "body": 
   {
-    "IDKhachHang": 10001,
-    "HoTen": "John Doe",
-    "SDT": "0123456789",
-    "Email": "demo@gmail.com",
-    "CCCD": "123456789",
-    "DiaChiThuongTru": "",
-    "DiaChiTamTru": "",
-    "TenCongTy": "",
-    "DiaChiCongTy": ""
+    "ho_ten": "Huy Bùi",
+    "can_cuoc": "046202003634",
+    "ngay_sinh": "17/11/2002",
+    "thuong_tru": "Hà Nội",
+    "tam_tru": "Hà Nội",
+    "email": null,
+    "dien_thoai": "0856723138",
+    "cong_ty": null
   }
   
 }
@@ -136,7 +143,7 @@ Deletes an employee record from the database.
 **Example**
 
 ```json
-DELETE /api/khachhang/10001
+DELETE /api/khachhang/3
 
 {
   "message": "Record deleted successfully"
@@ -169,16 +176,14 @@ Update an employee record by ID with new data.
   ```
 Example:
 ```json
-PUT /api/khachhang/10001
+PUT /api/khachhang/3
 
 {
-    "body": 
-    {
-        "HoTen": "Jane Doe",
-        "SDT": "01234567",
-        "CCCD": "123456789",
-        // etc
-    }
+  "body": 
+  {
+    "thuong_tru": "Buôn Ma Thuột, Đăk Lăk",
+    "cong_ty": "ABC Solutions"
+  }
 }
 
 Returns 200 OK and message: "Updated" on success
@@ -194,17 +199,14 @@ Update an employee record by ID with one new data.
 
 **Request Body**
 - JSON object containing fields to update. It's somewhat like this:
-  ```json
-  {
+
+```json
+{
     "body": 
-    {
-      "HoTen": "", 
-      "SDT": "", 
-      "CCCD": "", 
-      "ChucDanh": "", 
-      "PhongBan": ""
-    }
+  {
+    "cong_ty": "ABC Solutions"
   }
+}
   ```
 
 >**Note:** **PATCH** will be used when you need to update one value. If you need to update more than one, consider using **PUT**.
