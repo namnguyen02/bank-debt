@@ -6,7 +6,8 @@ const LawsuitProcessAPI = {
   getDetailLawsuit: (id) => HTTPService.sendRequest('get', `api/tiendokien/${id}`),
   updateLawsuit: (id, body) => HTTPService.sendRequest('patch', `api/tiendokien/${id}`, body),
   //   deleteStaff: id => HTTPService.sendRequest('delete', `api/nhanvien/${id}`),
-  addLawsuit: (body) => HTTPService.sendRequest('post', 'api/tiendokien', body),
+  // addLawsuit: (body) => HTTPService.sendRequest('post', 'api/tiendokien', body),
+  addLawsuit: (body) => HTTPService.sendRequest('post', 'api/v1/khoi-kien', body),
 }
 
 export default LawsuitProcessAPI
