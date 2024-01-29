@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 
 export async function GET() {
   const { count, data, error } = await supabase
-    .from('ToTrinhDanhGiaKhoiKien')
+    .from('to_trinh_danh_gia_khoi_kien')
     .select(`*, KhachHang(*)`, { count: 'exact' })
 
   if (error) {
@@ -17,10 +17,10 @@ export async function POST() {
   return NextResponse.json(
     {
       error: 'Method Not Allowed',
-      message: 'The requested method is not allowed for the resource.'
+      message: 'The requested method is not allowed for the resource.',
     },
     {
-      status: 405
+      status: 405,
     }
   )
 }

@@ -20,8 +20,8 @@ function validateEmail(inputText) {
   return mailformat.test(inputText) ? true : false
 }
 
-const checkLogicParams = obj => {
-  const { Ho_ten, SDT, CCCD, Email, TenCongTy } = obj
+const checkLogicParams = (obj) => {
+  const { ho_ten, dien_thoai, can_cuoc, email, cong_ty } = obj
   // Ho_ten: '',
   // CCCD: '',
   // Email: '',
@@ -29,51 +29,50 @@ const checkLogicParams = obj => {
   // DiaChiThuongTru: '',
   // DiaChiTamTru: '',
   // TenCongTy: '',
-  // DiaChiCongTy: ''
-  if (Ho_ten) {
-    if (!checkStringIsCharacters(Ho_ten)) {
-      console.log(Ho_ten)
+  if (ho_ten) {
+    if (!checkStringIsCharacters(ho_ten)) {
+      console.log(ho_ten)
       throw NextResponse.json(
         {
-          body: 'Invalid "Ho_ten" parameter'
+          body: 'Invalid "ho_ten" parameter',
         },
         { status: 400 }
       )
     }
   }
 
-  if (SDT && !checkPhoneNumber(SDT)) {
+  if (dien_thoai && !checkPhoneNumber(dien_thoai)) {
     throw NextResponse.json(
       {
-        body: 'Invalid "SDT" parameter'
+        body: 'Invalid "dien_thoai" parameter',
       },
       { status: 400 }
     )
   }
 
-  if (CCCD && !checkCCCD(CCCD)) {
+  if (can_cuoc && !checkCCCD(can_cuoc)) {
     throw NextResponse.json(
       {
-        body: 'Invalid "CCCD" parameter'
+        body: 'Invalid "can_cuoc" parameter',
       },
       { status: 400 }
     )
   }
 
-  if (Email && !validateEmail(Email)) {
+  if (email && !validateEmail(email)) {
     throw NextResponse.json(
       {
-        body: 'Invalid "Email" parameter'
+        body: 'Invalid "email" parameter',
       },
       { status: 400 }
     )
   }
 
-  if (TenCongTy) {
-    if (!checkStringIsCharacters(TenCongTy)) {
+  if (cong_ty) {
+    if (!checkStringIsCharacters(cong_ty)) {
       throw NextResponse.json(
         {
-          body: 'Invalid "TenCongTy" parameter'
+          body: 'Invalid "cong_ty" parameter',
         },
         { status: 400 }
       )
