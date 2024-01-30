@@ -1,8 +1,6 @@
-import createServer from 'utils/supabase/auth/route'
+import supabase from 'utils/supabase/client'
 
 export async function POST(request) {
-  const supabase = createServer()
-
   const res = await request.json()
 
   const { data, error } = await supabase.auth.signInWithPassword(res)

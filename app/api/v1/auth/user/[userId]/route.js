@@ -1,8 +1,8 @@
-import supabase from 'utils/supabase/auth/admin'
-import createServer from 'utils/supabase/auth/route'
+import adminAuthClient from 'utils/supabase/admin'
+import supabase from 'utils/supabase/client'
 
 export async function GET(_, { params }) {
-  const { data, error } = await supabase.auth.admin.getUserById(params.userId)
+  const { data, error } = await adminAuthClient.getUserById(params.userId)
 
   if (error) return Response.json(error, { status: error.status || 400 })
 
@@ -10,8 +10,6 @@ export async function GET(_, { params }) {
 }
 
 async function updateToTable(userId, other) {
-  const supabase = createServer()
-
   const { error } = await supabase
     .from('nhan_vien')
     .update({ ...other })
@@ -26,7 +24,7 @@ export async function PATCH(request, { params }) {
   const res = await request.json()
 
   const { email, phone, password, ...other } = res
-  const { data, error } = await supabase.auth.admin.updateUserById(params.userId, {
+  const { data, error } = await adminAuthClient.updateUserById(params.userId, {
     email,
     password,
     phone,
@@ -43,7 +41,7 @@ export async function PATCH(request, { params }) {
 }
 
 export async function DELETE(_, { params }) {
-  const { data, error } = await supabase.auth.admin.deleteUser(params.userId)
+  const { data, error } = await adminAuthClient.deleteUser(params.userId)
 
   if (error) return Response.json(error, { status: error.status || 400 })
 
