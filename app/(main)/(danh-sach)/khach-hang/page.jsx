@@ -98,11 +98,11 @@ const NonePerformingLoanList = () => {
   const handleDeleteStaff = (id) => {
     deleteCustomer(id).then((res) => {
       if (res.body === 'Record deleted successfully') {
-        setCustomers(customers.filter((item) => item.IDKhachHang !== id))
+        setCustomers(customers.filter((item) => item.ma_khach_hang !== id))
         informDeleteSuccessfully()
       }
     })
-    setCustomers(customers.filter((item) => item.IDKhachHang !== id))
+    setCustomers(customers.filter((item) => item.ma_khach_hang !== id))
     setOnConfirm('')
   }
 
@@ -111,14 +111,14 @@ const NonePerformingLoanList = () => {
       <React.Fragment>
         <div
           className="cursor-pointer"
-          onClick={() => setOnConfirm(rowData.IDKhachHang)}
+          onClick={() => setOnConfirm(rowData.ma_khach_hang)}
           style={{ color: 'red' }}
         >
           Xóa
         </div>
         <Dialog
           header="Xóa khách hàng nợ xấu"
-          visible={rowData.IDKhachHang === onConfirm}
+          visible={rowData.ma_khach_hang === onConfirm}
           onHide={() => setOnConfirm('')}
           style={{ width: '350px' }}
           modal
@@ -127,7 +127,7 @@ const NonePerformingLoanList = () => {
             <div className="flex align-items-center justify-content-center">
               <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
               <span>
-                Bạn có chắc chắn muốn xóa khách hàng <b>{rowData.Ho_ten}</b> không?
+                Bạn có chắc chắn muốn xóa khách hàng <b>{rowData.ho_ten}</b> không?
               </span>
             </div>
 
@@ -142,7 +142,7 @@ const NonePerformingLoanList = () => {
               <Button
                 label="Xóa"
                 style={{ width: '80px', height: '36px', marginLeft: '16px' }}
-                onClick={() => handleDeleteStaff(rowData.IDKhachHang)}
+                onClick={() => handleDeleteStaff(rowData.ma_khach_hang)}
               />
             </div>
           </div>
@@ -153,7 +153,7 @@ const NonePerformingLoanList = () => {
 
   const renderCustomerId = (rowData) => {
     return (
-      <Link href={`/khach-hang/chi-tiet?id=${rowData.IDKhachHang}`}>{rowData.IDKhachHang}</Link>
+      <Link href={`/khach-hang/chi-tiet?id=${rowData.ma_khach_hang}`}>{rowData.ma_khach_hang}</Link>
     )
   }
 
@@ -209,9 +209,9 @@ const NonePerformingLoanList = () => {
           header={header1}
         >
           <Column header="Mã khách hàng" style={{ minWidth: '10rem' }} body={renderCustomerId} />
-          <Column field="Ho_ten" header="Họ và tên" style={{ minWidth: '12rem' }} />
-          <Column field="CCCD" header="Căn cước công dân" style={{ minWidth: '11rem' }} />
-          <Column field="SDT" header="Số điện thoại" style={{ minWidth: '9rem' }} />
+          <Column field="ho_ten" header="Họ và tên" style={{ minWidth: '12rem' }} />
+          <Column field="can_cuoc" header="Căn cước công dân" style={{ minWidth: '11rem' }} />
+          <Column field="dien_thoai" header="Số điện thoại" style={{ minWidth: '10rem' }} />
           <Column field="nhom_no" header="Nhóm nợ" style={{ minWidth: '7rem' }} />
           <Column field="so_ngay_qua_han" header="Số ngày quá hạn" style={{ minWidth: '10rem' }} />
           <Column

@@ -11,7 +11,7 @@ import { DataTable } from 'primereact/datatable'
 import { Toast } from 'primereact/toast'
 import { Dropdown } from 'primereact/dropdown'
 
-import { getListStaff, deleteStaff } from 'actions/staff/Staff'
+import { getListStaff, deleteStaff } from 'actions/nhan-vien/nhan-vien'
 import { signUp } from 'actions/auth/auth'
 
 const StaffList = () => {
@@ -25,12 +25,12 @@ const StaffList = () => {
   const [showSuccess, setShowSuccess] = useState(false)
   const [createdEmail, setCreatedEmail] = useState('')
   const [errorForm, setErrorForm] = useState({})
-  const [password, setPassword] = useState()
   const [role, setRole] = useState({})
+  const [password, setPassword] = useState({})
   const toast = useRef(null)
 
   const getStaffList = () => {
-    getListStaff('queryAll=true').then((res) => {
+    getListStaff('').then((res) => {
       setCustomer(res.results)
       setLoading(false)
     })
@@ -85,6 +85,10 @@ const StaffList = () => {
       checkOK = false
       tempErrorForm.SDTError = true
     }
+    if (!staffForm.permission) {
+      checkOK = false
+      tempErrorForm.PermissionError = true
+    }
     if (!staffForm.chuc_danh) {
       checkOK = false
       tempErrorForm.ChucDanhError = true
@@ -100,12 +104,9 @@ const StaffList = () => {
   const handleAddStaff = () => {
     if (checkRequired()) {
       signUp(staffForm).then((res) => {
-        console.log(res)
         if (res && res.user) {
-          console.log(res)
-          setCustomer([...customers, staffForm])
+          setCustomer([...customers, res.user])
           setCreatedEmail(staffForm.email)
-          setPassword(res.results[0].encrypted_password)
           setShowSuccess(true)
           setErrorForm({})
         }
@@ -405,7 +406,9 @@ const StaffList = () => {
             outlined
             onClick={() => {
               setOnAddStaff(true)
-              handleChange('password', generatePassword())
+              const newPassword = generatePassword()
+              handleChange('password', newPassword)
+              setPassword(newPassword)
             }}
           />
           <Dialog
@@ -436,13 +439,33 @@ const StaffList = () => {
           emptyMessage="Không tìm thấy nhân viên nào"
           header={header1}
         >
-          <Column field="ma_nhan_vien" header="Mã nhân viên" style={{ minWidth: '9rem' }} />
-          <Column field="ho_ten" header="Tên nhân viên" style={{ minWidth: '12rem' }} />
+          <Column
+            field="user_metadata.ma_nhan_vien"
+            header="Mã nhân viên"
+            style={{ minWidth: '9rem' }}
+          />
+          <Column
+            field="user_metadata.ho_ten"
+            header="Tên nhân viên"
+            style={{ minWidth: '12rem' }}
+          />
           <Column field="email" header="Email" style={{ minWidth: '12rem' }} />
           <Column field="phone" header="Số điện thoại" style={{ minWidth: '9rem' }} />
-          <Column field="can_cuoc" header="Căn cước công dân" style={{ minWidth: '11rem' }} />
-          <Column field="chuc_danh" header="Chức danh" style={{ minWidth: '12rem' }} />
-          <Column field="phong_ban" header="Phòng ban" style={{ minWidth: '12rem' }} />
+          <Column
+            field="user_metadata.can_cuoc"
+            header="Căn cước công dân"
+            style={{ minWidth: '11rem' }}
+          />
+          <Column
+            field="user_metadata.chuc_danh"
+            header="Chức danh"
+            style={{ minWidth: '12rem' }}
+          />
+          <Column
+            field="user_metadata.phong_ban"
+            header="Phòng ban"
+            style={{ minWidth: '12rem' }}
+          />
           <Column style={{ minWidth: '1rem' }} body={renderAction} />
         </DataTable>
       </div>
