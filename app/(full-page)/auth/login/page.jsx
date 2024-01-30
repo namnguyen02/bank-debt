@@ -10,7 +10,9 @@ import { LayoutContext } from '@/layout/context/LayoutContext'
 import { InputText } from 'primereact/inputtext'
 import { classNames } from 'primereact/utils'
 
-const LoginPage = props => {
+import { signIn } from 'actions/auth/auth'
+
+const LoginPage = (props) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errMess, setErrMess] = useState('')
@@ -24,90 +26,103 @@ const LoginPage = props => {
   )
 
   const handleSignIn = () => {
-    if (email === 'quanly@gmail.com' && password === '123456') {
-      localStorage.setItem('user', JSON.stringify({ role: 'Manager' }))
-      props.setUser({ role: 'Manager' })
-      router.push('/nhan-vien')
-      return
+    const body = {
+      email: email,
+      password: password,
     }
-    if (email === 'nhanvien@gmail.com' && password === '123456') {
-      router.push('/')
-      return
-    }
-    setErrMess('Email không tồn tại')
+    signIn(body).then((res) => {
+      if (res && res.response?.status === 400) {
+        setErrMess('Thông tin đăng nhập không hợp lệ')
+      } else if (res && res.user) {
+        const role = res.user?.user_metadata?.permission
+        localStorage.setItem('user', JSON.stringify({ role: role }))
+        localStorage.setItem('access_token', res.session?.access_token)
+        props.setUser({ role: role, name: res.user?.user_metadata?.ho_ten })
+        if (role === 'SHB') {
+          router.push('/khach-hang')
+        } else if (role === 'NDH') {
+          router.push('/nhan-vien')
+        }
+      }
+    })
   }
   return (
     <div className={containerClassName}>
-      <div className='flex flex-column align-items-center justify-content-center'>
+      <div className="flex flex-column align-items-center justify-content-center">
         <img
           src={`/layout/images/logo-${layoutConfig.colorScheme === 'light' ? 'dark' : 'white'}.svg`}
-          alt='Sakai logo'
-          className='mb-5 w-6rem flex-shrink-0'
+          alt="Sakai logo"
+          className="mb-5 w-6rem flex-shrink-0"
         />
         <div
           style={{
             borderRadius: '56px',
             padding: '0.3rem',
-            background: 'linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)'
+            background:
+              'linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)',
           }}
         >
-          <div className='w-full surface-card py-8 px-5 sm:px-8' style={{ borderRadius: '53px' }}>
-            <div className='text-center mb-5'>
-              <img src='/demo/images/login/avatar.png' alt='Image' height='50' className='mb-3' />
-              <div className='text-900 text-3xl font-medium mb-3'>Welcome, Isabel!</div>
-              <span className='text-600 font-medium'>Sign in to continue</span>
+          <div className="w-full surface-card py-8 px-5 sm:px-8" style={{ borderRadius: '53px' }}>
+            <div className="text-center mb-5">
+              <img src="/demo/images/login/avatar.png" alt="Image" height="50" className="mb-3" />
+              <div className="text-900 text-3xl font-medium mb-3">Welcome, Isabel!</div>
+              <span className="text-600 font-medium">Sign in to continue</span>
             </div>
 
             <div>
-              <label htmlFor='email1' className='block text-900 text-xl font-medium mb-2'>
+              <label htmlFor="email1" className="block text-900 text-xl font-medium mb-2">
                 Email
               </label>
               <InputText
-                id='email1'
-                type='text'
+                id="email1"
+                type="text"
                 value={email}
-                onChange={e => {
+                onChange={(e) => {
                   setEmail(e.target.value)
                   setErrMess('')
                 }}
-                placeholder='Email address'
-                className='w-full md:w-30rem mb-5'
+                placeholder="Email address"
+                className="w-full md:w-30rem mb-5"
                 style={{ padding: '1rem' }}
               />
 
-              <label htmlFor='password1' className='block text-900 font-medium text-xl mb-2'>
+              <label htmlFor="password1" className="block text-900 font-medium text-xl mb-2">
                 Password
               </label>
               <Password
-                inputId='password1'
+                inputId="password1"
                 value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder='Password'
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
                 toggleMask
                 className={`w-full ${errMess ? 'mb-3' : 'mb-5'}`}
-                inputClassName='w-full p-3 md:w-30rem'
+                inputClassName="w-full p-3 md:w-30rem"
               ></Password>
 
               {errMess && <div style={{ color: 'red', marginBottom: '1rem' }}>{errMess}</div>}
 
-              <div className='flex align-items-center justify-content-between mb-5 gap-5'>
-                <div className='flex align-items-center'>
+              <div className="flex align-items-center justify-content-between mb-5 gap-5">
+                <div className="flex align-items-center">
                   <Checkbox
-                    inputId='rememberme1'
+                    inputId="rememberme1"
                     checked={checked}
-                    onChange={e => setChecked(e.checked ?? false)}
-                    className='mr-2'
+                    onChange={(e) => setChecked(e.checked ?? false)}
+                    className="mr-2"
                   ></Checkbox>
-                  <label htmlFor='rememberme1'>Remember me</label>
+                  <label htmlFor="rememberme1">Remember me</label>
                 </div>
                 <a
-                  className='font-medium no-underline ml-2 text-right cursor-pointer'
+                  className="font-medium no-underline ml-2 text-right cursor-pointer"
                   style={{ color: 'var(--primary-color)' }}
                 >
                   Forgot password?
                 </a>
               </div>
-              <Button label='Sign In' className='w-full p-3 text-xl' onClick={() => handleSignIn()}></Button>
+              <Button
+                label="Sign In"
+                className="w-full p-3 text-xl"
+                onClick={() => handleSignIn()}
+              ></Button>
             </div>
           </div>
         </div>
@@ -116,9 +131,9 @@ const LoginPage = props => {
   )
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    setUser: user => dispatch({ type: 'SET_USER', payload: user })
+    setUser: (user) => dispatch({ type: 'SET_USER', payload: user }),
   }
 }
 
