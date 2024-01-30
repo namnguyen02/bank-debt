@@ -5,7 +5,7 @@ export async function GET(_, { params }) {
   const data = {
     '': ['*'],
     du_no_the_td: ['*', 'the_tin_dung (so_tai_khoan_the)'],
-    nhan_vien: ['ma_nhan_vien, ho_ten'],
+    nhan_vien: ['ma_nhan_vien', 'ho_ten'],
   }
 
   return Action.read(

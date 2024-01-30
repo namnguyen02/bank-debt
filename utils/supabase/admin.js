@@ -7,4 +7,7 @@ const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.
   },
 })
 
-export default supabase
+// Access auth admin api
+const adminAuthClient = supabase.auth.admin
+
+export default adminAuthClient

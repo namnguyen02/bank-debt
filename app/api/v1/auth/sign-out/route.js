@@ -1,7 +1,6 @@
-import createServer from 'utils/supabase/auth/route'
+import supabase from 'utils/supabase/client'
 
 export async function POST() {
-  const supabase = createServer()
   const { error } = await supabase.auth.signOut()
 
   if (error) return Response.json(error, { status: 400 })

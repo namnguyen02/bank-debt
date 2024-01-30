@@ -1,8 +1,8 @@
-import supabase from 'utils/supabase/auth/admin'
-import createServer from 'utils/supabase/auth/route'
+import adminAuthClient from 'utils/supabase/admin'
+import supabase from 'utils/supabase/client'
 
 export async function GET() {
-  const { data, error } = await supabase.auth.admin.listUsers()
+  const { data, error } = await adminAuthClient.listUsers()
 
   if (error) return Response.json(error, { status: error.status || 400 })
 
@@ -10,8 +10,6 @@ export async function GET() {
 }
 
 async function addToTable(userId, other) {
-  const supabase = createServer()
-
   const { error } = await supabase.from('nhan_vien').insert({ auth_id: userId, ...other })
 
   if (error) return Response.json(error, { status: 400 })
@@ -24,7 +22,7 @@ export async function POST(request) {
 
   const { email, password, phone, ...other } = res
 
-  const { data, error } = await supabase.auth.admin.createUser({
+  const { data, error } = await adminAuthClient.createUser({
     email,
     password,
     phone,
