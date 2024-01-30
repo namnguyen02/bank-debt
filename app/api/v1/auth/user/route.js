@@ -17,11 +17,43 @@ async function addToTable(userId, other) {
   return null
 }
 
+function getNewCount(newestID, permission) {
+  const count = newestID.substring(8, 12)
+  let newCount = (Number(count) + 1).toString()
+  if (newCount.length === 1) {
+    newCount = '000' + newCount
+  } else if (newCount.length === 2) {
+    newCount = '00' + newCount
+  } else if (newCount.length === 3) {
+    newCount = '0' + newCount
+  }
+  return `${permission}-${year}${newCount}`
+}
+
 export async function POST(request) {
   const res = await request.json()
 
   const { email, password, phone, ...other } = res
 
+  if (other.permission) {
+    const year = new Date().getFullYear()
+
+    const { data, error } = await supabase
+      .from('nhan_vien')
+      .select('ma_nhan_vien')
+      .order('ma_nhan_vien', { ascending: false })
+      .like('ma_nhan_vien', `%${other.permission}-${year}%`)
+
+    // create ma_nhan_vien
+    if (data.length === 0) {
+      other.ma_nhan_vien = `${other.permission}-${year}0001`
+    } else {
+      other.ma_nhan_vien = getNewCount(data[0].ma_nhan_vien, other.permission)
+    }
+
+    if (error) return Response.json(error, { status: 400 })
+  }
+  
   const { data, error } = await adminAuthClient.createUser({
     email,
     password,

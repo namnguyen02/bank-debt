@@ -9,8 +9,10 @@ import { InputText } from 'primereact/inputtext'
 import { Column } from 'primereact/column'
 import { DataTable } from 'primereact/datatable'
 import { Toast } from 'primereact/toast'
+import { Dropdown } from 'primereact/dropdown'
 
-import { getListStaff, deleteStaff, addStaff } from 'actions/staff/Staff'
+import { getListStaff, deleteStaff } from 'actions/staff/Staff'
+import { signUp } from 'actions/auth/auth'
 
 const StaffList = () => {
   const [customers, setCustomer] = useState([])
@@ -24,6 +26,7 @@ const StaffList = () => {
   const [createdEmail, setCreatedEmail] = useState('')
   const [errorForm, setErrorForm] = useState({})
   const [password, setPassword] = useState()
+  const [role, setRole] = useState({})
   const toast = useRef(null)
 
   const getStaffList = () => {
@@ -44,34 +47,49 @@ const StaffList = () => {
     setOnAddStaff(false)
   }
 
+  const rolePermission = {
+    'Nhân viên thu hồi nợ': 'SHB',
+    'Người điều hành': 'NDH',
+    'Nhân viên KV/CN/PGD': 'PGD',
+    'Người phê duyệt': 'NPD',
+    'Trung tâm xử lý nợ': 'XLN',
+  }
+
+  function generatePassword() {
+    var length = 8,
+      charset = 'abcdefghijklmnopqrstuvwxyz0123456789',
+      retVal = ''
+    for (var i = 0, n = charset.length; i < length; ++i) {
+      retVal += charset.charAt(Math.floor(Math.random() * n))
+    }
+    return retVal
+  }
+
   const checkRequired = () => {
     let checkOK = true
     const tempErrorForm = {}
-    if (!staffForm.MaNhanVien) {
-      checkOK = false
-      tempErrorForm.MaNhanVienError = true
-    }
-    if (!staffForm.HoTen) {
+
+    if (!staffForm.ho_ten) {
       checkOK = false
       tempErrorForm.HoTenError = true
     }
-    if (!staffForm.Email) {
+    if (!staffForm.email) {
       checkOK = false
       tempErrorForm.EmailError = true
     }
-    if (!staffForm.CCCD) {
+    if (!staffForm.can_cuoc) {
       checkOK = false
       tempErrorForm.CCCDError = true
     }
-    if (!staffForm.SDT) {
+    if (!staffForm.phone) {
       checkOK = false
       tempErrorForm.SDTError = true
     }
-    if (!staffForm.ChucDanh) {
+    if (!staffForm.chuc_danh) {
       checkOK = false
       tempErrorForm.ChucDanhError = true
     }
-    if (!staffForm.PhongBan) {
+    if (!staffForm.phong_ban) {
       checkOK = false
       tempErrorForm.PhongBanError = true
     }
@@ -80,14 +98,13 @@ const StaffList = () => {
   }
 
   const handleAddStaff = () => {
-    const body = {
-      body: staffForm,
-    }
     if (checkRequired()) {
-      addStaff(body).then((res) => {
-        if (res && res.body === 'Inserted') {
+      signUp(staffForm).then((res) => {
+        console.log(res)
+        if (res && res.user) {
+          console.log(res)
           setCustomer([...customers, staffForm])
-          setCreatedEmail(staffForm.Email)
+          setCreatedEmail(staffForm.email)
           setPassword(res.results[0].encrypted_password)
           setShowSuccess(true)
           setErrorForm({})
@@ -120,7 +137,7 @@ const StaffList = () => {
   const handleDeleteStaff = (id) => {
     deleteStaff(id).then((res) => {
       if (res.body === 'Record deleted successfully') {
-        setCustomer(customers.filter((item) => item.MaNhanVien !== id))
+        setCustomer(customers.filter((item) => item.ma_nhan_vien !== id))
         informDeleteSuccessfully()
       }
     })
@@ -132,14 +149,14 @@ const StaffList = () => {
       <React.Fragment>
         <div
           className="cursor-pointer"
-          onClick={() => setOnConfirm(rowData.MaNhanVien)}
+          onClick={() => setOnConfirm(rowData.ma_nhan_vien)}
           style={{ color: 'red' }}
         >
           Xóa
         </div>
         <Dialog
           header="Xóa nhân viên"
-          visible={rowData.MaNhanVien !== '' && rowData.MaNhanVien === onConfirm}
+          visible={rowData.ma_nhan_vien !== '' && rowData.ma_nhan_vien === onConfirm}
           onHide={() => setOnConfirm('')}
           style={{ width: '350px' }}
           modal
@@ -148,7 +165,7 @@ const StaffList = () => {
             <div className="flex align-items-center justify-content-center">
               <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
               <span>
-                Bạn có chắc chắn muốn xóa nhân viên <b>{rowData.HoTen}</b> không?
+                Bạn có chắc chắn muốn xóa nhân viên <b>{rowData.ho_ten}</b> không?
               </span>
             </div>
 
@@ -163,7 +180,7 @@ const StaffList = () => {
               <Button
                 label="Xóa"
                 style={{ width: '80px', height: '36px', marginLeft: '16px' }}
-                onClick={() => handleDeleteStaff(rowData.MaNhanVien)}
+                onClick={() => handleDeleteStaff(rowData.ma_nhan_vien)}
               />
             </div>
           </div>
@@ -175,7 +192,7 @@ const StaffList = () => {
   const renderAddStaffContent = () => {
     return (
       <div className="p-fluid">
-        <div className="field">
+        {/* <div className="field">
           <label htmlFor="ma_nv">
             Mã nhân viên <span style={{ color: 'red' }}>*</span>
           </label>
@@ -183,11 +200,11 @@ const StaffList = () => {
             id="ma_nv"
             type="text"
             placeholder="Mã nhân viên"
-            value={staffForm.MaNhanVien}
-            onChange={(e) => handleChange('MaNhanVien', e.target.value)}
+            value={staffForm.ma_nhan_vien}
+            onChange={(e) => handleChange('ma_nhan_vien', e.target.value)}
             className={errorForm.MaNhanVienError ? 'p-invalid' : ''}
           />
-        </div>
+        </div> */}
 
         <div className="field">
           <label htmlFor="HoTen">
@@ -197,8 +214,8 @@ const StaffList = () => {
             id="HoTen"
             type="text"
             placeholder="Tên nhân viên"
-            value={staffForm.HoTen}
-            onChange={(e) => handleChange('HoTen', e.target.value)}
+            value={staffForm.ho_ten}
+            onChange={(e) => handleChange('ho_ten', e.target.value)}
             className={errorForm.HoTenError ? 'p-invalid' : ''}
           />
         </div>
@@ -211,8 +228,8 @@ const StaffList = () => {
             id="Email"
             type="text"
             placeholder="Email"
-            value={staffForm.Email}
-            onChange={(e) => handleChange('Email', e.target.value)}
+            value={staffForm.email}
+            onChange={(e) => handleChange('email', e.target.value)}
             className={errorForm.EmailError ? 'p-invalid' : ''}
           />
         </div>
@@ -225,8 +242,8 @@ const StaffList = () => {
             id="CCCD"
             type="text"
             placeholder="Căn cước công dân"
-            value={staffForm.CCCD}
-            onChange={(e) => handleChange('CCCD', e.target.value)}
+            value={staffForm.can_cuoc}
+            onChange={(e) => handleChange('can_cuoc', e.target.value)}
             className={errorForm.CCCDError ? 'p-invalid' : ''}
           />
         </div>
@@ -239,9 +256,32 @@ const StaffList = () => {
             id="SDT"
             type="text"
             placeholder="Số điện thoại"
-            value={staffForm.SDT}
-            onChange={(e) => handleChange('SDT', e.target.value)}
+            value={staffForm.phone}
+            onChange={(e) => handleChange('phone', e.target.value)}
             className={errorForm.SDTError ? 'p-invalid' : ''}
+          />
+        </div>
+
+        <div className="field">
+          <label htmlFor="role">
+            Vai trò <span style={{ color: 'red' }}>*</span>
+          </label>
+          <Dropdown
+            value={role}
+            onChange={(e) => {
+              setRole(e.value)
+              handleChange('permission', rolePermission[e.value.name])
+            }}
+            options={[
+              { name: 'Người điều hành' },
+              { name: 'Nhân viên thu hồi nợ' },
+              { name: 'Nhân viên KV/CN/PGD' },
+              { name: 'Người phê duyệt' },
+              ,
+              { name: 'Trung tâm xử lý nợ' },
+            ]}
+            optionLabel="name"
+            placeholder="Chọn vai trò"
           />
         </div>
 
@@ -253,8 +293,8 @@ const StaffList = () => {
             id="ChucDanh"
             type="text"
             placeholder="Chức danh"
-            value={staffForm.ChucDanh}
-            onChange={(e) => handleChange('ChucDanh', e.target.value)}
+            value={staffForm.chuc_danh}
+            onChange={(e) => handleChange('chuc_danh', e.target.value)}
             className={errorForm.ChucDanhError ? 'p-invalid' : ''}
           />
         </div>
@@ -267,8 +307,8 @@ const StaffList = () => {
             id="PhongBan"
             type="text"
             placeholder="Phòng ban"
-            value={staffForm.PhongBan}
-            onChange={(e) => handleChange('PhongBan', e.target.value)}
+            value={staffForm.phong_ban}
+            onChange={(e) => handleChange('phong_ban', e.target.value)}
             className={errorForm.PhongBanError ? 'p-invalid' : ''}
           />
         </div>
@@ -360,7 +400,14 @@ const StaffList = () => {
       <div className="flex justify-content-between align-items-center mb-3">
         <div className="font-bold text-xl">Danh sách nhân viên</div>
         <div>
-          <Button label="Tạo tài khoản nhân viên" outlined onClick={() => setOnAddStaff(true)} />
+          <Button
+            label="Tạo tài khoản nhân viên"
+            outlined
+            onClick={() => {
+              setOnAddStaff(true)
+              handleChange('password', generatePassword())
+            }}
+          />
           <Dialog
             header="Tạo tài khoản nhân viên"
             visible={onAddStaff}
@@ -389,13 +436,13 @@ const StaffList = () => {
           emptyMessage="Không tìm thấy nhân viên nào"
           header={header1}
         >
-          <Column field="MaNhanVien" header="Mã nhân viên" style={{ minWidth: '9rem' }} />
-          <Column field="HoTen" header="Tên nhân viên" style={{ minWidth: '12rem' }} />
-          <Column field="Email" header="Email" style={{ minWidth: '12rem' }} />
-          <Column field="SDT" header="Số điện thoại" style={{ minWidth: '9rem' }} />
-          <Column field="CCCD" header="Căn cước công dân" style={{ minWidth: '11rem' }} />
-          <Column field="ChucDanh" header="Chức danh" style={{ minWidth: '12rem' }} />
-          <Column field="PhongBan" header="Phòng ban" style={{ minWidth: '12rem' }} />
+          <Column field="ma_nhan_vien" header="Mã nhân viên" style={{ minWidth: '9rem' }} />
+          <Column field="ho_ten" header="Tên nhân viên" style={{ minWidth: '12rem' }} />
+          <Column field="email" header="Email" style={{ minWidth: '12rem' }} />
+          <Column field="phone" header="Số điện thoại" style={{ minWidth: '9rem' }} />
+          <Column field="can_cuoc" header="Căn cước công dân" style={{ minWidth: '11rem' }} />
+          <Column field="chuc_danh" header="Chức danh" style={{ minWidth: '12rem' }} />
+          <Column field="phong_ban" header="Phòng ban" style={{ minWidth: '12rem' }} />
           <Column style={{ minWidth: '1rem' }} body={renderAction} />
         </DataTable>
       </div>
