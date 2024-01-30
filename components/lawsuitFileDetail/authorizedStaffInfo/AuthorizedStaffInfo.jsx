@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { InputText } from 'primereact/inputtext'
 import { AutoComplete } from 'primereact/autocomplete'
 
-import { getListStaff } from 'actions/staff/Staff'
+import { getListStaff } from 'actions/nhan-vien/nhan-vien'
 
 import styles from './index.module.scss'
 
