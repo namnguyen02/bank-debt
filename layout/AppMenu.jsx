@@ -54,7 +54,7 @@ const AppMenu = () => {
           icon: 'pi pi-fw pi-file-edit',
           items: [
             { label: 'Khởi kiện', icon: 'pi pi-fw pi-file', to: '/to-trinh-khoi-kien' },
-            { label: 'Miễn giảm', icon: 'pi pi-fw pi-file' },
+            { label: 'Miễn giảm', icon: 'pi pi-fw pi-file', to: '/to-trinh-mien-giam' },
           ],
         },
       ],

@@ -5,7 +5,7 @@ import { InputText } from 'primereact/inputtext'
 import { AutoComplete } from 'primereact/autocomplete'
 import { Dropdown } from 'primereact/dropdown'
 
-import { provinces, districts } from 'utils/procinves-districts/provinces-districts'
+import { provinces, districts } from 'utils/provinces-districts/provinces-districts'
 
 import styles from './index.module.scss'
 

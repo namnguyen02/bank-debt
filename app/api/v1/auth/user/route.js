@@ -17,7 +17,7 @@ async function addToTable(userId, other) {
   return null
 }
 
-function getNewCount(newestID, permission, year) {
+function getNewId(newestID, permission, year) {
   const count = newestID.substring(8, 12)
   let newCount = (Number(count) + 1).toString()
   if (newCount.length === 1) {
@@ -48,7 +48,7 @@ export async function POST(request) {
     if (data.length === 0) {
       other.ma_nhan_vien = `${other.permission}-${year}0001`
     } else {
-      other.ma_nhan_vien = getNewCount(data[0].ma_nhan_vien, other.permission, year)
+      other.ma_nhan_vien = getNewId(data[0].ma_nhan_vien, other.permission, year)
       console.log(other.ma_nhan_vien)
     }
 
