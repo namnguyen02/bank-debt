@@ -37,7 +37,11 @@ const LoginPage = (props) => {
         const role = res.user?.user_metadata?.permission
         localStorage.setItem('user', JSON.stringify({ role: role }))
         localStorage.setItem('access_token', res.session?.access_token)
-        props.setUser({ role: role, name: res.user?.user_metadata?.ho_ten })
+        props.setUser({
+          role: role,
+          ho_ten: res.user?.user_metadata?.ho_ten,
+          ma_nhan_vien: res.user?.user_metadata?.ma_nhan_vien,
+        })
         if (role === 'SHB') {
           router.push('/khach-hang')
         } else if (role === 'NDH') {

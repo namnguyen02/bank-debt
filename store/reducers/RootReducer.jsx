@@ -1,7 +1,7 @@
 'use client'
 
 const initState = {
-  user: typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('user')) : {}
+  user: typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('user')) : {},
 }
 
 const RootReducer = (state = initState, action) => {
@@ -9,7 +9,8 @@ const RootReducer = (state = initState, action) => {
     case '':
       break
     case 'SET_USER':
-      return { ...state, user: action.payload }
+      state.user = action.payload
+      return state
     default:
       return state
   }

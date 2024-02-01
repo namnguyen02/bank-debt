@@ -6,7 +6,7 @@ import { Dropdown } from 'primereact/dropdown'
 
 import { getListCustomer } from 'actions/customer/Customer'
 
-import { provinces, districts } from 'utils/procinves-districts/provinces-districts'
+import { provinces, districts } from 'utils/provinces-districts/provinces-districts'
 
 import styles from './index.module.scss'
 
