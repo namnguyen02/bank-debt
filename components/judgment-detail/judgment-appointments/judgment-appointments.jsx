@@ -1,5 +1,6 @@
 'use client'
 import React, { useRef, useEffect, useState } from 'react'
+import { connect } from 'react-redux'
 
 import { Column } from 'primereact/column'
 import { DataTable } from 'primereact/datatable'
@@ -75,10 +76,10 @@ const JudgmentAppointments = (props) => {
                     ngay_hen: calendarValue.toString(),
                     noi_dung_hen: appointmentContent,
                     trang_thai_ho_so: props.state,
-                    nguoi_tao_lich_hen: 'Lê Văn Bằng',
-                    id_thi_hanh_an: props.id,
-                    thoi_gian_cap_nhat: 'Được thêm sau khi lưu',
-                    IDKhachHang: props.data.IDKhachHang,
+                    nguoi_tao_lich_hen: props.user.ho_ten,
+                    ma_thi_hanh_an: props.id,
+                    updated_at: 'Được thêm sau khi lưu',
+                    ma_khach_hang: props.data.ma_khach_hang,
                   },
                   ...props.appointments,
                 ])
@@ -100,29 +101,37 @@ const JudgmentAppointments = (props) => {
   }
 
   const renderSTT = (rowData) => {
-    if (rowData.thoi_gian_cap_nhat === 'Được thêm sau khi lưu') {
+    if (rowData.updated_at === 'Được thêm sau khi lưu') {
       return <div>{`${rowData.STT} (mới)`}</div>
     }
     return <div>{rowData.STT}</div>
   }
 
   const renderAppointmentDate = (rowData) => {
-    const date = new Date(rowData.ngay_hen)
+    const dateTime = new Date(rowData.ngay_hen)
+    const date = dateTime.getDate() < 10 ? `0${dateTime.getDate()}` : dateTime.getDate()
+    const month =
+      dateTime.getMonth() + 1 < 10 ? `0${dateTime.getMonth() + 1}` : dateTime.getMonth() + 1
+    const year = dateTime.getFullYear()
     return (
       <div>
-        {date.getDate()}/{date.getMonth() + 1}/{date.getFullYear()}
+        {date}/{month}/{year}
       </div>
     )
   }
 
   const renderUpdateTime = (rowData) => {
-    if (rowData.thoi_gian_cap_nhat === 'Được thêm sau khi lưu') {
+    if (rowData.updated_at === 'Được thêm sau khi lưu') {
       return <div>Được thêm sau khi lưu</div>
     }
-    const date = new Date(rowData.thoi_gian_cap_nhat)
+    const dateTime = new Date(rowData.updated_at)
+    const date = dateTime.getDate() < 10 ? `0${dateTime.getDate()}` : dateTime.getDate()
+    const month =
+      dateTime.getMonth() + 1 < 10 ? `0${dateTime.getMonth() + 1}` : dateTime.getMonth() + 1
+    const year = dateTime.getFullYear()
     return (
       <div>
-        {date.getDate()}/{date.getMonth() + 1}/{date.getFullYear()}
+        {date}/{month}/{year}
       </div>
     )
   }
@@ -178,7 +187,7 @@ const JudgmentAppointments = (props) => {
             style={{ minWidth: '12rem' }}
           />
           <Column
-            field="thoi_gian_cap_nhat"
+            field="updated_at"
             header="Thời gian cập nhật"
             style={{ minWidth: '11rem' }}
             body={renderUpdateTime}
@@ -189,4 +198,10 @@ const JudgmentAppointments = (props) => {
   )
 }
 
-export default JudgmentAppointments
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  }
+}
+
+export default connect(mapStateToProps)(JudgmentAppointments)

@@ -7,23 +7,23 @@ import { Checkbox } from 'primereact/checkbox'
 
 const ManageAppointmentTable = (props) => {
   const renderName = (rowData) => {
-    return <div>{rowData.KhachHang.Ho_ten}</div>
+    return <div>{rowData.khach_hang.ho_ten}</div>
   }
 
   const renderCCCD = (rowData) => {
-    return <div>{rowData.KhachHang.CCCD}</div>
+    return <div>{rowData.khach_hang.can_cuoc}</div>
   }
 
   const renderAuthorized = (rowData) => {
-    return <div>{rowData.tien_do_khoi_kien.NhanVien.HoTen}</div>
+    return <div>{rowData.khoi_kien.nhan_vien.ho_ten}</div>
   }
 
   const renderProvince = (rowData) => {
-    return <div>{rowData.tien_do_khoi_kien.tinh_tp}</div>
+    return <div>{rowData.khoi_kien.tinh_tp}</div>
   }
 
   const renderDistrict = (rowData) => {
-    return <div>{rowData.tien_do_khoi_kien.quan_huyen}</div>
+    return <div>{rowData.khoi_kien.quan_huyen}</div>
   }
 
   const renderAppointmentDate = (rowData) => {
@@ -38,7 +38,7 @@ const ManageAppointmentTable = (props) => {
   }
 
   const renderUpdateTime = (rowData) => {
-    const data = rowData.thoi_gian_cap_nhat
+    const data = rowData.updated_at
     const year = data.substr(0, 4)
     const month = data.substr(5, 2)
     const date = data.substr(8, 2)
@@ -47,6 +47,18 @@ const ManageAppointmentTable = (props) => {
         {date}/{month}/{year}
       </div>
     )
+  }
+
+  const renderLawsuitStatus = (rowData) => {
+    if (rowData.ma_khoi_kien) {
+      return <div>{rowData.trang_thai_ho_so}</div>
+    }
+  }
+
+  const renderJudgmentStatus = (rowData) => {
+    if (rowData.ma_thi_hanh_an) {
+      return <div>{rowData.trang_thai_ho_so}</div>
+    }
   }
 
   // const renderTHA = (rowData) => {
@@ -73,35 +85,23 @@ const ManageAppointmentTable = (props) => {
         <Column header="Tên khách hàng" style={{ minWidth: '12rem' }} body={renderName} />
         <Column header="Căn cước công dân" style={{ minWidth: '11rem' }} body={renderCCCD} />
         <Column
-          field="trang_thai_ho_so"
           header="Trạng thái khởi kiện"
           style={{ minWidth: '12rem' }}
+          body={renderLawsuitStatus}
         />
-        {/* <Column field="phu_trach_2" header="Trạng thái thi hành án" style={{ minWidth: '13rem' }} body={renderTHA}/> */}
         <Column
-          field="phu_trach_2"
+          header="Trạng thái thi hành án"
+          style={{ minWidth: '13rem' }}
+          body={renderJudgmentStatus}
+        />
+        <Column
           header="Người được ủy quyền"
           style={{ minWidth: '13rem' }}
           body={renderAuthorized}
         />
-        <Column
-          field="phu_trach_2"
-          header="Tỉnh/Thành phố"
-          style={{ minWidth: '10rem' }}
-          body={renderProvince}
-        />
-        <Column
-          field="phu_trach_2"
-          header="Quận/huyện"
-          style={{ minWidth: '9rem' }}
-          body={renderDistrict}
-        />
-        <Column
-          field="phu_trach_2"
-          header="Ngày hẹn"
-          style={{ minWidth: '7rem' }}
-          body={renderAppointmentDate}
-        />
+        <Column header="Tỉnh/Thành phố" style={{ minWidth: '10rem' }} body={renderProvince} />
+        <Column header="Quận/huyện" style={{ minWidth: '9rem' }} body={renderDistrict} />
+        <Column header="Ngày hẹn" style={{ minWidth: '7rem' }} body={renderAppointmentDate} />
         <Column field="noi_dung_hen" header="Nội dung" style={{ minWidth: '15rem' }} />
         <Column
           field="nguoi_tao_lich_hen"

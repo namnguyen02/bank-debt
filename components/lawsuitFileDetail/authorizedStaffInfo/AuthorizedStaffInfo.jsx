@@ -12,28 +12,14 @@ const AuthorizedStaffInfo = (props) => {
   const [selectedAutoValue, setSelectedAutoValue] = useState(null)
   const [autoFilteredValue, setAutoFilteredValue] = useState([])
 
-  const searchName = (event) => {
+  const search = (event, field) => {
     setTimeout(() => {
       if (!event.query.trim().length) {
         setAutoFilteredValue([...staffs])
       } else {
         setAutoFilteredValue(
           staffs.filter((staff) => {
-            return staff.HoTen.toLowerCase().startsWith(event.query.toLowerCase())
-          })
-        )
-      }
-    }, 250)
-  }
-
-  const searchCCCD = (event) => {
-    setTimeout(() => {
-      if (!event.query.trim().length) {
-        setAutoFilteredValue([...staffs])
-      } else {
-        setAutoFilteredValue(
-          staffs.filter((staff) => {
-            return staff.CCCD.toLowerCase().startsWith(event.query.toLowerCase())
+            return staff[field].toString().toLowerCase().startsWith(event.query.toLowerCase())
           })
         )
       }
@@ -69,15 +55,18 @@ const AuthorizedStaffInfo = (props) => {
                 onChange={(e) => {
                   setSelectedAutoValue(e.value)
                   if (typeof e.value === 'object') {
-                    props.setForm({ ...props.form, id_nguoi_duoc_uq: e.value.MaNhanVien })
+                    props.setForm({
+                      ...props.form,
+                      id_nguoi_duoc_uq: e.value.user_metadata.ma_nhan_vien,
+                    })
                   }
                 }}
                 suggestions={autoFilteredValue}
-                completeMethod={searchName}
-                field="HoTen"
+                completeMethod={(e) => search(e, 'user_metadata.ho_ten')}
+                field="user_metadata.ho_ten"
               />
             ) : (
-              <InputText disabled value={props.data.NhanVien?.HoTen} />
+              <InputText disabled value={props.data.nhan_vien?.ho_ten} />
             )}
           </div>
         </div>
@@ -97,15 +86,18 @@ const AuthorizedStaffInfo = (props) => {
                 onChange={(e) => {
                   setSelectedAutoValue(e.value)
                   if (typeof e.value === 'object') {
-                    props.setForm({ ...props.form, id_nguoi_duoc_uq: e.value.MaNhanVien })
+                    props.setForm({
+                      ...props.form,
+                      id_nguoi_duoc_uq: e.value.user_metadata.ma_nhan_vien,
+                    })
                   }
                 }}
                 suggestions={autoFilteredValue}
-                completeMethod={searchCCCD}
-                field="CCCD"
+                completeMethod={(e) => search(e, 'can_cuoc')}
+                field="user_metadata.can_cuoc"
               />
             ) : (
-              <InputText disabled value={props.data.NhanVien?.CCCD} />
+              <InputText disabled value={props.data.nhan_vien?.can_cuoc} />
             )}
           </div>
         </div>
@@ -134,9 +126,12 @@ const AuthorizedStaffInfo = (props) => {
           </div>
           <div className={styles.inputContainer}>
             {props.isCreateNew ? (
-              <InputText disabled value={selectedAutoValue ? selectedAutoValue.ChucDanh : ''} />
+              <InputText
+                disabled
+                value={selectedAutoValue ? selectedAutoValue.user_metadata.chuc_danh : ''}
+              />
             ) : (
-              <InputText disabled value={props.data.NhanVien?.ChucDanh} />
+              <InputText disabled value={props.data.nhan_vien?.chuc_danh} />
             )}
           </div>
         </div>
@@ -147,9 +142,9 @@ const AuthorizedStaffInfo = (props) => {
           </div>
           <div className={styles.inputContainer}>
             {props.isCreateNew ? (
-              <InputText disabled value={selectedAutoValue ? selectedAutoValue.SDT : ''} />
+              <InputText disabled value={selectedAutoValue ? selectedAutoValue.phone : ''} />
             ) : (
-              <InputText disabled value={props.data.NhanVien?.SDT} />
+              <InputText disabled value={props.data.nhan_vien?.phone} />
             )}
           </div>
         </div>

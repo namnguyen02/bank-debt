@@ -10,7 +10,6 @@ export function GET(request) {
     '': ['*'],
     khach_hang: ['ho_ten', 'can_cuoc'],
     nhan_vien: ['ho_ten'],
-    ket_qua: ['ghi_chu_ket_qua'],
   }
 
   return Action.read({
@@ -33,7 +32,7 @@ export async function POST(request) {
     nguoi_thuc_hien: nguoi_thuc_hien,
   }
 
-  return Action.create({
+  return Action.createWithLog({
     table: 'khoi_kien',
     values: res,
     logData: logData,

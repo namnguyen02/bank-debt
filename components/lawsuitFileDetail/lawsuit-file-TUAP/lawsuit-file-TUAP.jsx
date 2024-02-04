@@ -1,12 +1,12 @@
 'use client'
 import React, { useState } from 'react'
+import { connect } from 'react-redux'
 
 import { Column } from 'primereact/column'
 import { DataTable } from 'primereact/datatable'
 import { Button } from 'primereact/button'
 import { Dialog } from 'primereact/dialog'
 import { InputText } from 'primereact/inputtext'
-import { InputTextarea } from 'primereact/inputtextarea'
 import { Calendar } from 'primereact/calendar'
 import { InputNumber } from 'primereact/inputnumber'
 import { Dropdown } from 'primereact/dropdown'
@@ -70,9 +70,10 @@ const LawsuitFileTUAP = (props) => {
         ngay_dong_tuap: year2 ? `${year2}-${month2}-${date2}` : null,
         ngay_hoan_tuap: year3 ? `${year3}-${month3}-${date3}` : null,
         trang_thai_tuap: apState.name,
-        nguoi_thuc_hien: 'Lê Văn Bằng',
-        id_khoi_kien: props.id,
-        thoi_gian_thuc_hien: 'Được thêm sau khi lưu',
+        nguoi_thuc_hien: props.user.ho_ten,
+        ma_khoi_kien: props.id,
+        updated_at: 'Được thêm sau khi lưu',
+        ma_khach_hang: props.data.ma_khach_hang,
       },
       ...props.tuapForm,
     ])
@@ -201,7 +202,7 @@ const LawsuitFileTUAP = (props) => {
   }
 
   const renderSTT = (rowData) => {
-    if (rowData.thoi_gian_thuc_hien === 'Được thêm sau khi lưu') {
+    if (rowData.updated_at === 'Được thêm sau khi lưu') {
       return <div>{`${rowData.STT} (mới)`}</div>
     }
     return <div>{rowData.STT}</div>
@@ -259,13 +260,17 @@ const LawsuitFileTUAP = (props) => {
   }
 
   const renderUpdateTime = (rowData) => {
-    if (rowData.thoi_gian_thuc_hien === 'Được thêm sau khi lưu') {
+    if (rowData.updated_at === 'Được thêm sau khi lưu') {
       return <div>Được thêm sau khi lưu</div>
     }
-    const date = new Date(rowData.thoi_gian_thuc_hien)
+    const dateTime = new Date(rowData.updated_at)
+    const date = dateTime.getDate() < 10 ? `0${dateTime.getDate()}` : dateTime.getDate()
+    const month =
+      dateTime.getMonth() + 1 < 10 ? `0${dateTime.getMonth() + 1}` : dateTime.getMonth() + 1
+    const year = dateTime.getFullYear()
     return (
       <div>
-        {date.getDate()}/{date.getMonth() + 1}/{date.getFullYear()}
+        {date}/{month}/{year}
       </div>
     )
   }
@@ -326,7 +331,7 @@ const LawsuitFileTUAP = (props) => {
           <Column header="Ngày hoàn TUAP" style={{ minWidth: '8rem' }} body={renderNgayHoanTUAP} />
           <Column field="nguoi_thuc_hien" header="Người thực hiện" style={{ minWidth: '12rem' }} />
           <Column
-            header="Thời gian thực hiện"
+            header="Thời gian cập nhật"
             style={{ minWidth: '13rem' }}
             body={renderUpdateTime}
           />
@@ -336,4 +341,10 @@ const LawsuitFileTUAP = (props) => {
   )
 }
 
-export default LawsuitFileTUAP
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  }
+}
+
+export default connect(mapStateToProps)(LawsuitFileTUAP)

@@ -2,11 +2,8 @@ import HTTPService from 'services/HTTPServices'
 
 const AppointmentAPI = {
   getListAppointments: (query) =>
-    HTTPService.sendRequest('get', `api/lichhen${query ? '?' + query : ''}`),
-  //   getDetailLawsuit: (id) => HTTPService.sendRequest('get', `api/tiendokien/${id}`),
-  //   updateLawsuit: (id, body) => HTTPService.sendRequest('patch', `api/tiendokien/${id}`, body),
-  //   deleteStaff: id => HTTPService.sendRequest('delete', `api/nhanvien/${id}`),
-  addAppointment: (body) => HTTPService.sendRequest('post', 'api/lichhen', body),
+    HTTPService.sendRequest('get', `api/v1/lich-hen${query ? '?' + query : ''}`),
+  addAppointment: (body) => HTTPService.sendRequest('post', 'api/v1/lich-hen', body),
 }
 
 export default AppointmentAPI

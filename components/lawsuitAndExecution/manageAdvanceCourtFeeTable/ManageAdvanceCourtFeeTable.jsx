@@ -7,7 +7,7 @@ import { Checkbox } from 'primereact/checkbox'
 
 const ManageAdvanceCourtFeeTable = (props) => {
   const renderCustomerId = (rowData) => {
-    return <Link href="/khach-hang/chi-tiet">{rowData.IDKhachHang}</Link>
+    return <Link href="/khach-hang/chi-tiet">{rowData.ma_khach_hang}</Link>
   }
 
   const handleClickCheckbox = (id) => {
@@ -23,35 +23,39 @@ const ManageAdvanceCourtFeeTable = (props) => {
       <Checkbox
         inputId="checkOption1"
         name="option"
-        value={rowData.IDKhachHang}
-        checked={props.checkedList.indexOf(rowData.IDKhachHang) >= 0}
+        value={rowData.ma_khach_hang}
+        checked={props.checkedList.indexOf(rowData.ma_khach_hang) >= 0}
         onChange={(e) => handleClickCheckbox(e.value)}
       />
     )
   }
 
   const renderName = (rowData) => {
-    return <div>{rowData.tien_do_khoi_kien?.KhachHang?.Ho_ten}</div>
+    return (
+      <div>
+        {rowData.khach_hang?.ho_ten} ({rowData.khach_hang?.ma_khach_hang})
+      </div>
+    )
   }
 
   const renderCCCD = (rowData) => {
-    return <div>{rowData.tien_do_khoi_kien?.KhachHang?.CCCD}</div>
+    return <div>{rowData.khach_hang?.can_cuoc}</div>
   }
 
   const renderLawsuitState = (rowData) => {
-    return <div>{rowData.tien_do_khoi_kien?.trang_thai_kk}</div>
+    return <div>{rowData.khoi_kien?.trang_thai}</div>
   }
 
   const renderAuthorized = (rowData) => {
-    return <div>{rowData.tien_do_khoi_kien?.NhanVien.HoTen}</div>
+    return <div>{rowData.khoi_kien?.nhan_vien.ho_ten}</div>
   }
 
   const renderProvince = (rowData) => {
-    return <div>{rowData.tien_do_khoi_kien.tinh_tp}</div>
+    return <div>{rowData.khoi_kien.tinh_tp}</div>
   }
 
   const renderDistrict = (rowData) => {
-    return <div>{rowData.tien_do_khoi_kien.quan_huyen}</div>
+    return <div>{rowData.khoi_kien.quan_huyen}</div>
   }
 
   const renderNgayHoanTUAP = (rowData) => {
@@ -85,20 +89,8 @@ const ManageAdvanceCourtFeeTable = (props) => {
         emptyMessage="Không có dữ liệu"
         // header={header1}
       >
-        {/* <Column header="" style={{ minWidth: '4px' }} body={renderCheckbox} />
-        <Column header="Mã khách hàng" style={{ minWidth: '10rem' }} body={renderCustomerId} /> */}
-        <Column
-          field="Ho_ten"
-          header="Tên khách hàng"
-          style={{ minWidth: '12rem' }}
-          body={renderName}
-        />
-        <Column
-          field="CCCD"
-          header="Căn cước công dân"
-          style={{ minWidth: '11rem' }}
-          body={renderCCCD}
-        />
+        <Column header="Tên khách hàng" style={{ minWidth: '15rem' }} body={renderName} />
+        <Column header="Căn cước công dân" style={{ minWidth: '11rem' }} body={renderCCCD} />
         <Column
           field="phu_trach_2"
           header="Trạng thái khởi kiện"

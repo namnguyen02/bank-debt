@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
+import { connect } from 'react-redux'
 
 import LawsuitFileCustomerInfo from '@/components/lawsuitFileDetail/lawsuitFileCustomerInfo/LawsuitFileCustomerInfo'
 import AuthorizedStaffInfo from '@/components/lawsuitFileDetail/authorizedStaffInfo/AuthorizedStaffInfo'
@@ -26,7 +28,7 @@ import {
 
 import { addAppointment } from 'actions/lich-hen/lich-hen'
 
-const JudgmentExecutionFile = () => {
+const JudgmentExecutionFile = (props) => {
   const toast = useRef(null)
   const [checkedList, setCheckedList] = useState([])
   const [confirm, setConfirm] = useState(false)
@@ -37,9 +39,10 @@ const JudgmentExecutionFile = () => {
   const [displayConfirmation, setDisplayConfirmation] = useState(false)
   const searchParams = useSearchParams()
   const isCreateNew = searchParams.get('createNew')
-  const id = searchParams.get('id') ? searchParams.get('id') : ''
+  const id = searchParams.get('ma_thi_hanh_an') ? searchParams.get('ma_thi_hanh_an') : ''
   const [error, setError] = useState('')
   const [showError, setShowError] = useState(false)
+  const router = useRouter()
 
   // Check some data required before saving
   const checkBeforeSaving = () => {
@@ -87,7 +90,7 @@ const JudgmentExecutionFile = () => {
   }
 
   const handleCreateAppointment = () => {
-    addAppointment({ body: appointments }).then((res) => {
+    addAppointment(appointments).then((res) => {
       if (!res || res.body !== 'Inserted') {
         showError2()
         return false
@@ -98,16 +101,19 @@ const JudgmentExecutionFile = () => {
 
   const handleCreateOrUpdate = () => {
     if (isCreateNew) {
-      form.nguoi_thuc_hien = 'Lê Văn Bằng'
-      addJudgment({ body: form }).then((res) => {
-        console.log(res)
+      form.nguoi_thuc_hien = props.user.ho_ten
+      addJudgment(form).then((res) => {
+        if (res && res.ma_thi_hanh_an) {
+          localStorage.setItem('addJudgment', 'success')
+          router.push('/thi-hanh-an')
+        }
       })
     } else {
       if (checkBeforeSaving()) {
         setShowError(true)
       } else {
-        updateJudgment(id, { body: form }).then((res) => {
-          if (res && res.message === 'Updated') {
+        updateJudgment(id, form).then((res) => {
+          if (res && res.ma_thi_hanh_an) {
             showSuccess()
           }
         })
@@ -152,19 +158,19 @@ const JudgmentExecutionFile = () => {
 
   const getJudgment = () => {
     getDetailJudgment(id).then((res) => {
-      if (res && res.status == 200) {
-        setData(res.result)
-        setState(res.result?.trang_thai_tha)
+      if (res && res.ma_thi_hanh_an) {
+        setData(res)
+        setState(res?.trang_thai)
         setForm({
           ...form,
-          so_ban_an: res.result?.so_ban_an ? res.result?.so_ban_an : '',
-          ngay_ra_ban_an: res.result?.ngay_ra_ban_an,
-          so_tien_ban_an: res.result?.so_tien_ban_an,
-          noi_dung_ban_an: res.result?.noi_dung_ban_an ? res.result?.noi_dung_ban_an : '',
-          chap_hanh_vien: res.result?.chap_hanh_vien,
-          so_quyet_dinh: res.result?.so_quyet_dinh,
-          ngay_ra_quyet_dinh: res.result?.ngay_ra_quyet_dinh,
-          so_tien_quyet_dinh: res.result?.so_tien_quyet_dinh,
+          so_ban_an: res?.so_ban_an ? res?.so_ban_an : '',
+          ngay_ra_ban_an: res?.ngay_ra_ban_an,
+          so_tien_ban_an: res?.so_tien_ban_an,
+          noi_dung_ban_an: res?.noi_dung_ban_an ? res?.noi_dung_ban_an : '',
+          chap_hanh_vien: res?.chap_hanh_vien,
+          so_quyet_dinh: res?.so_quyet_dinh,
+          ngay_ra_quyet_dinh: res?.ngay_ra_quyet_dinh,
+          so_tien_quyet_dinh: res?.so_tien_quyet_dinh,
         })
       }
     })
@@ -240,9 +246,9 @@ const JudgmentExecutionFile = () => {
 
       {/* Back button */}
       <div
-        className="mb-4 relative cursor-pointer"
+        className="relative cursor-pointer"
         onClick={() => {
-          if (Object.keys(form).length > 0 || appointments.length > 0 || tuapForm.length > 0) {
+          if (Object.keys(form).length > 0 || appointments.length > 0) {
             setDisplayConfirmation(true)
           } else {
             history.back()
@@ -263,11 +269,6 @@ const JudgmentExecutionFile = () => {
         >
           Quay lại
         </div>
-      </div>
-
-      <div className="flex gap-3">
-        <Button label="Quản lý KK" style={{ height: '36px' }} />
-        <Button label="Quản lý THA" style={{ height: '36px' }} />
       </div>
 
       <div className="flex mb-3 align-items-end justify-content-between" style={{ height: '41px' }}>
@@ -347,4 +348,10 @@ const JudgmentExecutionFile = () => {
   )
 }
 
-export default JudgmentExecutionFile
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  }
+}
+
+export default connect(mapStateToProps)(JudgmentExecutionFile)

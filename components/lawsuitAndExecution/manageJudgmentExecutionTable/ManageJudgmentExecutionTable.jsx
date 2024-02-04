@@ -17,13 +17,13 @@ const ManageJudgmentExecutionTable = (props) => {
   const renderCustomerName = (rowData) => {
     return (
       <div>
-        {rowData.KhachHang.Ho_ten} ({rowData.IDKhachHang})
+        {rowData.khach_hang.ho_ten} ({rowData.ma_khach_hang})
       </div>
     )
   }
 
   const renderCustomerCCCD = (rowData) => {
-    return <div>{rowData.KhachHang.CCCD}</div>
+    return <div>{rowData.khach_hang.can_cuoc}</div>
   }
 
   const renderCheckbox = (rowData) => {
@@ -31,36 +31,32 @@ const ManageJudgmentExecutionTable = (props) => {
       <Checkbox
         inputId="checkOption1"
         name="option"
-        value={rowData.IDKhachHang}
-        checked={props.checkedList.indexOf(rowData.IDKhachHang) >= 0}
+        value={rowData.ma_khach_hang}
+        checked={props.checkedList.indexOf(rowData.ma_khach_hang) >= 0}
         onChange={(e) => handleClickCheckbox(e.value)}
       />
     )
   }
 
   const renderCreatedAt = (rowData) => {
-    const date = new Date(rowData.created_at)
-    return (
-      <div>
-        {date.getDate().toString() +
-          '/' +
-          (date.getMonth() + 1).toString() +
-          '/' +
-          date.getFullYear().toString()}
-      </div>
-    )
+    const dateTime = new Date(rowData.created_at)
+    const date = dateTime.getDate() < 10 ? `0${dateTime.getDate()}` : dateTime.getDate()
+    const month =
+      dateTime.getMonth() + 1 < 10 ? `0${dateTime.getMonth() + 1}` : dateTime.getMonth() + 1
+    const year = dateTime.getFullYear()
+    return <div>{date + '/' + month + '/' + year}</div>
   }
 
   const renderAuthorizedStaff = (rowData) => {
     return (
       <div>
-        {rowData.NhanVien?.HoTen} ({rowData.id_nguoi_duoc_uq})
+        {rowData.nhan_vien?.ho_ten} ({rowData.id_nguoi_duoc_uq})
       </div>
     )
   }
 
   const renderDetailBtn = (rowData) => {
-    return <Link href={`thi-hanh-an/ho-so?id=${rowData.id}`}>Chi tiết</Link>
+    return <Link href={`thi-hanh-an/ho-so?ma_thi_hanh_an=${rowData.ma_thi_hanh_an}`}>Chi tiết</Link>
   }
 
   return (
@@ -91,18 +87,13 @@ const ManageJudgmentExecutionTable = (props) => {
           body={renderCustomerCCCD}
         />
         <Column
-          field="id_nguoi_duoc_uq"
           header="Người được ủy quyền"
-          style={{ minWidth: '13rem' }}
+          style={{ minWidth: '17rem' }}
           body={renderAuthorizedStaff}
         />
-        <Column
-          field="trang_thai_tha"
-          header="Trạng thái thi hành án"
-          style={{ minWidth: '13rem' }}
-        />
+        <Column field="trang_thai" header="Trạng thái thi hành án" style={{ minWidth: '13rem' }} />
         <Column field="tinh_tp" header="Tỉnh/Thành phố" style={{ minWidth: '10rem' }} />
-        <Column field="quan_huyen" header="Quận/huyện" style={{ minWidth: '9rem' }} />
+        <Column field="quan_huyen" header="Quận/huyện" style={{ minWidth: '12rem' }} />
         <Column
           header="Ngày tạo thi hành án"
           style={{ minWidth: '12rem' }}

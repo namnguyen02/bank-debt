@@ -1,5 +1,5 @@
 'use client'
-
+import { connect } from 'react-redux'
 import { Button } from 'primereact/button'
 
 const JudgmentActions = (props) => {
@@ -8,17 +8,17 @@ const JudgmentActions = (props) => {
       props.setState('Nộp hồ sơ THA')
       props.setForm({
         ...props.form,
-        trang_thai_tha: 'Nộp hồ sơ THA',
+        trang_thai: 'Nộp hồ sơ THA',
         thao_tac: 'Chuyển trạng thái',
-        nguoi_thuc_hien: 'Lê Văn Bằng',
+        nguoi_thuc_hien: props.user.ho_ten,
       })
     } else if (props.state === 'Nộp hồ sơ THA') {
       props.setState('Đang THA')
       props.setForm({
         ...props.form,
-        trang_thai_tha: 'Đang THA',
+        trang_thai: 'Đang THA',
         thao_tac: 'Chuyển trạng thái',
-        nguoi_thuc_hien: 'Lê Văn Bằng',
+        nguoi_thuc_hien: props.user.ho_ten,
       })
     }
   }
@@ -51,9 +51,9 @@ const JudgmentActions = (props) => {
             props.setState('Kết thúc THA')
             props.setForm({
               ...props.form,
-              trang_thai_tha: 'Kết thúc THA',
+              trang_thai: 'Kết thúc THA',
               thao_tac: 'Kết thúc THA',
-              nguoi_thuc_hien: 'Lê Văn Bằng',
+              nguoi_thuc_hien: props.user.ho_ten,
             })
             window.scroll({
               top: 0,
@@ -72,9 +72,9 @@ const JudgmentActions = (props) => {
             props.setState('Chưa thi hành án')
             props.setForm({
               ...props.form,
-              trang_thai_tha: 'Chưa thi hành án',
+              trang_thai: 'Chưa thi hành án',
               thao_tac: 'Rút đơn THA',
-              nguoi_thuc_hien: 'Lê Văn Bằng',
+              nguoi_thuc_hien: props.user.ho_ten,
             })
           }}
         />
@@ -99,4 +99,10 @@ const JudgmentActions = (props) => {
   )
 }
 
-export default JudgmentActions
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  }
+}
+
+export default connect(mapStateToProps)(JudgmentActions)

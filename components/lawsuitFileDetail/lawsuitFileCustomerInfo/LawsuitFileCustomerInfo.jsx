@@ -18,35 +18,20 @@ const LawsuitFileCustomerInfo = (props) => {
   const [province, setProvince] = useState({})
   const [district, setDistrict] = useState({})
 
-  const searchID = (event) => {
+  const search = (event, field) => {
     setTimeout(() => {
       if (!event.query.trim().length) {
         setAutoFilteredValue([...customers])
       } else {
         setAutoFilteredValue(
           customers.filter((customer) => {
-            return customer.IDKhachHang.toString()
-              .toLowerCase()
-              .startsWith(event.query.toLowerCase())
+            return customer[field].toString().toLowerCase().startsWith(event.query.toLowerCase())
           })
         )
       }
     }, 250)
   }
 
-  const searchCCCD = (event) => {
-    setTimeout(() => {
-      if (!event.query.trim().length) {
-        setAutoFilteredValue([...customers])
-      } else {
-        setAutoFilteredValue(
-          customers.filter((customer) => {
-            return customer.CCCD.toString().toLowerCase().startsWith(event.query.toLowerCase())
-          })
-        )
-      }
-    }, 250)
-  }
   const getListCustomers = () => {
     getListCustomer('queryAll=true').then((res) => {
       setCustomers(res.results)
@@ -75,15 +60,15 @@ const LawsuitFileCustomerInfo = (props) => {
                 onChange={(e) => {
                   setSelectedAutoValue(e.value)
                   if (typeof e.value === 'object') {
-                    props.setForm({ ...props.form, IDKhachHang: e.value.IDKhachHang })
+                    props.setForm({ ...props.form, ma_khach_hang: e.value.ma_khach_hang })
                   }
                 }}
                 suggestions={autoFilteredValue}
-                completeMethod={searchID}
-                field="IDKhachHang"
+                completeMethod={(e) => search(e, 'ma_khach_hang')}
+                field="ma_khach_hang"
               />
             ) : (
-              <InputText value={props.data.IDKhachHang} disabled />
+              <InputText value={props.data?.ma_khach_hang} disabled />
             )}
           </div>
         </div>
@@ -102,15 +87,15 @@ const LawsuitFileCustomerInfo = (props) => {
                 onChange={(e) => {
                   setSelectedAutoValue(e.value)
                   if (typeof e.value === 'object') {
-                    props.setForm({ ...props.form, IDKhachHang: e.value.IDKhachHang })
+                    props.setForm({ ...props.form, ma_khach_hang: e.value.ma_khach_hang })
                   }
                 }}
                 suggestions={autoFilteredValue}
-                completeMethod={searchCCCD}
-                field="CCCD"
+                completeMethod={(e) => search(e, 'can_cuoc')}
+                field="can_cuoc"
               />
             ) : (
-              <InputText value={props.data.KhachHang?.CCCD} disabled />
+              <InputText value={props.data.khach_hang?.can_cuoc} disabled />
             )}
           </div>
         </div>
@@ -121,21 +106,12 @@ const LawsuitFileCustomerInfo = (props) => {
           </div>
           <div className={styles.inputContainer}>
             {props.isCreateNew ? (
-              <InputText value={selectedAutoValue ? selectedAutoValue.Ho_ten : ''} disabled />
+              <InputText value={selectedAutoValue ? selectedAutoValue.ho_ten : ''} disabled />
             ) : (
-              <InputText value={props.data.KhachHang?.Ho_ten} disabled />
+              <InputText value={props.data.khach_hang?.ho_ten} disabled />
             )}
           </div>
         </div>
-
-        {/* <div className="col-12 xl:col-4 md:col-6 pl-0">
-          <div className="mb-2">
-            <label>Ngày sinh</label>
-          </div>
-          <div className={styles.inputContainer}>
-            <InputText />
-          </div>
-        </div> */}
 
         <div className="col-12 xl:col-4 md:col-6 pl-0">
           <div className="mb-2">
@@ -143,12 +119,9 @@ const LawsuitFileCustomerInfo = (props) => {
           </div>
           <div className={styles.inputContainer}>
             {props.isCreateNew ? (
-              <InputText
-                value={selectedAutoValue ? selectedAutoValue.DiaChiThuongTru : ''}
-                disabled
-              />
+              <InputText value={selectedAutoValue ? selectedAutoValue.thuong_tru : ''} disabled />
             ) : (
-              <InputText value={props.data.KhachHang?.DiaChiThuongTru} disabled />
+              <InputText value={props.data.khach_hang?.thuong_tru} disabled />
             )}
           </div>
         </div>
@@ -159,9 +132,9 @@ const LawsuitFileCustomerInfo = (props) => {
           </div>
           <div className={styles.inputContainer}>
             {props.isCreateNew ? (
-              <InputText value={selectedAutoValue ? selectedAutoValue.DiaChiTamTru : ''} disabled />
+              <InputText value={selectedAutoValue ? selectedAutoValue.tam_tru : ''} disabled />
             ) : (
-              <InputText value={props.data.KhachHang?.DiaChiTamTru} disabled />
+              <InputText value={props.data.khach_hang?.tam_tru} disabled />
             )}
           </div>
         </div>

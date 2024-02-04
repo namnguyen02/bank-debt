@@ -1,9 +1,10 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 
 import { Accordion, AccordionTab } from 'primereact/accordion'
 import { Button } from 'primereact/button'
+import { Toast } from 'primereact/toast'
 
 import LawsuitSearch from '@/components/lawsuitAndExecution/search/lawsuitSearch'
 import ManageJudgmentExecutionTable from '@/components/lawsuitAndExecution/manageJudgmentExecutionTable/ManageJudgmentExecutionTable'
@@ -13,6 +14,8 @@ import { getJudgments } from 'actions/tien-do-thi-hanh-an/tien-do-thi-hanh-an'
 const ManageJudgmentExecution = () => {
   const [checkedList, setCheckedList] = useState([])
   const [data, setData] = useState([])
+  const toast = useRef(null)
+
   const getListJudgments = () => {
     getJudgments().then((res) => {
       if (res && !res.error) {
@@ -21,12 +24,25 @@ const ManageJudgmentExecution = () => {
     })
   }
 
+  const informAddSuccessfully = () => {
+    toast.current?.show({
+      severity: 'success',
+      detail: 'Tạo mới thi hành án thành công',
+      life: 3000,
+    })
+    localStorage.removeItem('addJudgment')
+  }
+
   useEffect(() => {
+    if (localStorage.getItem('addJudgment') === 'success') {
+      informAddSuccessfully()
+    }
     getListJudgments()
   }, [])
 
   return (
     <div className="card">
+      <Toast ref={toast} />
       <div>
         <Accordion>
           <AccordionTab header="Tìm kiếm">
