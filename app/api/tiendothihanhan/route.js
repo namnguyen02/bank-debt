@@ -1,6 +1,6 @@
 import { supabase } from 'utils/supabaseClient'
 import { NextResponse } from 'next/server'
-import { getCurrentTime } from 'utils/current-date-time/current-date-time'
+import { getCurrentTime } from '../v1/helpers'
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url)

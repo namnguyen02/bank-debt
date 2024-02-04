@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/navigation'
+import { connect } from 'react-redux'
 
 import LawsuitFileCustomerInfo from '@/components/lawsuitFileDetail/lawsuitFileCustomerInfo/LawsuitFileCustomerInfo'
 import LawsuitFileCreditInfo from '@/components/lawsuitFileDetail/lawsuitFileCreditInfo/LawsuitFileCreditInfo'
@@ -27,7 +28,7 @@ import { Dialog } from 'primereact/dialog'
 import { Toast } from 'primereact/toast'
 import 'primeicons/primeicons.css'
 
-const LawsuitFile = () => {
+const LawsuitFile = (props) => {
   const toast = useRef(null)
   const [checkedList, setCheckedList] = useState([])
   const [form, setForm] = useState({})
@@ -39,35 +40,27 @@ const LawsuitFile = () => {
   const [tuapForm, setTuapForm] = useState([])
   const searchParams = useSearchParams()
   const isCreateNew = searchParams.get('createNew')
-  const id = searchParams.get('id') ? searchParams.get('id') : ''
+  const id = searchParams.get('ma_khoi_kien') ? searchParams.get('ma_khoi_kien') : ''
   const router = useRouter()
 
   const handleSave = () => {
     const bodyToCreate = {
-      IDKhachHang: form.IDKhachHang,
+      ma_khach_hang: form.ma_khach_hang,
       tinh_tp: form.tinh_tp,
       quan_huyen: form.quan_huyen,
       id_nguoi_duoc_uq: form.id_nguoi_duoc_uq,
       so_tien_kk: 100000000,
-      nguoi_thuc_hien: 'Lê Văn Bằng',
+      nguoi_thuc_hien: props.user.ho_ten,
     }
 
     const bodyToUpdate = {
-      trang_thai_kk: state,
+      trang_thai: state,
       thao_tac: operation,
       nguoi_thuc_hien: 'Lê Văn Bằng',
     }
 
     if (isCreateNew) {
-      const fakeData = {
-        ma_khach_hang: 403078,
-        tinh_tp: 'Đăk Lăk',
-        quan_huyen: 'Ea Kar',
-        id_nguoi_duoc_uq: 'SHB-12052002',
-        nguoi_thuc_hien: 'Lê Văn Bằng',
-      }
-
-      addLawsuit(fakeData).then((res) => {
+      addLawsuit(bodyToCreate).then((res) => {
         if (res && res.body === 'Inserted') {
           localStorage.setItem('addLawsuit', 'success')
           router.push('/khoi-kien')
@@ -75,8 +68,8 @@ const LawsuitFile = () => {
       })
     } else {
       if (operation) {
-        updateLawsuit(id, { body: bodyToUpdate }).then((res) => {
-          if (!res || res.message !== 'Updated') {
+        updateLawsuit(id, bodyToUpdate).then((res) => {
+          if (!res || !res.ma_khoi_kien) {
             showError1()
             return 'stop'
           }
@@ -103,8 +96,8 @@ const LawsuitFile = () => {
       showSuccess()
 
       getDetailLawsuit(id).then((res) => {
-        if (res && res.status == 200) {
-          setData(res.result)
+        if (res && res.ma_khoi_kien) {
+          setData(res)
         }
       })
     }
@@ -154,8 +147,8 @@ const LawsuitFile = () => {
   }
 
   const handleCreateAppointment = () => {
-    addAppointment({ body: appointments }).then((res) => {
-      if (!res || res.body !== 'Inserted') {
+    addAppointment(appointments).then((res) => {
+      if (!res || !res.id) {
         showError2()
         return false
       }
@@ -164,8 +157,8 @@ const LawsuitFile = () => {
   }
 
   const handleCreateTUAP = () => {
-    addTUAP({ body: tuapForm }).then((res) => {
-      if (!res || res.body !== 'Inserted') {
+    addTUAP(tuapForm).then((res) => {
+      if (!res || !res.id) {
         showError3()
         return false
       }
@@ -176,9 +169,9 @@ const LawsuitFile = () => {
   useEffect(() => {
     if (!isCreateNew && id) {
       getDetailLawsuit(id).then((res) => {
-        if (res && res.status == 200) {
-          setData(res.result)
-          setState(res.result?.trang_thai_kk)
+        if (res && res.ma_khoi_kien) {
+          setData(res)
+          setState(res.trang_thai)
         }
       })
     }
@@ -225,7 +218,7 @@ const LawsuitFile = () => {
       </Dialog>
 
       <div
-        className="mb-4 relative cursor-pointer"
+        className="relative cursor-pointer"
         onClick={() => {
           if (
             Object.keys(form).length > 0 ||
@@ -254,10 +247,6 @@ const LawsuitFile = () => {
           Quay lại
         </div>
       </div>
-      <div className="flex gap-3">
-        <Button label="Quản lý KK" style={{ height: '36px' }} />
-        <Button label="Quản lý THA" style={{ height: '36px' }} />
-      </div>
       <div className="flex mb-3 align-items-end justify-content-between" style={{ height: '41px' }}>
         <div className="flex">
           <div className="font-bold text-xl mr-2">Trạng thái hồ sơ: </div>
@@ -266,26 +255,30 @@ const LawsuitFile = () => {
         {Object.keys(form).length > 0 ||
         operation ||
         appointments.length > 0 ||
-        tuapForm.length === 0 ? (
-          <Button label="Lưu thay đổi" style={{ height: '36px' }} onClick={() => handleSave()} />
+        tuapForm.length > 0 ? (
+          <Button
+            label={isCreateNew ? 'Thêm' : 'Lưu thay đổi'}
+            style={isCreateNew ? { height: '36px', width: '100px' } : { height: '36px' }}
+            onClick={() => handleSave()}
+          />
         ) : (
           <Button label="Lưu thay đổi" style={{ height: '36px' }} disabled />
         )}
       </div>
-      {/* <LawsuitFileCustomerInfo
+      <LawsuitFileCustomerInfo
         form={form}
         setForm={setForm}
         isCreateNew={isCreateNew}
         data={data}
-        /> */}
-      {((isCreateNew && form.IDKhachHang) || !isCreateNew) && (
+      />
+      {((isCreateNew && form.ma_khach_hang) || !isCreateNew) && (
         <>
           <LawsuitFileCreditInfo form={form} />
           <LawsuitFileConsumerCreditInfo form={form} />
         </>
       )}
 
-      {/* <AuthorizedStaffInfo form={form} setForm={setForm} isCreateNew={isCreateNew} data={data} /> */}
+      <AuthorizedStaffInfo form={form} setForm={setForm} isCreateNew={isCreateNew} data={data} />
       {!isCreateNew && (
         <LawsuitFileActions
           data={data}
@@ -322,4 +315,10 @@ const LawsuitFile = () => {
   )
 }
 
-export default LawsuitFile
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  }
+}
+
+export default connect(mapStateToProps)(LawsuitFile)

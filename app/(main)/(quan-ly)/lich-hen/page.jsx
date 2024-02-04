@@ -14,7 +14,7 @@ const ManageAppointment = () => {
   const [data, setData] = useState([])
   const getAppointments = () => {
     getListAppointments('offset=0&limit=10').then((res) => {
-      if (res && !res.error) {
+      if (res && res.count >= 0) {
         setData(res.results)
       }
     })

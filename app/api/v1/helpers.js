@@ -12,6 +12,21 @@ export function transformToQuery(data) {
     .join(', ')
 }
 
+export function hierarchyTransformToQuery(data) {
+  return Object.entries(data)
+    .map(([key, value]) => {
+      if (key === '') {
+        return value.join(', ')
+      } else {
+        if (typeof value === 'array') return `${key} (${value.join(', ')})`
+        else if (typeof value === 'object') {
+          return hierarchyTransformToQuery(value)
+        }
+      }
+    })
+    .join(', ')
+}
+
 export const getCurrentTime = () => {
   const date = new Date()
   const year = date.getFullYear()

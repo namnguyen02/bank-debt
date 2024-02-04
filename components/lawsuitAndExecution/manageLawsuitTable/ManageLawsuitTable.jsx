@@ -7,15 +7,15 @@ import { Checkbox } from 'primereact/checkbox'
 
 const ManageLawsuitTable = (props) => {
   const renderCustomerId = (rowData) => {
-    return <Link href="/khach-hang/chi-tiet">{rowData.IDKhachHang}</Link>
+    return <Link href="/khach-hang/chi-tiet">{rowData.ma_khach_hang}</Link>
   }
 
   const renderCustomerName = (rowData) => {
-    return <div>{rowData.KhachHang.Ho_ten}</div>
+    return <div>{rowData.khach_hang.ho_ten}</div>
   }
 
   const renderCustomerCCCD = (rowData) => {
-    return <div>{rowData.KhachHang.CCCD}</div>
+    return <div>{rowData.khach_hang.can_cuoc}</div>
   }
 
   const handleClickCheckbox = (id) => {
@@ -31,30 +31,33 @@ const ManageLawsuitTable = (props) => {
       <Checkbox
         inputId="checkOption1"
         name="option"
-        value={rowData.IDKhachHang}
-        checked={props.checkedList.indexOf(rowData.IDKhachHang) >= 0}
+        value={rowData.ma_khach_hang}
+        checked={props.checkedList.indexOf(rowData.ma_khach_hang) >= 0}
         onChange={(e) => handleClickCheckbox(e.value)}
       />
     )
   }
 
   const renderCreatedAt = (rowData) => {
-    const date = new Date(rowData.created_at)
-    return (
-      <div>
-        {date.getDate().toString() +
-          '/' +
-          (date.getMonth() + 1).toString() +
-          '/' +
-          date.getFullYear().toString()}
-      </div>
-    )
+    const dateTime = new Date(rowData.created_at)
+    const date = dateTime.getDate() < 10 ? `0${dateTime.getDate()}` : dateTime.getDate()
+    const month =
+      dateTime.getMonth() + 1 < 10 ? `0${dateTime.getMonth() + 1}` : dateTime.getMonth() + 1
+    const year = dateTime.getFullYear()
+    return <div>{date + '/' + month + '/' + year}</div>
   }
 
   const renderDetailBtn = (rowData) => {
-    return <Link href={`khoi-kien/ho-so?id=${rowData.id}`}>Chi tiết</Link>
+    return <Link href={`khoi-kien/ho-so?ma_khoi_kien=${rowData.ma_khoi_kien}`}>Chi tiết</Link>
   }
-  console.log(props.lawsuits)
+
+  const renderAuthorizedStaff = (rowData) => {
+    return (
+      <div>
+        {rowData.nhan_vien?.ho_ten} ({rowData.id_nguoi_duoc_uq})
+      </div>
+    )
+  }
 
   return (
     <div>
@@ -64,7 +67,7 @@ const ManageLawsuitTable = (props) => {
         className="p-datatable-gridlines"
         showGridlines
         rows={10}
-        dataKey="id"
+        dataKey="ma_khoi_kien"
         // filters={filters1}
         // filterDisplay='menu'
         responsiveLayout="scroll"
@@ -85,12 +88,12 @@ const ManageLawsuitTable = (props) => {
           body={renderCustomerCCCD}
         />
         <Column
-          field="id_nguoi_duoc_uq"
           header="Người được ủy quyền"
-          style={{ minWidth: '13rem' }}
+          style={{ minWidth: '17rem' }}
+          body={renderAuthorizedStaff}
         />
         <Column field="so_tien_kk" header="Số tiền khởi kiện" style={{ minWidth: '10rem' }} />
-        <Column field="trang_thai_kk" header="Trạng thái khởi kiện" style={{ minWidth: '12rem' }} />
+        <Column field="trang_thai" header="Trạng thái khởi kiện" style={{ minWidth: '12rem' }} />
         {/* <Column field="phu_trach_2" header="Trạng thái án phí" style={{ minWidth: '12rem' }} /> */}
         <Column field="tinh_tp" header="Tỉnh/Thành phố" style={{ minWidth: '10rem' }} />
         <Column field="quan_huyen" header="Quận/huyện" style={{ minWidth: '9rem' }} />

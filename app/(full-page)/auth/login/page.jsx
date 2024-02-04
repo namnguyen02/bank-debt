@@ -35,7 +35,14 @@ const LoginPage = (props) => {
         setErrMess('Thông tin đăng nhập không hợp lệ')
       } else if (res && res.user) {
         const role = res.user?.user_metadata?.permission
-        localStorage.setItem('user', JSON.stringify({ role: role }))
+        localStorage.setItem(
+          'user',
+          JSON.stringify({
+            role: role,
+            ho_ten: res.user?.user_metadata?.ho_ten,
+            ma_nhan_vien: res.user?.user_metadata?.ma_nhan_vien,
+          })
+        )
         localStorage.setItem('access_token', res.session?.access_token)
         props.setUser({
           role: role,
