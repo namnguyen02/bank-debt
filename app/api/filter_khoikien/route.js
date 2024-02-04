@@ -1,17 +1,12 @@
 import { supabase } from 'utils/supabaseClient'
 import { NextResponse } from 'next/server'
 
-export async function GET(request) {
-  const { searchParams } = new URL(request.url)
-  const filter = Object.fromEntries(searchParams.entries())
+export async function POST(request) {
+  const res = await request.json()
+  const filter = res.filter
 
   let query = supabase.from('khoi_kien_filter').select(`*`, { count: 'exact' })
 
-  const offset = filter['offset'] ? parseInt(filter['offset']) : 0
-  const limit = filter['limit'] ? parseInt(filter['limit']) : 10
-  if (filter['offset'] && filter['limit']) {
-    query = query.range(offset, limit)
-  }
   // Condition chaining for filters
   if (filter['ma_khoi_kien']) {
     query = query.eq('ma_khoi_kien', filter['ma_khoi_kien'])

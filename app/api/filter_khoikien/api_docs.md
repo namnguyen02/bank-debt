@@ -6,9 +6,10 @@
 
 Get return data by sending data in filters using search function
 
-**Request Parameters**
-- Request Parameters must have more than one key. (*offset* and *limit*).
-- Request Parameters inside must contains at least one of these keys:
+**Request Body**
+- Request Body must have more than one key.
+- Request Body must be JSON format
+- Request Body inside must contains at least one of these keys: (no need to be in-order)
   - ma_khoi_kien
   - trang_thai
   - tinh_tp
@@ -19,7 +20,12 @@ Get return data by sending data in filters using search function
   - can_cuoc
   - ma_nhan_vien
 ```json
-GET /api/filter_khoikien/?ma_khoi_kien=15&offset=0&limit=10
+{
+    "filter":{
+        "ma_khoi_kien": 15,
+        "ho_ten": "Dương Mỹ"
+    }
+}
 ```
 
 **Response**
