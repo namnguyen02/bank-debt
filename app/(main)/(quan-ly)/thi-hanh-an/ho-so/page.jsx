@@ -43,7 +43,7 @@ const JudgmentExecutionFile = (props) => {
   const [error, setError] = useState('')
   const [showError, setShowError] = useState(false)
   const router = useRouter()
-
+  console.log(localStorage.access_token)
   // Check some data required before saving
   const checkBeforeSaving = () => {
     let haveError = false

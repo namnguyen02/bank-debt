@@ -68,7 +68,7 @@ const LawsuitFileCustomerInfo = (props) => {
                 field="ma_khach_hang"
               />
             ) : (
-              <InputText value={props.data?.ma_khach_hang} disabled />
+              <InputText value={props.data.ma_khach_hang} disabled />
             )}
           </div>
         </div>

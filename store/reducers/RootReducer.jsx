@@ -1,7 +1,12 @@
 'use client'
 
 const initState = {
-  user: typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('user')) : {},
+  user:
+    typeof window !== 'undefined'
+      ? localStorage.getItem('user')
+        ? JSON.parse(localStorage.getItem('user'))
+        : {}
+      : {},
 }
 
 const RootReducer = (state = initState, action) => {
