@@ -28,6 +28,13 @@ export async function GET(_, { params }) {
 export async function PATCH(request, { params }) {
   const res = await request.json()
 
+  if (res.action === 'approve') {
+    res.trang_thai = 'Đã duyệt'
+    delete res.action
+  } else if (res.action === 'decline') {
+    res.trang_thai = 'Đã từ chối'
+    delete res.action
+  }
   res.updated_at = getCurrentTime()
 
   return Action.update({

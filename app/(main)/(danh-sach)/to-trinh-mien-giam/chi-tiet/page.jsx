@@ -193,13 +193,27 @@ const ChiTietToTrinhMienGiam = (props) => {
             style={{ height: '36px', width: '100px' }}
             onClick={() => handleAdd()}
           />
-        ) : (
+        ) : props.user.role !== 'NPD' ? (
           <Button
             label="Lưu thay đổi"
             style={{ height: '36px' }}
             onClick={() => handleUpdate()}
             disabled={!canPressSave}
           />
+        ) : (
+          detail.trang_thai?.toLowerCase() === 'chưa duyệt' && (
+            <div>
+              <Button
+                label="Từ chối"
+                severity="danger"
+                outlined
+                style={{ height: '36px' }}
+                onClick={() => handleUpdate()}
+                className="mr-3"
+              />
+              <Button label="Phê duyệt" style={{ height: '36px' }} onClick={() => handleUpdate()} />
+            </div>
+          )
         )}
       </div>
 
@@ -225,6 +239,7 @@ const ChiTietToTrinhMienGiam = (props) => {
         setAmountToBeDecreased={setAmountToBeDecreased}
         detail={detail}
         setCanPressSave={setCanPressSave}
+        isNPD={props.user.role === 'NPD'}
       />
     </div>
   )

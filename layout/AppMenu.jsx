@@ -5,18 +5,13 @@ import AppMenuItem from './AppMenuItem'
 import { LayoutContext } from './context/LayoutContext'
 import { MenuProvider } from './context/MenuContext'
 import Link from 'next/link'
+import { connect } from 'react-redux'
 
-const AppMenu = () => {
+const AppMenu = (props) => {
   const { layoutConfig } = useContext(LayoutContext)
-
-  const model = [
-    {
-      label: 'Home',
-      items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }],
-    },
-    {
-      label: 'Danh mục',
-      items: [
+  const getDanhMuc = () => {
+    if (props.user.role === 'NDH') {
+      return [
         {
           label: 'Hành động thu hồi',
           icon: 'pi pi-fw pi-box',
@@ -34,7 +29,33 @@ const AppMenu = () => {
           icon: 'pi pi-fw pi-users',
           to: '/nhan-vien',
         },
-      ],
+      ]
+    } else {
+      return [
+        {
+          label: 'Hành động thu hồi',
+          icon: 'pi pi-fw pi-box',
+        },
+        {
+          label: 'Kết quả thu hồi',
+          icon: 'pi pi-fw pi-inbox',
+        },
+        {
+          label: 'Biểu mẫu',
+          icon: 'pi pi-fw pi-paperclip',
+        },
+      ]
+    }
+  }
+
+  const model = [
+    {
+      label: 'Home',
+      items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }],
+    },
+    {
+      label: 'Danh mục',
+      items: getDanhMuc(),
     },
     {
       label: 'Danh sách',
@@ -304,4 +325,10 @@ const AppMenu = () => {
   )
 }
 
-export default AppMenu
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  }
+}
+
+export default connect(mapStateToProps)(AppMenu)

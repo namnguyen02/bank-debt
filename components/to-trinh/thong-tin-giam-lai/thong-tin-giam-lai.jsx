@@ -23,6 +23,7 @@ const ThongTinGiamLai = (props) => {
                 props.setCanPressSave(true)
               }}
               mode="decimal"
+              disabled={props.isNPD}
             ></InputNumber>
           </div>
         </div>
@@ -40,6 +41,7 @@ const ThongTinGiamLai = (props) => {
                 props.setCalendarValue(e.value ?? null)
                 props.setCanPressSave(true)
               }}
+              disabled={props.isNPD}
             />
           </div>
         </div>
@@ -56,6 +58,7 @@ const ThongTinGiamLai = (props) => {
                 props.setCanPressSave(true)
               }}
               mode="decimal"
+              disabled={props.isNPD}
             />
           </div>
         </div>

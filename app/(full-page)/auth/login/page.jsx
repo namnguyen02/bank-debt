@@ -49,7 +49,7 @@ const LoginPage = (props) => {
           ho_ten: res.user?.user_metadata?.ho_ten,
           ma_nhan_vien: res.user?.user_metadata?.ma_nhan_vien,
         })
-        if (role === 'SHB') {
+        if (role === 'SHB' || role === 'NPD') {
           router.push('/khach-hang')
         } else if (role === 'NDH') {
           router.push('/nhan-vien')

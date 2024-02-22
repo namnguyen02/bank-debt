@@ -2,6 +2,7 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
+import { connect } from 'react-redux'
 
 import { Button } from 'primereact/button'
 import { Column } from 'primereact/column'
@@ -16,9 +17,9 @@ import { Toast } from 'primereact/toast'
 import { Toolbar } from 'primereact/toolbar'
 import { classNames } from 'primereact/utils'
 
-import { getListTTMG, deleteTTMG } from 'actions/to-trinh-mien-giam/to-trinh-mien-giam'
+import { getListTTMG, deleteTTMG, updateTTMG } from 'actions/to-trinh-mien-giam/to-trinh-mien-giam'
 
-const ToTrinhMienGiam = () => {
+const ToTrinhMienGiam = (props) => {
   let emptyForm = {
     id: '',
     trang_thai: '',
@@ -30,6 +31,8 @@ const ToTrinhMienGiam = () => {
   const [ttmgClicked, setTtmgClicked] = useState({})
   const [ttkkDialog, setTTKKDialog] = useState(false)
   const [deleteTTKKDialog, setDeleteTTKKDialog] = useState(false)
+  const [approveTTMGDialog, setApproveTTMGDialog] = useState(false)
+  const [declineTTMGDialog, setDeclineTTMGDialog] = useState(false)
   const [deleteTTKKsDialog, setDeleteTTKKsDialog] = useState(false)
   const [ttkk, setTTKK] = useState(emptyForm)
   const [selectedTTKKs, setSelectedTTKKs] = useState(null)
@@ -78,6 +81,14 @@ const ToTrinhMienGiam = () => {
     setDeleteTTKKDialog(false)
   }
 
+  const hideApproveDialog = () => {
+    setApproveTTMGDialog(false)
+  }
+
+  const hideDeclineDialog = () => {
+    setDeclineTTMGDialog(false)
+  }
+
   const hideDeleteProductsDialog = () => {
     setDeleteTTKKsDialog(false)
   }
@@ -119,6 +130,64 @@ const ToTrinhMienGiam = () => {
   const confirmDeleteProduct = (data) => {
     setTtmgClicked(data)
     setDeleteTTKKDialog(true)
+  }
+
+  const confirmApprove = (data) => {
+    setTtmgClicked(data)
+    setApproveTTMGDialog(true)
+  }
+
+  const confirmDecline = (data) => {
+    setTtmgClicked(data)
+    setDeclineTTMGDialog(true)
+  }
+
+  const approveTTMG = () => {
+    updateTTMG(ttmgClicked.ma_to_trinh, {
+      action: 'approve',
+    }).then((res) => {
+      if (res && res.ma_to_trinh) {
+        hideApproveDialog()
+        toast.current?.show({
+          severity: 'success',
+          summary: 'Thành công',
+          detail: 'Đã phê duyệt tờ trình',
+          life: 3000,
+        })
+      } else {
+        hideApproveDialog()
+        toast.current?.show({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Phê duyệt tờ trình thất bại',
+          life: 3000,
+        })
+      }
+    })
+  }
+
+  const declineTTMG = () => {
+    updateTTMG(ttmgClicked.ma_to_trinh, {
+      action: 'decline',
+    }).then((res) => {
+      if (res && res.ma_to_trinh) {
+        hideDeclineDialog()
+        toast.current?.show({
+          severity: 'success',
+          summary: 'Thành công',
+          detail: 'Đã từ chối tờ trình',
+          life: 3000,
+        })
+      } else {
+        hideDeclineDialog()
+        toast.current?.show({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Từ chối tờ trình thất bại',
+          life: 3000,
+        })
+      }
+    })
   }
 
   const deleteProduct = () => {
@@ -229,17 +298,21 @@ const ToTrinhMienGiam = () => {
     return (
       <React.Fragment>
         <div className="my-2">
-          <Link href={{ pathname: 'to-trinh-mien-giam/chi-tiet', query: { createNew: true } }}>
-            <Button label="Thêm" icon="pi pi-plus" severity="success" className="mr-2" />
-          </Link>
+          {props.user.role === 'SHB' && (
+            <Link href={{ pathname: 'to-trinh-mien-giam/chi-tiet', query: { createNew: true } }}>
+              <Button label="Thêm" icon="pi pi-plus" severity="success" className="mr-2" />
+            </Link>
+          )}
 
-          <Button
-            label="Xóa"
-            icon="pi pi-trash"
-            severity="danger"
-            onClick={confirmDeleteSelected}
-            disabled={!selectedTTKKs || !selectedTTKKs.length}
-          />
+          {(props.user.role === 'SHB' || props.user.role === 'NDH') && (
+            <Button
+              label="Xóa"
+              icon="pi pi-trash"
+              severity="danger"
+              onClick={confirmDeleteSelected}
+              disabled={!selectedTTKKs || !selectedTTKKs.length}
+            />
+          )}
         </div>
       </React.Fragment>
     )
@@ -312,25 +385,89 @@ const ToTrinhMienGiam = () => {
   }
 
   const actionBodyTemplate = (rowData) => {
-    return (
-      <>
-        <Link
-          href={{
-            pathname: 'to-trinh-mien-giam/chi-tiet',
-            query: { ma_to_trinh: rowData.ma_to_trinh },
-          }}
-        >
-          <Button icon="pi pi-pencil" rounded severity="success" className="mr-2" />
-        </Link>
+    if (props.user.role === 'SHB' || props.user.role === 'NDH') {
+      return rowData.trang_thai.toLowerCase() === 'chưa duyệt' ? (
+        <>
+          <Link
+            href={{
+              pathname: 'to-trinh-mien-giam/chi-tiet',
+              query: { ma_to_trinh: rowData.ma_to_trinh },
+            }}
+          >
+            <Button icon="pi pi-pencil" rounded severity="success" className="mr-2" />
+          </Link>
 
-        <Button
-          icon="pi pi-trash"
-          rounded
-          severity="warning"
-          onClick={() => confirmDeleteProduct(rowData)}
-        />
-      </>
-    )
+          {rowData.trang_thai.toLowerCase() === 'chưa duyệt' && (
+            <Button
+              icon="pi pi-trash"
+              rounded
+              severity="warning"
+              onClick={() => confirmDeleteProduct(rowData)}
+            />
+          )}
+        </>
+      ) : (
+        <>
+          <Link
+            href={{
+              pathname: 'to-trinh-mien-giam/chi-tiet',
+              query: { ma_to_trinh: rowData.ma_to_trinh },
+            }}
+          >
+            <Button icon={'pi pi-search'} rounded severity="success" className="mr-2" />
+          </Link>
+        </>
+      )
+    } else if (props.user.role === 'NPD') {
+      return rowData.trang_thai.toLowerCase() === 'chưa duyệt' ? (
+        <>
+          <Link
+            href={{
+              pathname: 'to-trinh-mien-giam/chi-tiet',
+              query: { ma_to_trinh: rowData.ma_to_trinh },
+            }}
+          >
+            <Button
+              icon={props.user.role === 'NPD' ? 'pi pi-search' : 'pi pi-pencil'}
+              rounded
+              severity="success"
+              className="mr-2"
+            />
+          </Link>
+
+          <Button
+            icon="pi pi-check"
+            rounded
+            severity="primary"
+            onClick={() => confirmApprove(rowData)}
+            className="mr-2"
+          />
+
+          <Button
+            icon="pi pi-times"
+            rounded
+            severity="warning"
+            onClick={() => confirmDecline(rowData)}
+          />
+        </>
+      ) : (
+        <>
+          <Link
+            href={{
+              pathname: 'to-trinh-mien-giam/chi-tiet',
+              query: { ma_to_trinh: rowData.ma_to_trinh },
+            }}
+          >
+            <Button
+              icon={props.user.role === 'NPD' ? 'pi pi-search' : 'pi pi-pencil'}
+              rounded
+              severity="success"
+              className="mr-2"
+            />
+          </Link>
+        </>
+      )
+    }
   }
 
   const header = (
@@ -353,12 +490,28 @@ const ToTrinhMienGiam = () => {
       <Button label="Lưu" icon="pi pi-check" text onClick={saveProduct} />
     </>
   )
+
   const deleteProductDialogFooter = (
     <>
       <Button label="Hủy" icon="pi pi-times" text onClick={hideDeleteProductDialog} />
       <Button label="Có" icon="pi pi-check" text onClick={deleteProduct} />
     </>
   )
+
+  const approveProductDialogFooter = (
+    <>
+      <Button label="Hủy" icon="pi pi-times" text onClick={hideApproveDialog} />
+      <Button label="Có" icon="pi pi-check" text onClick={approveTTMG} />
+    </>
+  )
+
+  const declineProductDialogFooter = (
+    <>
+      <Button label="Hủy" icon="pi pi-times" text onClick={hideDeclineDialog} />
+      <Button label="Có" icon="pi pi-check" text onClick={declineTTMG} />
+    </>
+  )
+
   const deleteProductsDialogFooter = (
     <>
       <Button label="Hủy" icon="pi pi-times" text onClick={hideDeleteProductsDialog} />
@@ -562,6 +715,42 @@ const ToTrinhMienGiam = () => {
           </Dialog>
 
           <Dialog
+            visible={approveTTMGDialog}
+            style={{ width: '450px' }}
+            header="Xác nhận"
+            modal
+            footer={approveProductDialogFooter}
+            onHide={hideApproveDialog}
+          >
+            <div className="flex align-items-center justify-content-center">
+              <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+              {ttkk && (
+                <span>
+                  Bạn có chắc chắn muốn phê duyệt tờ trình <b>{ttmgClicked.ma_to_trinh} </b>không?
+                </span>
+              )}
+            </div>
+          </Dialog>
+
+          <Dialog
+            visible={declineTTMGDialog}
+            style={{ width: '450px' }}
+            header="Xác nhận"
+            modal
+            footer={declineProductDialogFooter}
+            onHide={hideDeclineDialog}
+          >
+            <div className="flex align-items-center justify-content-center">
+              <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+              {ttkk && (
+                <span>
+                  Bạn có chắc chắn muốn từ chối tờ trình <b>{ttmgClicked.ma_to_trinh} </b>không?
+                </span>
+              )}
+            </div>
+          </Dialog>
+
+          <Dialog
             visible={deleteTTKKsDialog}
             style={{ width: '450px' }}
             header="Xác nhận"
@@ -580,4 +769,10 @@ const ToTrinhMienGiam = () => {
   )
 }
 
-export default ToTrinhMienGiam
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  }
+}
+
+export default connect(mapStateToProps)(ToTrinhMienGiam)
