@@ -20,12 +20,15 @@ const NonePerformingLoanDetail = () => {
   const toast = useRef(null)
   const [customer, setCustomer] = useState({})
   const [customerId, setCustomerId] = useState()
+
   const getCustomerInfo = () => {
     const url = window.location.href
     const id = url.slice(url.indexOf('id=') + 3)
     setCustomerId(id)
     getDetailCustomer(id).then((res) => {
-      setCustomer(res.results[0])
+      if (res && res.count) {
+        setCustomer(res.results[0])
+      }
     })
   }
 
