@@ -35,6 +35,11 @@ export async function POST(request) {
   if (filter['ma_nhan_vien']) {
     query = query.eq('ma_nhan_vien', filter['ma_nhan_vien'])
   }
+  if (filter['tu_ngay'] && filter['den_ngay']) {
+    const tu_ngay = filter['tu_ngay'] + 'T00:00:00.000Z'
+    const den_ngay = filter['den_ngay'] + 'T23:59:59.999Z'
+    query = query.gte('created_at', tu_ngay).lte('created_at', den_ngay)
+  }
 
   const { count, data, error } = await query
 
