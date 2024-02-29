@@ -11,7 +11,7 @@ import LawsuitFileConsumerCreditInfo from '@/components/lawsuitFileDetail/lawsui
 import AuthorizedStaffInfo from '@/components/lawsuitFileDetail/authorizedStaffInfo/AuthorizedStaffInfo'
 import LawsuitFileActions from '@/components/lawsuitFileDetail/lawsuitFileActions/LawsuitFileActions'
 import LogInfo from '@/components/lawsuitFileDetail/logInfo/LogInfo'
-import LawsuitFileAppointment from '@/components/lawsuitFileDetail/lawsuitFileAppointment/LawsuitFileAppointment'
+import LawsuitFileAppointment from '@/components/lawsuitFileDetail/lawsuit-file-appointment/lawsuit-file-appointment'
 import LawsuitFileNotification from '@/components/lawsuitFileDetail/lawsuitFileNotification/LawsuitFileNotification'
 import LawsuitFileTUAP from '@/components/lawsuitFileDetail/lawsuit-file-TUAP/lawsuit-file-TUAP'
 

@@ -10,15 +10,34 @@ import { InputText } from 'primereact/inputtext'
 import { InputTextarea } from 'primereact/inputtextarea'
 import { Calendar } from 'primereact/calendar'
 
+import styles from './index.module.scss'
+
 const JudgmentAppointments = (props) => {
   const [showDialog, setShowDialog] = useState(false)
   const [appointmentContent, setAppointmentContent] = useState('')
   const [calendarValue, setCalendarValue] = useState(null)
+  const [errors, setErrors] = useState({})
 
   const onCancel = () => {
     setAppointmentContent('')
     setCalendarValue(null)
     setShowDialog(false)
+    setErrors({})
+  }
+
+  const preCheck = () => {
+    let noError = true
+    const tempErrors = {}
+    if (!calendarValue) {
+      tempErrors.calendarValueError = true
+      noError = false
+    }
+    if (!appointmentContent) {
+      tempErrors.appointmentContentError = true
+      noError = false
+    }
+    setErrors(tempErrors)
+    return noError
   }
 
   const renderAddAppointmentContent = () => {
@@ -40,7 +59,11 @@ const JudgmentAppointments = (props) => {
             showButtonBar
             placeholder="Chọn ngày hẹn"
             value={calendarValue}
-            onChange={(e) => setCalendarValue(e.value ?? null)}
+            onChange={(e) => {
+              setCalendarValue(e.value ?? null)
+              setErrors({ ...errors, calendarValueError: false })
+            }}
+            className={errors.calendarValueError ? styles.calenderError : ''}
           />
         </div>
 
@@ -54,7 +77,11 @@ const JudgmentAppointments = (props) => {
             rows={5}
             cols={30}
             value={appointmentContent}
-            onChange={(e) => setAppointmentContent(e.target.value)}
+            onChange={(e) => {
+              setAppointmentContent(e.target.value)
+              setErrors({ ...errors, appointmentContentError: false })
+            }}
+            className={errors.appointmentContentError ? 'p-invalid' : ''}
           />
         </div>
 
@@ -71,19 +98,21 @@ const JudgmentAppointments = (props) => {
               label="Tạo"
               style={{ width: '80px', height: '36px', marginLeft: '16px' }}
               onClick={() => {
-                props.setAppointments([
-                  {
-                    ngay_hen: calendarValue.toString(),
-                    noi_dung_hen: appointmentContent,
-                    trang_thai_ho_so: props.state,
-                    nguoi_tao_lich_hen: props.user.ho_ten,
-                    ma_thi_hanh_an: props.id,
-                    updated_at: 'Được thêm sau khi lưu',
-                    ma_khach_hang: props.data.ma_khach_hang,
-                  },
-                  ...props.appointments,
-                ])
-                onCancel()
+                if (preCheck()) {
+                  props.setAppointments([
+                    {
+                      ngay_hen: calendarValue.toString(),
+                      noi_dung_hen: appointmentContent,
+                      trang_thai_ho_so: props.state,
+                      nguoi_tao_lich_hen: props.user.ho_ten,
+                      ma_thi_hanh_an: props.id,
+                      updated_at: 'Được thêm sau khi lưu',
+                      ma_khach_hang: props.data.ma_khach_hang,
+                    },
+                    ...props.appointments,
+                  ])
+                  onCancel()
+                }
               }}
             />
           </div>

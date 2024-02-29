@@ -15,15 +15,27 @@ const ManageAppointmentTable = (props) => {
   }
 
   const renderAuthorized = (rowData) => {
-    return <div>{rowData.khoi_kien.nhan_vien.ho_ten}</div>
+    return (
+      <div>
+        {rowData.khoi_kien
+          ? rowData.khoi_kien?.nhan_vien?.ho_ten
+          : rowData.thi_hanh_an?.nhan_vien?.ho_ten}
+      </div>
+    )
   }
 
   const renderProvince = (rowData) => {
-    return <div>{rowData.khoi_kien.tinh_tp}</div>
+    return (
+      <div>{rowData.khoi_kien ? rowData.khoi_kien?.tinh_tp : rowData.thi_hanh_an?.tinh_tp}</div>
+    )
   }
 
   const renderDistrict = (rowData) => {
-    return <div>{rowData.khoi_kien.quan_huyen}</div>
+    return (
+      <div>
+        {rowData.khoi_kien ? rowData.khoi_kien?.quan_huyen : rowData.thi_hanh_an?.quan_huyen}
+      </div>
+    )
   }
 
   const renderAppointmentDate = (rowData) => {

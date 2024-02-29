@@ -5,7 +5,7 @@ import { Accordion, AccordionTab } from 'primereact/accordion'
 import { Button } from 'primereact/button'
 
 import AppointmentSearch from '@/components/lawsuitAndExecution/search/appointmentSearch'
-import ManageAdvanceCourtFeeTable from '@/components/lawsuitAndExecution/manageAdvanceCourtFeeTable/ManageAdvanceCourtFeeTable'
+import ManageAdvanceCourtFeeTable from '@/components/lawsuitAndExecution/manage-advance-court-fee-table/manage-advance-court-fee-table'
 
 import { getListTUAP } from 'actions/tam-ung-an-phi/tam-ung-an-phi'
 

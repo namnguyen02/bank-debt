@@ -11,6 +11,8 @@ import { Calendar } from 'primereact/calendar'
 import { InputNumber } from 'primereact/inputnumber'
 import { Dropdown } from 'primereact/dropdown'
 
+import styles from './index.module.scss'
+
 const LawsuitFileTUAP = (props) => {
   const [showDialog, setShowDialog] = useState(false)
   const [newTUAPForm, setNewTUAPForm] = useState({})
@@ -18,13 +20,34 @@ const LawsuitFileTUAP = (props) => {
   const [calendarValue2, setCalendarValue2] = useState(null)
   const [calendarValue3, setCalendarValue3] = useState(null)
   const [apState, setApState] = useState({})
+  const [errors, setErrors] = useState({})
 
   const onCancel = () => {
     setNewTUAPForm({})
     setCalendarValue(null)
     setCalendarValue2(null)
     setApState({})
+    setErrors({})
     setShowDialog(false)
+  }
+
+  const preCheck = () => {
+    let noError = true
+    const tempErrors = {}
+    if (!newTUAPForm.so_tien_tuap) {
+      tempErrors.soTienTuapError = true
+      noError = false
+    }
+    if (!calendarValue) {
+      tempErrors.calendarValueError = true
+      noError = false
+    }
+    if (!apState.name) {
+      tempErrors.apStateError = true
+      noError = false
+    }
+    setErrors(tempErrors)
+    return noError
   }
 
   const handleCreate = () => {
@@ -90,8 +113,12 @@ const LawsuitFileTUAP = (props) => {
           </label>
           <InputNumber
             value={newTUAPForm.so_tien_tuap}
-            onChange={(e) => setNewTUAPForm({ ...newTUAPForm, so_tien_tuap: e.value })}
+            onChange={(e) => {
+              setNewTUAPForm({ ...newTUAPForm, so_tien_tuap: e.value })
+              setErrors({ ...errors, soTienTuapError: false })
+            }}
             mode="decimal"
+            className={errors.soTienTuapError ? 'p-invalid' : ''}
           ></InputNumber>
         </div>
 
@@ -104,7 +131,11 @@ const LawsuitFileTUAP = (props) => {
             showButtonBar
             placeholder="Chọn ngày thông báo TUAP"
             value={calendarValue}
-            onChange={(e) => setCalendarValue(e.value ?? null)}
+            onChange={(e) => {
+              setCalendarValue(e.value ?? null)
+              setErrors({ ...errors, calendarValueError: false })
+            }}
+            className={errors.calendarValueError ? styles.calenderError : ''}
           />
         </div>
 
@@ -116,10 +147,12 @@ const LawsuitFileTUAP = (props) => {
             value={apState}
             onChange={(e) => {
               setApState(e.value)
+              setErrors({ ...errors, apStateError: false })
             }}
             options={[{ name: 'Đã đóng TUAP' }, { name: 'Chưa đóng TUAP' }]}
             optionLabel="name"
             placeholder="Chọn trạng thái AP"
+            className={errors.apStateError ? 'p-invalid' : ''}
           />
         </div>
 
@@ -185,7 +218,11 @@ const LawsuitFileTUAP = (props) => {
             <Button
               label="Tạo"
               style={{ width: '80px', height: '36px', marginLeft: '16px' }}
-              onClick={() => handleCreate()}
+              onClick={() => {
+                if (preCheck()) {
+                  handleCreate()
+                }
+              }}
             />
           </div>
         </div>
