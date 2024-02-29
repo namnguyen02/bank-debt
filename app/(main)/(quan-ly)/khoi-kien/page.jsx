@@ -6,15 +6,17 @@ import { Accordion, AccordionTab } from 'primereact/accordion'
 import { Button } from 'primereact/button'
 import { Toast } from 'primereact/toast'
 
-import LawsuitSearch from '@/components/lawsuitAndExecution/search/lawsuitSearch'
+import LawsuitSearch from '@/components/lawsuitAndExecution/search/lawsuit-search'
 import ManageLawsuitTable from '@/components/lawsuitAndExecution/manageLawsuitTable/ManageLawsuitTable'
 
 import { getListCustomer } from 'actions/customer/Customer'
 import { getListLawsuit } from 'actions/tien-do-khoi-kien/tien-do-khoi-kien'
+import { getListStaff } from 'actions/nhan-vien/nhan-vien'
 
 const ManageLawsuit = () => {
   const [checkedList, setCheckedList] = useState([])
   const [customers, setCustomers] = useState([])
+  const [staffs, setStaffs] = useState([])
   const [lawsuits, setLawsuits] = useState([])
   const toast = useRef(null)
 
@@ -22,6 +24,14 @@ const ManageLawsuit = () => {
     getListCustomer('queryAll=true').then((res) => {
       if (res && res.count) {
         setCustomers(res.results)
+      }
+    })
+  }
+
+  const getStaffList = () => {
+    getListStaff('').then((res) => {
+      if (res.results) {
+        setStaffs(res.results)
       }
     })
   }
@@ -47,6 +57,7 @@ const ManageLawsuit = () => {
     if (localStorage.getItem('addLawsuit') === 'success') {
       informAddSuccessfully()
     }
+    getStaffList()
     getListCustomers()
     getListLawsuits()
   }, [])
@@ -57,7 +68,7 @@ const ManageLawsuit = () => {
       <div>
         <Accordion>
           <AccordionTab header="Tìm kiếm">
-            <LawsuitSearch customers={customers} />
+            <LawsuitSearch customers={customers} staffs={staffs} />
           </AccordionTab>
         </Accordion>
       </div>

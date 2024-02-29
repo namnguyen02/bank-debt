@@ -6,20 +6,40 @@ import { Accordion, AccordionTab } from 'primereact/accordion'
 import { Button } from 'primereact/button'
 import { Toast } from 'primereact/toast'
 
-import LawsuitSearch from '@/components/lawsuitAndExecution/search/lawsuitSearch'
+import LawsuitSearch from '@/components/lawsuitAndExecution/search/lawsuit-search'
 import ManageJudgmentExecutionTable from '@/components/lawsuitAndExecution/manageJudgmentExecutionTable/ManageJudgmentExecutionTable'
 
 import { getJudgments } from 'actions/tien-do-thi-hanh-an/tien-do-thi-hanh-an'
+import { getListCustomer } from 'actions/customer/Customer'
+import { getListStaff } from 'actions/nhan-vien/nhan-vien'
 
 const ManageJudgmentExecution = () => {
   const [checkedList, setCheckedList] = useState([])
   const [data, setData] = useState([])
+  const [customers, setCustomers] = useState([])
+  const [staffs, setStaffs] = useState([])
   const toast = useRef(null)
 
   const getListJudgments = () => {
     getJudgments().then((res) => {
       if (res && !res.error) {
         setData(res.results)
+      }
+    })
+  }
+
+  const getListCustomers = () => {
+    getListCustomer('queryAll=true').then((res) => {
+      if (res && res.count) {
+        setCustomers(res.results)
+      }
+    })
+  }
+
+  const getStaffList = () => {
+    getListStaff('').then((res) => {
+      if (res.results) {
+        setStaffs(res.results)
       }
     })
   }
@@ -37,6 +57,8 @@ const ManageJudgmentExecution = () => {
     if (localStorage.getItem('addJudgment') === 'success') {
       informAddSuccessfully()
     }
+    getStaffList()
+    getListCustomers()
     getListJudgments()
   }, [])
 
@@ -46,7 +68,7 @@ const ManageJudgmentExecution = () => {
       <div>
         <Accordion>
           <AccordionTab header="Tìm kiếm">
-            <LawsuitSearch />
+            <LawsuitSearch customers={customers} staffs={staffs} />
           </AccordionTab>
         </Accordion>
       </div>

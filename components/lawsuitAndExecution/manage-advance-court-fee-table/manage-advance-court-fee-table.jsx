@@ -51,11 +51,11 @@ const ManageAdvanceCourtFeeTable = (props) => {
   }
 
   const renderProvince = (rowData) => {
-    return <div>{rowData.khoi_kien.tinh_tp}</div>
+    return <div>{rowData.khoi_kien?.tinh_tp}</div>
   }
 
   const renderDistrict = (rowData) => {
-    return <div>{rowData.khoi_kien.quan_huyen}</div>
+    return <div>{rowData.khoi_kien?.quan_huyen}</div>
   }
 
   const renderNgayHoanTUAP = (rowData) => {

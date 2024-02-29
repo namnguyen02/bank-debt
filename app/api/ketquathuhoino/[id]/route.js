@@ -6,7 +6,6 @@ export async function GET(request, { params }) {
   try {
     const res = await request.json()
     const dataToUpdate = res.body
-    console.log('params:', params)
     const id = params.id
 
     const { count, data, error } = await supabase

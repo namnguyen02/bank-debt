@@ -11,7 +11,7 @@ import { provinces, districts } from 'utils/provinces-districts/provinces-distri
 
 import styles from './index.module.scss'
 
-const AppointmentSearch = (props) => {
+const LawsuitSearch = (props) => {
   const initialInputSearch = {
     bien_lai: '',
     so_quyet_dinh_ban_an: '',
@@ -76,9 +76,10 @@ const AppointmentSearch = (props) => {
       <div className="grid">
         <div className="col-12 xl:col-4 md:col-6">
           <div className="mb-2">
-            <label htmlFor="IDKhachHang">Mã khách hàng</label>
+            <label htmlFor="ma_khach_hang">Mã khách hàng</label>
           </div>
           <div className={styles.inputContainer}>
+            {/* <InputText id='ma_khach_hang' type='text' /> */}
             <AutoComplete
               placeholder="Search"
               id="dd"
@@ -103,7 +104,7 @@ const AppointmentSearch = (props) => {
 
         <div className="col-12 xl:col-4 md:col-6">
           <div className="mb-2">
-            <label htmlFor="HoTen">Tên khách hàng</label>
+            <label htmlFor="HoTen">Họ và tên</label>
           </div>
           <div className={styles.inputContainer}>
             <AutoComplete
@@ -130,9 +131,10 @@ const AppointmentSearch = (props) => {
 
         <div className="col-12 xl:col-4 md:col-6">
           <div className="mb-2">
-            <label htmlFor="IDKhachHang">Căn cước công dân</label>
+            <label htmlFor="ma_khach_hang">Căn cước công dân</label>
           </div>
           <div className={styles.inputContainer}>
+            {/* <InputText id="ma_khach_hang" type="text" /> */}
             <AutoComplete
               placeholder="Search"
               id="dd"
@@ -151,6 +153,88 @@ const AppointmentSearch = (props) => {
               suggestions={autoFilteredValue}
               completeMethod={(e) => search(e, 'can_cuoc')}
               field="can_cuoc"
+            />
+          </div>
+        </div>
+
+        <div className="col-12 xl:col-4 md:col-6">
+          <div className="mb-2">
+            <label htmlFor="HoTen">Tỉnh/Thành phố</label>
+          </div>
+          <div className={styles.inputContainer}>
+            {/* <InputText id="HoTen" type="text" /> */}
+            <Dropdown
+              value={province}
+              onChange={(e) => setProvince(e.value)}
+              options={provinces}
+              optionLabel="name"
+              placeholder="Select"
+            />
+          </div>
+        </div>
+
+        <div className="col-12 xl:col-4 md:col-6">
+          <div className="mb-2">
+            <label htmlFor="HoTen">Quận/Huyện</label>
+          </div>
+          <div className={styles.inputContainer}>
+            {/* <InputText id="HoTen" type="text" /> */}
+            <Dropdown
+              value={district}
+              onChange={(e) => setDistrict(e.value)}
+              options={districts[province.name]}
+              optionLabel="name"
+              placeholder="Select"
+            />
+          </div>
+        </div>
+
+        <div className="col-12 xl:col-4 md:col-6">
+          <div className="mb-2">
+            <label htmlFor="HoTen">Người được ủy quyền</label>
+          </div>
+          <div className={styles.inputContainer}>
+            <AutoComplete
+              placeholder="Search"
+              id="dd"
+              dropdown
+              value={selectedStaff}
+              onChange={(e) => {
+                setSelectedStaff(e.value)
+              }}
+              suggestions={autoFilteredStaff}
+              completeMethod={(e) => searchStaff(e)}
+              field="user_metadata.ho_ten"
+            />
+          </div>
+        </div>
+
+        <div className="col-12 xl:col-4 md:col-6">
+          <div className="mb-2">
+            <label htmlFor="HoTen">Biên lai</label>
+          </div>
+          <div className={styles.inputContainer}>
+            <InputText
+              id="HoTen"
+              type="text"
+              value={inputSearch.bien_lai}
+              onChange={(e) => setInputSearch({ ...inputSearch, bien_lai: e.target.value })}
+            />
+          </div>
+        </div>
+
+        <div className="col-12 xl:col-4 md:col-6">
+          <div className="mb-2">
+            <label htmlFor="HoTen">Số quyết định bản án</label>
+          </div>
+          <div className={styles.inputContainer}>
+            <InputText
+              id="HoTen"
+              type="text"
+              value={inputSearch.so_quyet_dinh_ban_an}
+              onChange={(e) =>
+                setInputSearch({ ...inputSearch, so_quyet_dinh_ban_an: e.target.value })
+              }
             />
           </div>
         </div>
@@ -205,70 +289,18 @@ const AppointmentSearch = (props) => {
 
         <div className="col-12 xl:col-4 md:col-6">
           <div className="mb-2">
-            <label htmlFor="HoTen">Người được ủy quyền</label>
+            <label htmlFor="HoTen">Số tiền đóng tạm ứng án phí</label>
           </div>
           <div className={styles.inputContainer}>
-            <AutoComplete
-              placeholder="Search"
-              id="dd"
-              dropdown
-              value={selectedStaff}
+            <InputNumber
+              value={inputSearch.so_tien_dong_tuap}
               onChange={(e) => {
-                setSelectedStaff(e.value)
+                setInputSearch({ ...inputSearch, so_tien_dong_tuap: e.value })
               }}
-              suggestions={autoFilteredStaff}
-              completeMethod={(e) => searchStaff(e)}
-              field="user_metadata.ho_ten"
-            />
+              mode="decimal"
+            ></InputNumber>
           </div>
         </div>
-
-        <div className="col-12 xl:col-4 md:col-6">
-          <div className="mb-2">
-            <label htmlFor="HoTen">Tỉnh/Thành phố</label>
-          </div>
-          <div className={styles.inputContainer}>
-            <Dropdown
-              value={province}
-              onChange={(e) => setProvince(e.value)}
-              options={provinces}
-              optionLabel="name"
-              placeholder="Select"
-            />
-          </div>
-        </div>
-
-        <div className="col-12 xl:col-4 md:col-6">
-          <div className="mb-2">
-            <label htmlFor="HoTen">Quận/Huyện</label>
-          </div>
-          <div className={styles.inputContainer}>
-            <Dropdown
-              value={district}
-              onChange={(e) => setDistrict(e.value)}
-              options={districts[province.name]}
-              optionLabel="name"
-              placeholder="Select"
-            />
-          </div>
-        </div>
-
-        {props.isAdvanceCourtFee && (
-          <div className="col-12 xl:col-4 md:col-6">
-            <div className="mb-2">
-              <label htmlFor="HoTen">Số tiền đóng tạm ứng án phí</label>
-            </div>
-            <div className={styles.inputContainer}>
-              <InputNumber
-                value={inputSearch.so_tien_dong_tuap}
-                onChange={(e) => {
-                  setInputSearch({ ...inputSearch, so_tien_dong_tuap: e.value })
-                }}
-                mode="decimal"
-              ></InputNumber>
-            </div>
-          </div>
-        )}
 
         <div className="col-12 xl:col-4 md:col-6">
           <div className="mb-2">
@@ -301,25 +333,8 @@ const AppointmentSearch = (props) => {
             />
           </div>
         </div>
-
-        {props.isAdvanceCourtFee && (
-          <div className="col-12 xl:col-4 md:col-6">
-            <div className="mb-2">
-              <label htmlFor="HoTen">Số biên lai</label>
-            </div>
-            <div className={styles.inputContainer}>
-              <InputText
-                id="HoTen"
-                type="text"
-                value={inputSearch.bien_lai}
-                onChange={(e) => setInputSearch({ ...inputSearch, bien_lai: e.target.value })}
-              />
-            </div>
-          </div>
-        )}
       </div>
-
-      <div className="flex justify-content-center md:justify-content-end ">
+      <div className="flex justify-content-center md:justify-content-end mt-2">
         <Button
           label="Xóa"
           outlined
@@ -332,4 +347,4 @@ const AppointmentSearch = (props) => {
   )
 }
 
-export default AppointmentSearch
+export default LawsuitSearch
