@@ -7,36 +7,50 @@ import { AutoComplete } from 'primereact/autocomplete'
 import styles from './index.module.scss'
 
 const DebtRecoverySearch = (props) => {
-  const [selectedAutoValue, setSelectedAutoValue] = useState(null)
+  const [selectedAutoValue1, setSelectedAutoValue1] = useState(null)
+  const [selectedAutoValue2, setSelectedAutoValue2] = useState(null)
+  const [selectedAutoValue3, setSelectedAutoValue3] = useState(null)
   const [autoFilteredValue, setAutoFilteredValue] = useState([])
-  const searchID = (event) => {
+  const [selectedStaff, setSelectedStaff] = useState(null)
+  const [autoFilteredStaff, setAutoFilteredStaff] = useState([])
+  const [sdt, setSdt] = useState()
+  const [progressOfKkTha, setProgressOfKkTha] = useState('')
+
+  const search = (event, field) => {
     setTimeout(() => {
       if (!event.query.trim().length) {
         setAutoFilteredValue([...props.customers])
       } else {
         setAutoFilteredValue(
           props.customers.filter((customer) => {
-            return customer.IDKhachHang.toString()
-              .toLowerCase()
-              .startsWith(event.query.toLowerCase())
+            return customer[field].toString().toLowerCase().startsWith(event.query.toLowerCase())
           })
         )
       }
     }, 250)
   }
 
-  const searchCCCD = (event) => {
+  const searchStaff = (event) => {
     setTimeout(() => {
       if (!event.query.trim().length) {
-        setAutoFilteredValue([...props.customers])
+        setAutoFilteredStaff([...props.staffs])
       } else {
-        setAutoFilteredValue(
-          props.customers.filter((customer) => {
-            return customer.CCCD.toString().toLowerCase().startsWith(event.query.toLowerCase())
+        setAutoFilteredStaff(
+          props.staffs.filter((staff) => {
+            return staff.phone.toString().toLowerCase().startsWith(event.query.toLowerCase())
           })
         )
       }
     }, 250)
+  }
+
+  const deleteFilter = () => {
+    setSelectedAutoValue1(null)
+    setSelectedAutoValue2(null)
+    setSelectedAutoValue3(null)
+    setSelectedStaff(null)
+    setSdt('')
+    setProgressOfKkTha('')
   }
 
   const applySearch = () => {
@@ -59,11 +73,20 @@ const DebtRecoverySearch = (props) => {
               placeholder="Search"
               id="dd"
               dropdown
-              value={selectedAutoValue}
-              onChange={(e) => setSelectedAutoValue(e.value)}
+              value={selectedAutoValue1}
+              onChange={(e) => {
+                setSelectedAutoValue1(e.value)
+                if (typeof e.value === 'object') {
+                  setSelectedAutoValue2(e.value)
+                  setSelectedAutoValue3(e.value)
+                } else {
+                  setSelectedAutoValue2(null)
+                  setSelectedAutoValue3(null)
+                }
+              }}
               suggestions={autoFilteredValue}
-              completeMethod={searchID}
-              field="IDKhachHang"
+              completeMethod={(e) => search(e, 'ma_khach_hang')}
+              field="ma_khach_hang"
             />
           </div>
         </div>
@@ -82,13 +105,20 @@ const DebtRecoverySearch = (props) => {
               placeholder="Search"
               id="dd"
               dropdown
-              value={selectedAutoValue}
+              value={selectedAutoValue2}
               onChange={(e) => {
-                setSelectedAutoValue(e.value)
+                setSelectedAutoValue2(e.value)
+                if (typeof e.value === 'object') {
+                  setSelectedAutoValue1(e.value)
+                  setSelectedAutoValue3(e.value)
+                } else {
+                  setSelectedAutoValue1(null)
+                  setSelectedAutoValue3(null)
+                }
               }}
               suggestions={autoFilteredValue}
-              completeMethod={searchCCCD}
-              field="CCCD"
+              completeMethod={(e) => search(e, 'can_cuoc')}
+              field="can_cuoc"
             />
           </div>
         </div>
@@ -98,11 +128,24 @@ const DebtRecoverySearch = (props) => {
             <label htmlFor="HoTen">Họ và tên</label>
           </div>
           <div className={styles.inputContainer}>
-            <InputText
-              id="HoTen"
-              type="text"
-              value={selectedAutoValue ? selectedAutoValue.Ho_ten : ''}
-              disabled
+            <AutoComplete
+              placeholder="Search"
+              id="dd"
+              dropdown
+              value={selectedAutoValue3}
+              onChange={(e) => {
+                setSelectedAutoValue3(e.value)
+                if (typeof e.value === 'object') {
+                  setSelectedAutoValue1(e.value)
+                  setSelectedAutoValue2(e.value)
+                } else {
+                  setSelectedAutoValue1(null)
+                  setSelectedAutoValue2(null)
+                }
+              }}
+              suggestions={autoFilteredValue}
+              completeMethod={(e) => search(e, 'ho_ten')}
+              field="ho_ten"
             />
           </div>
         </div>
@@ -115,8 +158,8 @@ const DebtRecoverySearch = (props) => {
             <InputText
               id="HoTen"
               type="text"
-              value={selectedAutoValue ? selectedAutoValue.SDT : ''}
-              disabled
+              value={sdt}
+              onChange={(e) => setSdt(e.target.value)}
             />
           </div>
         </div>
@@ -126,7 +169,12 @@ const DebtRecoverySearch = (props) => {
             <label htmlFor="HoTen">Tiến độ kiện - THA</label>
           </div>
           <div className={styles.inputContainer}>
-            <InputText id="HoTen" type="text" disabled />
+            <InputText
+              id="HoTen"
+              type="text"
+              value={progressOfKkTha}
+              onChange={(e) => setProgressOfKkTha(e.target.value)}
+            />
           </div>
         </div>
 
@@ -135,7 +183,18 @@ const DebtRecoverySearch = (props) => {
             <label htmlFor="HoTen">Nhân viên phụ trách</label>
           </div>
           <div className={styles.inputContainer}>
-            <InputText id="HoTen" type="text" disabled />
+            <AutoComplete
+              placeholder="Search"
+              id="dd"
+              dropdown
+              value={selectedStaff}
+              onChange={(e) => {
+                setSelectedStaff(e.value)
+              }}
+              suggestions={autoFilteredStaff}
+              completeMethod={(e) => searchStaff(e)}
+              field="user_metadata.ho_ten"
+            />
           </div>
         </div>
       </div>
@@ -144,9 +203,7 @@ const DebtRecoverySearch = (props) => {
           label="Xóa"
           outlined
           style={{ width: '93px', marginRight: '16px' }}
-          onClick={() => {
-            setSelectedAutoValue(null)
-          }}
+          onClick={deleteFilter}
         />
         <Button label="Tìm kiếm" onClick={() => applySearch()} />
       </div>

@@ -8,9 +8,12 @@ import { InputText } from 'primereact/inputtext'
 import { InputTextarea } from 'primereact/inputtextarea'
 import { Dropdown } from 'primereact/dropdown'
 import { Toast } from 'primereact/toast'
+import { AutoComplete } from 'primereact/autocomplete'
 
 import DebtRecoverySearch from '@/components/debtRecoveryActions/search/debt-recovery-search'
 import ActionTable from '@/components/debtRecoveryActions/action-table/action-table'
+
+import styles from './index.module.scss'
 
 import {
   getListActions,
@@ -19,8 +22,8 @@ import {
 } from 'actions/ket-qua-thu-hoi-no/Ket-qua-thu-hoi-no'
 
 import { getDebtRecoveryResult } from 'actions/ket-qua-thu-hoi-no/Ket-qua-thu-hoi-no'
-
 import { getListCustomer } from 'actions/customer/Customer'
+import { getListStaff } from 'actions/nhan-vien/nhan-vien'
 
 import { actionNames, actionTypes, results } from './const'
 
@@ -30,7 +33,6 @@ const DebtRecoveryActions = () => {
   const [showUpdateDialog, setShowUpdateDialog] = useState(false)
   const [errorForm, setErrorForm] = useState({})
   const [IDKhachHang, setIDKhachHang] = useState('')
-  const [CCCD, setCCCD] = useState('')
   const [actionName, setActionName] = useState({})
   const [actionType, setActionType] = useState({})
   const [result, setResult] = useState({})
@@ -40,6 +42,12 @@ const DebtRecoveryActions = () => {
   const [actionData, setActionData] = useState({})
   const [query, setQuery] = useState('')
   const [customers, setCustomers] = useState([])
+  const [staffs, setStaffs] = useState([])
+  const [selectedAutoValue1, setSelectedAutoValue1] = useState(null)
+  const [selectedAutoValue2, setSelectedAutoValue2] = useState(null)
+  const [selectedAutoValue3, setSelectedAutoValue3] = useState(null)
+  const [autoFilteredValue, setAutoFilteredValue] = useState([])
+
   const toast = useRef(null)
 
   const getActions = () => {
@@ -51,6 +59,14 @@ const DebtRecoveryActions = () => {
   const getListCustomers = () => {
     getListCustomer('queryAll=true').then((res) => {
       setCustomers(res.results)
+    })
+  }
+
+  const getStaffList = () => {
+    getListStaff('').then((res) => {
+      if (res.results) {
+        setStaffs(res.results)
+      }
     })
   }
 
@@ -66,8 +82,10 @@ const DebtRecoveryActions = () => {
   }
 
   const onCancel = () => {
-    setIDKhachHang('')
-    setCCCD('')
+    setSelectedAutoValue1(null)
+    setSelectedAutoValue2(null)
+    setSelectedAutoValue3(null)
+    setErrorForm({ noError: true })
     setActionType({})
     setActionName({})
     setResult({})
@@ -94,6 +112,33 @@ const DebtRecoveryActions = () => {
       detail: 'Cập nhật thành công',
       life: 3000,
     })
+  }
+
+  const preCheck = () => {
+    let noError = true
+    const tempErrorForm = {}
+    if (!selectedAutoValue1 || typeof selectedAutoValue1 !== 'object') {
+      tempErrorForm.maKhachHangError = true
+      noError = false
+    }
+    if (!selectedAutoValue2 || typeof selectedAutoValue2 !== 'object') {
+      tempErrorForm.cccdError = true
+      noError = false
+    }
+    if (!selectedAutoValue3 || typeof selectedAutoValue3 !== 'object') {
+      tempErrorForm.hoVaTenError = true
+      noError = false
+    }
+    if (!actionName.name) {
+      tempErrorForm.actionNameError = true
+      noError = false
+    }
+    if (!actionType.name) {
+      tempErrorForm.actionTypeError = true
+      noError = false
+    }
+    setErrorForm(tempErrorForm)
+    return noError
   }
 
   const handleAdd = () => {
@@ -155,9 +200,24 @@ const DebtRecoveryActions = () => {
     })
   }
 
+  const search = (event, field) => {
+    setTimeout(() => {
+      if (!event.query.trim().length) {
+        setAutoFilteredValue([...customers])
+      } else {
+        setAutoFilteredValue(
+          customers.filter((customer) => {
+            return customer[field].toString().toLowerCase().startsWith(event.query.toLowerCase())
+          })
+        )
+      }
+    }, 250)
+  }
+
   useEffect(() => {
     getActions()
     getListCustomers()
+    getStaffList()
   }, [])
 
   return (
@@ -167,7 +227,12 @@ const DebtRecoveryActions = () => {
       <div>
         <Accordion>
           <AccordionTab header="Tìm kiếm">
-            <DebtRecoverySearch handleSearch={handleSearch} customers={customers} query={query} />
+            <DebtRecoverySearch
+              handleSearch={handleSearch}
+              customers={customers}
+              query={query}
+              staffs={staffs}
+            />
           </AccordionTab>
         </Accordion>
       </div>
@@ -185,16 +250,31 @@ const DebtRecoveryActions = () => {
               <label htmlFor="ma_nv">
                 Mã khách hàng <span style={{ color: 'red' }}>*</span>
               </label>
-              <InputText
-                id="ma_nv"
-                type="text"
-                placeholder="Mã khách hàng"
-                value={IDKhachHang}
+              <AutoComplete
+                placeholder="Search"
+                id="dd"
+                dropdown
+                value={selectedAutoValue1}
                 onChange={(e) => {
-                  setIDKhachHang(e.target.value)
-                  setAddedError(false)
+                  setSelectedAutoValue1(e.value)
+                  if (typeof e.value === 'object') {
+                    setErrorForm({
+                      ...errorForm,
+                      cccdError: false,
+                      hoVaTenError: false,
+                      maKhachHangError: false,
+                    })
+                    setSelectedAutoValue2(e.value)
+                    setSelectedAutoValue3(e.value)
+                  } else {
+                    setSelectedAutoValue2(null)
+                    setSelectedAutoValue3(null)
+                  }
                 }}
-                className={errorForm.MaNhanVienError ? 'p-invalid' : ''}
+                suggestions={autoFilteredValue}
+                completeMethod={(e) => search(e, 'ma_khach_hang')}
+                field="ma_khach_hang"
+                className={errorForm.maKhachHangError ? styles.autoCompleteError : ''}
               />
             </div>
             {addedError && (
@@ -204,16 +284,66 @@ const DebtRecoveryActions = () => {
             )}
 
             <div className="field">
+              <label htmlFor="ho_ten">
+                Họ và tên <span style={{ color: 'red' }}>*</span>
+              </label>
+              <AutoComplete
+                placeholder="Search"
+                id="ho_ten"
+                dropdown
+                value={selectedAutoValue3}
+                onChange={(e) => {
+                  setSelectedAutoValue3(e.value)
+                  if (typeof e.value === 'object') {
+                    setErrorForm({
+                      ...errorForm,
+                      cccdError: false,
+                      hoVaTenError: false,
+                      maKhachHangError: false,
+                    })
+                    setSelectedAutoValue1(e.value)
+                    setSelectedAutoValue2(e.value)
+                  } else {
+                    setSelectedAutoValue1(null)
+                    setSelectedAutoValue2(null)
+                  }
+                }}
+                suggestions={autoFilteredValue}
+                completeMethod={(e) => search(e, 'ho_ten')}
+                field="ho_ten"
+                className={errorForm.hoVaTenError ? styles.autoCompleteError : ''}
+              />
+            </div>
+
+            <div className="field">
               <label htmlFor="CCCD">
                 Căn cước công dân <span style={{ color: 'red' }}>*</span>
               </label>
-              <InputText
-                id="CCCD"
-                type="text"
-                placeholder="Căn cước công dân"
-                value={CCCD}
-                onChange={(e) => setCCCD(e.target.value)}
-                className={errorForm.CCCDError ? 'p-invalid' : ''}
+              <AutoComplete
+                placeholder="Search"
+                id="dd"
+                dropdown
+                value={selectedAutoValue2}
+                onChange={(e) => {
+                  setSelectedAutoValue2(e.value)
+                  if (typeof e.value === 'object') {
+                    setErrorForm({
+                      ...errorForm,
+                      cccdError: false,
+                      hoVaTenError: false,
+                      maKhachHangError: false,
+                    })
+                    setSelectedAutoValue1(e.value)
+                    setSelectedAutoValue3(e.value)
+                  } else {
+                    setSelectedAutoValue1(null)
+                    setSelectedAutoValue3(null)
+                  }
+                }}
+                suggestions={autoFilteredValue}
+                completeMethod={(e) => search(e, 'can_cuoc')}
+                field="can_cuoc"
+                className={errorForm.cccdError ? styles.autoCompleteError : ''}
               />
             </div>
 
@@ -223,11 +353,14 @@ const DebtRecoveryActions = () => {
               </label>
               <Dropdown
                 value={actionType}
-                onChange={(e) => setActionType(e.value)}
+                onChange={(e) => {
+                  setActionType(e.value)
+                  setErrorForm({ ...errorForm, actionTypeError: false })
+                }}
                 options={actionTypes}
                 optionLabel="name"
                 placeholder="Chọn loại hành động"
-                className={errorForm.HoTenError ? 'p-invalid' : ''}
+                className={errorForm.actionTypeError ? 'p-invalid' : ''}
               />
             </div>
 
@@ -237,10 +370,14 @@ const DebtRecoveryActions = () => {
               </label>
               <Dropdown
                 value={actionName}
-                onChange={(e) => setActionName(e.value)}
+                onChange={(e) => {
+                  setActionName(e.value)
+                  setErrorForm({ ...errorForm, actionNameError: false })
+                }}
                 options={actionNames[actionType.name]}
                 optionLabel="name"
                 placeholder="Chọn tên hành động"
+                className={errorForm.actionNameError ? 'p-invalid' : ''}
               />
             </div>
 
@@ -288,7 +425,11 @@ const DebtRecoveryActions = () => {
                 <Button
                   label="Thêm"
                   style={{ width: '80px', height: '36px', marginLeft: '16px' }}
-                  onClick={() => handleAdd()}
+                  onClick={() => {
+                    if (preCheck()) {
+                      handleAdd()
+                    }
+                  }}
                 />
               </div>
             </div>
