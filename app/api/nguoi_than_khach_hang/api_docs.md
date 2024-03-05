@@ -44,7 +44,20 @@ GET /api/nguoi_than_khach_hang?offset=0&limit=2
             "thuong_tru": "Thủ Đức, HCM",
             "ma_khach_hang": 775714,
             "moi_quan_he": "Cha",
-            "email": "abc@gmail.com"
+            "email": "abc@gmail.com",
+            "khach_hang": {
+                "email": null,
+                "ho_ten": "Ngô Khánh Ngân",
+                "cong_ty": null,
+                "tam_tru": "Hồ Chí Minh",
+                "can_cuoc": "046202003938",
+                "ngay_sinh": "28/10/1984",
+                "dien_thoai": "+84 555 575 740",
+                "thuong_tru": "Thừa Thiên Huế",
+                "ma_khach_hang": 775714,
+                "nhan_vien_phu_trach_1": null,
+                "nhan_vien_phu_trach_2": null
+            }
         },
         {
             "id": 2,
@@ -54,7 +67,20 @@ GET /api/nguoi_than_khach_hang?offset=0&limit=2
             "thuong_tru": "Thủ Đức, HCM",
             "ma_khach_hang": 443183,
             "moi_quan_he": "Cha",
-            "email": "duy12@gmail.com"
+            "email": "duy12@gmail.com",
+            "khach_hang": {
+                "email": null,
+                "ho_ten": "Võ Kim Hoa",
+                "cong_ty": null,
+                "tam_tru": "Hồ Chí Minh",
+                "can_cuoc": "046202003544",
+                "ngay_sinh": "16/11/1983",
+                "dien_thoai": "+84 555 591 459",
+                "thuong_tru": "Thừa Thiên Huế",
+                "ma_khach_hang": 443183,
+                "nhan_vien_phu_trach_1": null,
+                "nhan_vien_phu_trach_2": null
+            }
         }
     ]
 }
@@ -95,7 +121,20 @@ GET /api/nguoi_than_khach_hang/1
             "thuong_tru": "Thủ Đức, HCM",
             "ma_khach_hang": 775714,
             "moi_quan_he": "Cha",
-            "email": "abc@gmail.com"
+            "email": "abc@gmail.com",
+            "khach_hang": {
+                "email": null,
+                "ho_ten": "Ngô Khánh Ngân",
+                "cong_ty": null,
+                "tam_tru": "Hồ Chí Minh",
+                "can_cuoc": "046202003938",
+                "ngay_sinh": "28/10/1984",
+                "dien_thoai": "+84 555 575 740",
+                "thuong_tru": "Thừa Thiên Huế",
+                "ma_khach_hang": 775714,
+                "nhan_vien_phu_trach_1": null,
+                "nhan_vien_phu_trach_2": null
+            }
         }
     ]
 }

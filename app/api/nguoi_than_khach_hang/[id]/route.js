@@ -16,7 +16,7 @@ export async function GET(request, { params }) {
   }
   const { count, data, error } = await supabase
     .from('nguoi_than_khach_hang')
-    .select('*', { count: 'exact' })
+    .select('*, khach_hang(*)', { count: 'exact' })
     .eq('id', id)
   if (error) {
     return NextResponse.json(
