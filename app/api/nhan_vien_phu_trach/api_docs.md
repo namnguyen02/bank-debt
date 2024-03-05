@@ -1,3 +1,7 @@
+- [nhan\_vien\_phu\_trach](#nhan_vien_phu_trach)
+  - [GET /api/nhan\_vien\_phu\_trach?offset=10\&limit=10](#get-apinhan_vien_phu_trachoffset10limit10)
+  - [POST /api/nhan\_vien\_phu\_trach](#post-apinhan_vien_phu_trach)
+
 # nhan_vien_phu_trach
 ## GET /api/nhan_vien_phu_trach?offset=10&limit=10
 
