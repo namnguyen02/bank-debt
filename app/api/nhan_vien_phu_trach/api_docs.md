@@ -20,7 +20,7 @@ Retrieves data from the database.
   - count (number): Total number of records
   - next (string|null): Next page URL (null if no more pages)
   - previous (string|null): Previous page URL (null if no previous page)
-  - results (array): Array of objects sorted by id
+  - results (array): Array of objects
 
 **Example**
 
@@ -28,19 +28,53 @@ Retrieves data from the database.
 GET /api/nhan_vien_phu_trach?offset=0&limit=2
 
 {
+    {
     "count": 2,
     "next": null,
     "previous": null,
     "results": [
         {
             "ma_khach_hang": 834879,
-            "ma_nhan_vien": "SHB-23072008"
+            "ma_nhan_vien": "SHB-23072008",
+            "khach_hang": {
+                "email": null,
+                "ho_ten": "Mai Minh Anh",
+                "cong_ty": "Rockship",
+                "tam_tru": "Hồ Chí Minh",
+                "can_cuoc": "046202005106",
+                "ngay_sinh": "11/1/1973",
+                "dien_thoai": "+84 855 564 992",
+                "thuong_tru": "Thừa Thiên Huế",
+                "ma_khach_hang": 834879,
+                "nhan_vien_phu_trach_1": null,
+                "nhan_vien_phu_trach_2": null
+            },
+            "nhan_vien": {
+                "ho_ten": "Nguyễn Anh Thư"
+            }
         },
         {
             "ma_khach_hang": 834879,
-            "ma_nhan_vien": "SHB-12052002"
+            "ma_nhan_vien": "SHB-12052002",
+            "khach_hang": {
+                "email": null,
+                "ho_ten": "Mai Minh Anh",
+                "cong_ty": "Rockship",
+                "tam_tru": "Hồ Chí Minh",
+                "can_cuoc": "046202005106",
+                "ngay_sinh": "11/1/1973",
+                "dien_thoai": "+84 855 564 992",
+                "thuong_tru": "Thừa Thiên Huế",
+                "ma_khach_hang": 834879,
+                "nhan_vien_phu_trach_1": null,
+                "nhan_vien_phu_trach_2": null
+            },
+            "nhan_vien": {
+                "ho_ten": "Nguyễn Hoài Nam"
+            }
         }
     ]
+}
 }
 ```
 

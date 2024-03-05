@@ -28,7 +28,7 @@ export async function GET(request) {
   } else {
     const { count, data, error } = await supabase
       .from('nhan_vien_phu_trach')
-      .select('*', { count: 'exact' })
+      .select('*, khach_hang(*),nhan_vien(ho_ten)', { count: 'exact' })
     if (error) {
       return NextResponse.json(
         {
