@@ -6,15 +6,20 @@ export async function GET(request) {
   const { searchParams } = new URL(request.url)
   const obj = Object.fromEntries(searchParams.entries())
 
-  // const id = obj['IDKhachHang'] ? obj['IDKhachHang'] : ''
   const offset = obj['offset'] ? parseInt(obj['offset']) : 0 // Offset default = 0
   const limit = obj['limit'] ? parseInt(obj['limit']) : 10 // Limit default = 10
+  // const fields = obj['fields'] ? obj['fields'] : '*'
 
   if (obj['offset'] && obj['limit']) {
+    // const { data, error } = await supabase
+    //   .from('lich_hen')
+    //   .select(`*, khach_hang (ho_ten, can_cuoc), khoi_kien (*, NhanVien (HoTen))`)
+    //   .order('thoi_gian_cap_nhat', { ascending: false })
+    //   .range(offset, limit)
     const { data, error } = await supabase
       .from('lich_hen')
-      .select(`*, KhachHang (Ho_ten, CCCD), tien_do_khoi_kien (*, NhanVien (HoTen))`)
-      .order('thoi_gian_cap_nhat', { ascending: false })
+      .select(`*, khach_hang(ho_ten, can_cuoc), khoi_kien(*, nhan_vien(ho_ten))`)
+      .order('created_at', { ascending: false })
       .range(offset, limit)
     if (error) {
       return NextResponse.json(
@@ -30,10 +35,14 @@ export async function GET(request) {
       { status: 200 }
     )
   } else {
+    // const { count, data, error } = await supabase
+    //   .from('lich_hen')
+    //   .select(`*, KhachHang (Ho_ten, CCCD), tien_do_khoi_kien (*)`)
+    //   .order('created_at', { ascending: false })
     const { count, data, error } = await supabase
       .from('lich_hen')
-      .select(`*, KhachHang (Ho_ten, CCCD), tien_do_khoi_kien (*)`)
-      .order('thoi_gian_cap_nhat', { ascending: false })
+      .select(`*`)
+      .order('created_at', { ascending: false })
     if (error) {
       return NextResponse.json(
         {
@@ -60,32 +69,29 @@ export async function POST(request) {
       "ngay_hen" = '',
       "noi_dung_hen" = '',
       "nguoi_tao_lich_hen" = '',
-      "id_khoi_kien" = '',
-      "id_thi_hanh_an" = '',
+      "ma_khoi_kien" = '',
+      "ma_thi_hanh_an" = '',
+      "ma_khach_hang" = '',
       }]
       */
   // Check params
-  dataToCreate.map((item) => {
-    if (!item['trang_thai_ho_so']) {
-      return NextResponse.json({ body: 'Missing "trang_thai_ho_so" parameter' }, { status: 400 })
-    }
-    if (!item['ngay_hen']) {
-      return NextResponse.json({ body: 'Missing "ngay_hen" parameter' }, { status: 400 })
-    }
-    if (!item['noi_dung_hen']) {
-      return NextResponse.json({ body: 'Missing "noi_dung_hen" parameter' }, { status: 400 })
-    }
-    if (!item['nguoi_tao_lich_hen']) {
-      return NextResponse.json({ body: 'Missing "nguoi_tao_lich_hen" parameter' }, { status: 400 })
-    }
-  })
-
-  const newDataToCreate = dataToCreate.map((item) => {
-    item.thoi_gian_cap_nhat = getDateTime()
-    return item
-  })
-
-  const { error } = await supabase.from('lich_hen').insert(newDataToCreate)
+  if (!isValidTimestamp(dataToCreate['ngay_hen'])) {
+    return NextResponse.json(
+      {
+        body: 'Invalid "ngay_hen" parameter, must be timestamp type',
+      },
+      { status: 400 }
+    )
+  }
+  if (!checkStringIsCharacters(dataToCreate['nguoi_tao_lich_hen'])) {
+    return NextResponse.json(
+      {
+        body: 'Invalid "nguoi_tao_lich_hen" parameter, must be a valid name',
+      },
+      { status: 400 }
+    )
+  }
+  const { error } = await supabase.from('lich_hen').insert(dataToCreate)
   if (error) {
     return NextResponse.json({ body: JSON.stringify(error) }, { status: 500 })
   }
