@@ -1,3 +1,11 @@
+- [nguoi\_than\_khach\_hang](#nguoi_than_khach_hang)
+  - [GET /api/nguoi\_than\_khach\_hang?offset=10\&limit=10](#get-apinguoi_than_khach_hangoffset10limit10)
+  - [GET /api/nguoi\_than\_khach\_hang/:id](#get-apinguoi_than_khach_hangid)
+  - [POST /api/nguoi\_than\_khach\_hang](#post-apinguoi_than_khach_hang)
+  - [DELETE /api/nguoi\_than\_khach\_hang/:id](#delete-apinguoi_than_khach_hangid)
+  - [PUT /api/nguoi\_than\_khach\_hang/:id](#put-apinguoi_than_khach_hangid)
+  - [PATCH /api/nguoi\_than\_khach\_hang/:id](#patch-apinguoi_than_khach_hangid)
+
 # nguoi_than_khach_hang
 ## GET /api/nguoi_than_khach_hang?offset=10&limit=10
 
