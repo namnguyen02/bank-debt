@@ -10,7 +10,7 @@ export async function GET(request) {
   if (obj['offset'] && obj['limit']) {
     const { data, error } = await supabase
       .from('nhan_vien_phu_trach')
-      .select('*')
+      .select('*, khach_hang(*),nhan_vien(ho_ten)')
       .range(offset, limit)
     if (error) {
       return NextResponse.json(
