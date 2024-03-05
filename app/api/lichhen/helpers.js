@@ -9,3 +9,17 @@ export const getDateTime = () => {
   const returnData = year + '-' + month + '-' + date + ' ' + hour + ':' + minute + ':' + second
   return returnData
 }
+function isValidTimestamp(_timestamp) {
+  const newTimestamp = new Date(_timestamp).getTime()
+  return isNumeric(newTimestamp)
+}
+
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n)
+}
+
+function checkStringIsCharacters(string) {
+  // check for only letters (a-zA-Z) and whitespace
+  const regex = /^[\p{L}\s]+$/u
+  return regex.test(string)
+}
