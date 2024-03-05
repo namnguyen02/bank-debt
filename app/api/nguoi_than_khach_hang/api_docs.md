@@ -9,7 +9,7 @@
 # nguoi_than_khach_hang
 ## GET /api/nguoi_than_khach_hang?offset=10&limit=10
 
-Retrieves employee data from the database.
+Retrieves data from the database.
 
 **Query Parameters**
 
@@ -21,10 +21,10 @@ Retrieves employee data from the database.
 - 500 Internal Server Error: When database query fails
 - 200 OK: No error
 - Returns JSON object with:
-  - count (number): Total number of employee records
+  - count (number): Total number of customer's relatives records
   - next (string|null): Next page URL (null if no more pages)
   - previous (string|null): Previous page URL (null if no previous page)
-  - results (array): Array of employee objects sorted by IDKhachHang
+  - results (array): Array of customer's relatives objects sorted by id
 
 **Example**
 
@@ -64,22 +64,22 @@ GET /api/nguoi_than_khach_hang?offset=0&limit=2
 
 ## GET /api/nguoi_than_khach_hang/:id
 
-Retrieves a specific employee record by ID.
+Retrieves a specific customer's relatives record by ID.
 
 **Path Parameters**
 
-- **id** (required): Employee ID to fetch
+- **id** (required): customer's relatives ID to fetch
 
 **Response**
 
-- 200 OK: Returns requested employee object
+- 200 OK: Returns requested customer's relatives object
 - 400 Bad Request: If invalid ID is passed
 - 500 Internal Server Error: If database query fails
 
 **JSON contains**
 
 - count (number): Number of results (1 for single object)
-- results (object): Employee data
+- results (object): customer's relatives data
 
 ```json
 GET /api/nguoi_than_khach_hang/1
@@ -103,10 +103,10 @@ GET /api/nguoi_than_khach_hang/1
 ---
 ## POST /api/nguoi_than_khach_hang
 
-Create a new employee record in the database.
+Create a new customer's relatives record in the database.
 
 **Request Body**
-- Employee object containing all fields
+- customer's relatives object containing all fields
 - Request body must have more than one field. 
 
 ```json
@@ -124,22 +124,22 @@ Create a new employee record in the database.
 ```
 
 **Response**
-- 200 Created: When new employee record is inserted
+- 200 Created: When new customer's relatives record is inserted
 - 400 Bad Request: If invalid data is passed
 - 500 Internal Server Error: If insert query fails
 ---
 
 ## DELETE /api/nguoi_than_khach_hang/:id
 
-Deletes an employee record from the database.
+Deletes a customer's relatives record from the database.
 
 **Query Parameters**
 
-- **id** (required): Employee ID to delete
+- **id** (required): customer's relatives ID to delete
 
 **Response**
 
-- 200 OK: When employee record is deleted successfully
+- 200 OK: When customer's relatives record is deleted successfully
   - Returns JSON object:
     - message: 'Record deleted successfully'
 - 400 Bad Request: When ma_nv is invalid or missing
@@ -157,10 +157,10 @@ Return status 200
 ```
 ---
 ## PUT /api/nguoi_than_khach_hang/:id
-Update an employee record by ID with new data.
+Update a customer's relatives record by ID with new data.
 
 **Path Parameters**
-- **id** (required): Employee ID to update
+- **id** (required): customer's relatives ID to update
 
 **Request Body**
 - JSON object containing fields to update. It's somewhat like this:
@@ -196,10 +196,10 @@ Returns 200 OK and message: "Updated" on success
 ---
 ## PATCH /api/nguoi_than_khach_hang/:id
 
-Update an employee record by ID with one new data.
+Update a customer's relatives record by ID with one new data.
 
 **Path Parameters**
-- **id** (required): Employee ID to update
+- **id** (required): customer's relatives ID to update
 
 **Request Body**
 - JSON object containing fields to update. It's somewhat like this:
