@@ -13,8 +13,9 @@ const AppMenu = (props) => {
     if (props.user.role === 'NDH') {
       return [
         {
-          label: 'Hành động thu hồi',
+          label: 'Hành động thu hồi nợ',
           icon: 'pi pi-fw pi-box',
+          to: '/danh-muc-hanh-dong-thu-hoi-no',
         },
         {
           label: 'Kết quả thu hồi',
@@ -33,8 +34,9 @@ const AppMenu = (props) => {
     } else {
       return [
         {
-          label: 'Hành động thu hồi',
+          label: 'Hành động thu hồi nợ',
           icon: 'pi pi-fw pi-box',
+          to: '/danh-muc-hanh-dong-thu-hoi-no',
         },
         {
           label: 'Kết quả thu hồi',
