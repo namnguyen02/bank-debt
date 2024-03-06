@@ -12,35 +12,36 @@ const TreeDemo = () => {
   const [selectedFileKeys2, setSelectedFileKeys2] = useState(null)
 
   useEffect(() => {
-    NodeService.getFiles().then(files => setFiles(files))
-    NodeService.getFilesystem().then(files => setFiles2(files))
+    NodeService.getFiles().then((files) => setFiles(files))
+    NodeService.getFilesystem().then((files) => setFiles2(files))
   }, [])
 
   return (
-    <div className='grid'>
-      <div className='col-12'>
-        <div className='card'>
+    <div className="grid">
+      <div className="col-12">
+        <div className="card">
           <h5>Tree</h5>
           <Tree
             value={files}
-            selectionMode='checkbox'
+            selectionMode="checkbox"
             selectionKeys={selectedFileKeys}
-            onSelectionChange={e => setSelectedFileKeys(e.value)}
+            onSelectionChange={(e) => setSelectedFileKeys(e.value)}
           />
         </div>
       </div>
-      <div className='col-12'>
-        <div className='card'>
+      <div className="col-12">
+        <div className="card">
           <h5>TreeTable</h5>
+          {console.log(files2)}
           <TreeTable
             value={files2}
-            selectionMode='checkbox'
+            selectionMode="checkbox"
             selectionKeys={selectedFileKeys2}
-            onSelectionChange={e => setSelectedFileKeys2(e.value)}
+            onSelectionChange={(e) => setSelectedFileKeys2(e.value)}
           >
-            <Column field='name' header='Name' expander />
-            <Column field='size' header='Size' />
-            <Column field='type' header='Type' />
+            <Column field="name" header="Name" expander />
+            <Column field="size" header="Size" />
+            <Column field="type" header="Type" />
           </TreeTable>
         </div>
       </div>
