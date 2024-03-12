@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react'
+import { connect } from 'react-redux'
 
 import { Accordion, AccordionTab } from 'primereact/accordion'
 import { Button } from 'primereact/button'
@@ -20,19 +21,24 @@ import {
   addDebtRecoveryResult,
   updateDebtRecoveryResult,
 } from 'actions/ket-qua-thu-hoi-no/Ket-qua-thu-hoi-no'
+import { getListActionCategoryResults } from 'actions/danh-muc-ket-qua-hanh-dong/danh-muc-ket-qua-hanh-dong'
+import { getListActionCategories } from 'actions/danh-muc-hanh-dong/danh-muc-hanh-dong'
 
 import { getDebtRecoveryResult } from 'actions/ket-qua-thu-hoi-no/Ket-qua-thu-hoi-no'
 import { getListCustomer } from 'actions/customer/Customer'
 import { getListStaff } from 'actions/nhan-vien/nhan-vien'
 
-import { actionNames, actionTypes, results } from './const'
+import { actionTypes } from './const'
 
-const DebtRecoveryActions = () => {
+const DebtRecoveryActions = (props) => {
   const [checkedList, setCheckedList] = useState([])
+  const [actionCategories, setActionCategories] = useState([])
+  const [actionResultCategories, setActionResultCategories] = useState([])
+  const [actionNames, setActionNames] = useState([])
+  const [results, setResults] = useState([])
   const [showDialog, setShowDialog] = useState(false)
   const [showUpdateDialog, setShowUpdateDialog] = useState(false)
   const [errorForm, setErrorForm] = useState({})
-  const [IDKhachHang, setIDKhachHang] = useState('')
   const [actionName, setActionName] = useState({})
   const [actionType, setActionType] = useState({})
   const [result, setResult] = useState({})
@@ -47,12 +53,29 @@ const DebtRecoveryActions = () => {
   const [selectedAutoValue2, setSelectedAutoValue2] = useState(null)
   const [selectedAutoValue3, setSelectedAutoValue3] = useState(null)
   const [autoFilteredValue, setAutoFilteredValue] = useState([])
+  const [isUpdating, setIsUpdating] = useState(false)
 
   const toast = useRef(null)
 
   const getActions = () => {
     getListActions(query).then((res) => {
       setData(res.results)
+    })
+  }
+
+  const getActionCategories = () => {
+    getListActionCategories().then((res) => {
+      if (res && res.count) {
+        setActionCategories(res.results)
+      }
+    })
+  }
+
+  const getActionResultCategories = () => {
+    getListActionCategoryResults().then((res) => {
+      if (res && res.count) {
+        setActionResultCategories(res.results)
+      }
     })
   }
 
@@ -95,6 +118,11 @@ const DebtRecoveryActions = () => {
   }
 
   const onCancelUpdate = () => {
+    setErrorForm({ noError: true })
+    setActionType({})
+    setActionName({})
+    setResult({})
+    setNote('')
     setShowUpdateDialog(false)
   }
 
@@ -117,24 +145,38 @@ const DebtRecoveryActions = () => {
   const preCheck = () => {
     let noError = true
     const tempErrorForm = {}
-    if (!selectedAutoValue1 || typeof selectedAutoValue1 !== 'object') {
-      tempErrorForm.maKhachHangError = true
+    if (isUpdating) {
+      if (!actionData.khach_hang?.ma_khach_hang) {
+        tempErrorForm.maKhachHangError = true
+        tempErrorForm.cccdError = true
+        tempErrorForm.hoVaTenError = true
+        noError = false
+      }
+    } else {
+      if (!selectedAutoValue1 || typeof selectedAutoValue1 !== 'object') {
+        tempErrorForm.maKhachHangError = true
+        noError = false
+      }
+      if (!selectedAutoValue2 || typeof selectedAutoValue2 !== 'object') {
+        tempErrorForm.cccdError = true
+        noError = false
+      }
+      if (!selectedAutoValue3 || typeof selectedAutoValue3 !== 'object') {
+        tempErrorForm.hoVaTenError = true
+        noError = false
+      }
+    }
+
+    if (!actionType.name) {
+      tempErrorForm.actionTypeError = true
       noError = false
     }
-    if (!selectedAutoValue2 || typeof selectedAutoValue2 !== 'object') {
-      tempErrorForm.cccdError = true
-      noError = false
-    }
-    if (!selectedAutoValue3 || typeof selectedAutoValue3 !== 'object') {
-      tempErrorForm.hoVaTenError = true
-      noError = false
-    }
-    if (!actionName.name) {
+    if (!actionName.ten_hanh_dong) {
       tempErrorForm.actionNameError = true
       noError = false
     }
-    if (!actionType.name) {
-      tempErrorForm.actionTypeError = true
+    if (!result?.ma_ket_qua) {
+      tempErrorForm.actionResultError = true
       noError = false
     }
     setErrorForm(tempErrorForm)
@@ -143,28 +185,22 @@ const DebtRecoveryActions = () => {
 
   const handleAdd = () => {
     const form = {
-      IDKhachHang: IDKhachHang,
-      ten_hanh_dong: actionName.name,
-      loai_hanh_dong: actionType.name,
-      ket_qua: result.name,
+      ma_khach_hang: selectedAutoValue1.ma_khach_hang,
+      ma_hanh_dong: actionName.ma_hanh_dong,
+      ma_ket_qua: result.ma_ket_qua,
+      ma_nhan_vien: props.user.ma_nhan_vien,
       ghi_chu: note,
     }
-
-    addDebtRecoveryResult({ body: form }).then((res) => {
-      if (res && res.body === 'Inserted') {
+    addDebtRecoveryResult(form).then((res) => {
+      if (res && res.id) {
         getActions()
         setShowDialog(false)
-        setIDKhachHang('')
-        setCCCD('')
         setActionType({})
         setActionName({})
         setResult({})
         setNote('')
         informAddSuccessfully()
-      } else if (
-        res &&
-        res.response.data.error === 'Debt recovery action of this IDKhachHang has already exist'
-      ) {
+      } else {
         setAddedError(true)
       }
     })
@@ -180,19 +216,56 @@ const DebtRecoveryActions = () => {
     }-${date.getDate()} ${hour}:${minute}:${second}+00`
   }
 
+  const getData = (data) => {
+    // Get action type
+    setActionType({ name: data.hanh_dong?.loai_hanh_dong })
+    // Get action names
+    const localActionNames = actionCategories.filter(
+      (item) => item.loai_hanh_dong?.toLowerCase() === data.hanh_dong?.loai_hanh_dong?.toLowerCase()
+    )
+    setActionNames(localActionNames)
+    // Get action name
+    if (
+      localActionNames.filter((item) => item.ten_hanh_dong === data.hanh_dong?.ten_hanh_dong)
+        .length > 0
+    ) {
+      setActionName(
+        localActionNames.filter((item) => item.ten_hanh_dong === data.hanh_dong?.ten_hanh_dong)[0]
+      )
+    }
+    // Get results
+    const localActionResults = actionResultCategories.filter(
+      (item) =>
+        item.hanh_dong.ten_hanh_dong.toLowerCase() === data.hanh_dong?.ten_hanh_dong?.toLowerCase()
+    )
+    setResults(localActionResults)
+    // Get result
+    if (
+      localActionResults.filter((item) => item.ghi_chu_ket_qua === data.ket_qua?.ghi_chu_ket_qua)
+        .length > 0
+    ) {
+      setResult(
+        localActionResults.filter(
+          (item) => item.ghi_chu_ket_qua === data.ket_qua?.ghi_chu_ket_qua
+        )[0]
+      )
+    }
+    // Get note
+    setNote(data.ghi_chu)
+  }
+
   const handleUpdate = () => {
-    const id = actionData.ma_ket_qua_hd
+    const id = actionData.id
     const time = getTime()
     const body = {
-      IDKhachHang: actionData.IDKhachHang,
-      loai_hanh_dong: actionData.loai_hanh_dong,
-      ten_hanh_dong: actionData.ten_hanh_dong,
-      ket_qua: actionData.ket_qua,
-      ghi_chu: actionData.ghi_chu,
-      last_edited_at: time,
+      ma_khach_hang: actionData.khach_hang?.ma_khach_hang,
+      ma_hanh_dong: actionName.ma_hanh_dong,
+      ma_ket_qua: result.ma_ket_qua,
+      ghi_chu: note,
+      ngay_cap_nhat: time,
     }
-    updateDebtRecoveryResult(id, { body: body }).then((res) => {
-      if (res && res.body === 'Updated') {
+    updateDebtRecoveryResult(id, body).then((res) => {
+      if (res && res.id) {
         getActions()
         setShowUpdateDialog(false)
         informUpdateSuccessfully()
@@ -216,6 +289,8 @@ const DebtRecoveryActions = () => {
 
   useEffect(() => {
     getActions()
+    getActionCategories()
+    getActionResultCategories()
     getListCustomers()
     getStaffList()
   }, [])
@@ -356,6 +431,11 @@ const DebtRecoveryActions = () => {
                 onChange={(e) => {
                   setActionType(e.value)
                   setErrorForm({ ...errorForm, actionTypeError: false })
+                  setActionNames(
+                    actionCategories.filter(
+                      (item) => item.loai_hanh_dong?.toLowerCase() === e.value?.name?.toLowerCase()
+                    )
+                  )
                 }}
                 options={actionTypes}
                 optionLabel="name"
@@ -373,30 +453,35 @@ const DebtRecoveryActions = () => {
                 onChange={(e) => {
                   setActionName(e.value)
                   setErrorForm({ ...errorForm, actionNameError: false })
+                  setResults(
+                    actionResultCategories.filter(
+                      (item) =>
+                        item.hanh_dong.ten_hanh_dong.toLowerCase() ===
+                        e.value.ten_hanh_dong.toLowerCase()
+                    )
+                  )
                 }}
-                options={actionNames[actionType.name]}
-                optionLabel="name"
+                options={actionNames}
+                optionLabel="ten_hanh_dong"
                 placeholder="Chọn tên hành động"
                 className={errorForm.actionNameError ? 'p-invalid' : ''}
               />
             </div>
 
             <div className="field">
-              <label htmlFor="SDT">Kết quả</label>
-              {/* <InputText
-                id="SDT"
-                type="text"
-                placeholder="Kết quả"
-                value={result}
-                onChange={(e) => setResult(e.target.value)}
-                className={errorForm.SDTError ? 'p-invalid' : ''}
-              /> */}
+              <label htmlFor="SDT">
+                Kết quả <span style={{ color: 'red' }}>*</span>
+              </label>
               <Dropdown
                 value={result}
-                onChange={(e) => setResult(e.value)}
-                options={results[actionName.name]}
-                optionLabel="name"
+                onChange={(e) => {
+                  setResult(e.value)
+                  setErrorForm({ ...errorForm, actionResultError: false })
+                }}
+                options={results}
+                optionLabel="ghi_chu_ket_qua"
                 placeholder="Chọn kết quả"
+                className={errorForm.actionResultError ? 'p-invalid' : ''}
               />
             </div>
 
@@ -439,7 +524,7 @@ const DebtRecoveryActions = () => {
         <Dialog
           header="Cập nhật"
           visible={showUpdateDialog}
-          onHide={() => setShowUpdateDialog(false)}
+          onHide={() => onCancelUpdate()}
           style={{ width: '400px' }}
           modal
         >
@@ -451,8 +536,22 @@ const DebtRecoveryActions = () => {
               <InputText
                 id="ma_nv"
                 type="text"
-                value={actionData.IDKhachHang}
+                value={actionData.khach_hang?.ma_khach_hang}
                 className={errorForm.MaNhanVienError ? 'p-invalid' : ''}
+                disabled
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="CCCD">
+                Họ và tên <span style={{ color: 'red' }}>*</span>
+              </label>
+              <InputText
+                id="ho_ten"
+                type="text"
+                placeholder="Họ và tên"
+                value={actionData.khach_hang?.ho_ten}
+                className={errorForm.HoTenError ? 'p-invalid' : ''}
                 disabled
               />
             </div>
@@ -465,7 +564,7 @@ const DebtRecoveryActions = () => {
                 id="CCCD"
                 type="text"
                 placeholder="Căn cước công dân"
-                value={actionData.KhachHang?.CCCD}
+                value={actionData.khach_hang?.can_cuoc}
                 className={errorForm.CCCDError ? 'p-invalid' : ''}
                 disabled
               />
@@ -476,8 +575,23 @@ const DebtRecoveryActions = () => {
                 Loại hành động <span style={{ color: 'red' }}>*</span>
               </label>
               <Dropdown
-                value={{ name: actionData.loai_hanh_dong }}
-                onChange={(e) => setActionData({ ...actionData, loai_hanh_dong: e.value.name })}
+                value={actionType}
+                onChange={(e) => {
+                  setActionType(e.value)
+                  setActionName({})
+                  setResult({})
+                  setActionNames(
+                    actionCategories.filter(
+                      (item) => item.loai_hanh_dong?.toLowerCase() === e.value?.name?.toLowerCase()
+                    )
+                  )
+                  setErrorForm({
+                    ...errorForm,
+                    actionTypeError: false,
+                    actionNameError: false,
+                    actionResultError: false,
+                  })
+                }}
                 options={actionTypes}
                 optionLabel="name"
                 placeholder="Chọn loại hành động"
@@ -490,30 +604,40 @@ const DebtRecoveryActions = () => {
                 Tên hành động <span style={{ color: 'red' }}>*</span>
               </label>
               <Dropdown
-                value={{ name: actionData.ten_hanh_dong }}
-                onChange={(e) => setActionData({ ...actionData, ten_hanh_dong: e.value.name })}
-                options={actionNames[actionData.loai_hanh_dong]}
-                optionLabel="name"
+                value={actionName}
+                onChange={(e) => {
+                  setActionName(e.value)
+                  setResult({})
+                  setResults(
+                    actionResultCategories.filter(
+                      (item) =>
+                        item.hanh_dong.ten_hanh_dong.toLowerCase() ===
+                        e.value.ten_hanh_dong.toLowerCase()
+                    )
+                  )
+                  setErrorForm({ ...errorForm, actionNameError: false, actionResultError: false })
+                }}
+                options={actionNames}
+                optionLabel="ten_hanh_dong"
                 placeholder="Chọn tên hành động"
+                className={errorForm.actionNameError ? 'p-invalid' : ''}
               />
             </div>
 
             <div className="field">
-              <label htmlFor="SDT">Kết quả</label>
-              {/* <InputText
-                id="SDT"
-                type="text"
-                placeholder="Kết quả"
-                value={result}
-                onChange={(e) => setResult(e.target.value)}
-                className={errorForm.SDTError ? 'p-invalid' : ''}
-              /> */}
+              <label htmlFor="SDT">
+                Kết quả <span style={{ color: 'red' }}>*</span>
+              </label>
               <Dropdown
-                value={{ name: actionData.ket_qua }}
-                onChange={(e) => setActionData({ ...actionData, ket_qua: e.value.name })}
-                options={results[actionData.ten_hanh_dong]}
-                optionLabel="name"
+                value={result}
+                onChange={(e) => {
+                  setResult(e.value)
+                  setErrorForm({ ...errorForm, actionResultError: false })
+                }}
+                options={results}
+                optionLabel="ghi_chu_ket_qua"
                 placeholder="Chọn kết quả"
+                className={errorForm.actionResultError ? 'p-invalid' : ''}
               />
             </div>
 
@@ -524,8 +648,8 @@ const DebtRecoveryActions = () => {
                 type="text"
                 placeholder="Ghi chú"
                 rows={4}
-                value={actionData.ghi_chu}
-                onChange={(e) => setActionData({ ...actionData, ghi_chu: e.target.value })}
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
                 className={errorForm.SDTError ? 'p-invalid' : ''}
               />
             </div>
@@ -542,7 +666,9 @@ const DebtRecoveryActions = () => {
                 <Button
                   label="Cập nhật"
                   style={{ width: '96px', height: '36px', marginLeft: '16px' }}
-                  onClick={() => handleUpdate()}
+                  onClick={() => {
+                    if (preCheck()) handleUpdate()
+                  }}
                 />
               </div>
             </div>
@@ -567,6 +693,8 @@ const DebtRecoveryActions = () => {
             setCheckedList={setCheckedList}
             setShowUpdateDialog={setShowUpdateDialog}
             setActionData={setActionData}
+            getData={getData}
+            setIsUpdating={setIsUpdating}
           />
         </div>
       </div>
@@ -574,4 +702,10 @@ const DebtRecoveryActions = () => {
   )
 }
 
-export default DebtRecoveryActions
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  }
+}
+
+export default connect(mapStateToProps)(DebtRecoveryActions)
