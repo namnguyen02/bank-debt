@@ -5,10 +5,22 @@ import { InputText } from 'primereact/inputtext'
 import { Button } from 'primereact/button'
 import { Calendar } from 'primereact/calendar'
 
+import EditRelative from './edit-relative'
+
 import styles from './index.module.scss'
 
 const EditPersonalInformation = (props) => {
+  const emptyRelativeForm = {
+    ho_ten: '',
+    can_cuoc: '',
+    sdt: '',
+    thuong_tru: '',
+    moi_quan_he: '',
+    email: '',
+  }
   const [birthday, setBirthday] = useState(null)
+  const [calendarValue, setCalendarValue] = useState(null)
+  const [relatives, setRelatives] = useState([emptyRelativeForm])
 
   return (
     <div>
@@ -62,7 +74,13 @@ const EditPersonalInformation = (props) => {
           <label htmlFor="birthday">Ngày sinh:</label>
         </div>
         <div className="col-12 md:col-9 sm:col-8">
-          <Calendar value={birthday} className={styles.inputText} />
+          <Calendar
+            className={styles.inputText}
+            showIcon
+            showButtonBar
+            value={calendarValue}
+            onChange={(e) => setCalendarValue(e.value ?? null)}
+          />
         </div>
       </div>
 
@@ -135,8 +153,8 @@ const EditPersonalInformation = (props) => {
             id="company_name"
             type="text"
             className={styles.inputText}
-            onChange={(e) => props.handleChange('TenCongTy', e.target.value)}
-            value={props.customerForm.TenCongTy}
+            onChange={(e) => props.handleChange('ten_cong_ty', e.target.value)}
+            value={props.customerForm.ten_cong_ty}
           />
         </div>
       </div>
@@ -150,13 +168,18 @@ const EditPersonalInformation = (props) => {
             id="company_address"
             type="text"
             className={styles.inputText}
-            onChange={(e) => props.handleChange('DiaChiCongTy', e.target.value)}
-            value={props.customerForm.DiaChiCongTy}
+            onChange={(e) => props.handleChange('dia_chi_cong_ty', e.target.value)}
+            value={props.customerForm.dia_chi_cong_ty}
           />
         </div>
       </div>
 
-      <div className="field grid">
+      <EditRelative
+        relatives={relatives}
+        setRelatives={setRelatives}
+        emptyRelativeForm={emptyRelativeForm}
+      />
+      {/* <div className="field grid">
         <div className="col-12 mb-2 md:col-3 sm:col-4 sm:mb-0 sm:flex sm:justify-content-end sm:align-items-center">
           <label htmlFor="relative_name">Tên người thân:</label>
         </div>
@@ -181,7 +204,7 @@ const EditPersonalInformation = (props) => {
         <div className="col-12 md:col-9 sm:col-8">
           <InputText id="relationship" type="text" className={styles.inputText} />
         </div>
-      </div>
+      </div> */}
 
       <div className="flex justify-content-end">
         <Button
@@ -194,7 +217,8 @@ const EditPersonalInformation = (props) => {
           <Button
             label="Thêm"
             style={{ width: '90px', height: '36px' }}
-            onClick={props.handleAddCustomer}
+            // onClick={props.handleAddCustomer}
+            onClick={() => console.log(relatives)}
           />
         ) : (
           <Button
