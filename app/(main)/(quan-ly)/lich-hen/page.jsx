@@ -52,7 +52,7 @@ const ManageAppointment = () => {
       <div>
         <Accordion>
           <AccordionTab header="Tìm kiếm">
-            <AppointmentSearch customers={customers} staffs={staffs} />
+            <AppointmentSearch customers={customers} staffs={staffs} isAppointment />
           </AccordionTab>
         </Accordion>
       </div>

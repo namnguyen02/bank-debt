@@ -8,6 +8,7 @@ import { Calendar } from 'primereact/calendar'
 import { InputNumber } from 'primereact/inputnumber'
 
 import { provinces, districts } from 'utils/provinces-districts/provinces-districts'
+import { lawsuitStates } from 'utils/lawsuit-states/lawsuit-states'
 
 import styles from './index.module.scss'
 
@@ -27,6 +28,7 @@ const LawsuitSearch = (props) => {
   const [autoFilteredStaff, setAutoFilteredStaff] = useState([])
   const [province, setProvince] = useState({})
   const [district, setDistrict] = useState({})
+  const [lawsuitState, setLawsuitState] = useState({})
   const [inputSearch, setInputSearch] = useState(initialInputSearch)
   const [fromDate, setFromDate] = useState(null)
   const [toDate, setToDate] = useState(null)
@@ -69,6 +71,25 @@ const LawsuitSearch = (props) => {
     setSelectedAutoValue1(null)
     setSelectedAutoValue2(null)
     setSelectedAutoValue3(null)
+  }
+
+  const handleApplyFilter = () => {
+    const filter = {
+      ma_khach_hang: selectedAutoValue1 ? selectedAutoValue1.ma_khach_hang : '',
+      tinh_tp: province.name,
+      quan_huyen: district.name,
+      ma_nhan_vien: selectedStaff ? selectedStaff.user_metadata?.ma_nhan_vien : '',
+      trang_thai: lawsuitState.name,
+      tu_ngay: fromDate,
+      den_ngay: toDate,
+    }
+    Object.keys(filter).forEach((item) => {
+      if (!filter[item]) {
+        delete filter[item]
+      }
+    })
+    props.setFilterBody(filter)
+    props.getListLawsuitsWithFilter(filter)
   }
 
   return (
@@ -244,32 +265,41 @@ const LawsuitSearch = (props) => {
             <label htmlFor="HoTen">Trạng thái khởi kiện</label>
           </div>
           <div className={styles.inputContainer}>
-            <InputText
+            {/* <InputText
               id="HoTen"
               type="text"
               value={inputSearch.trang_thai_khoi_kien}
               onChange={(e) =>
                 setInputSearch({ ...inputSearch, trang_thai_khoi_kien: e.target.value })
               }
+            /> */}
+            <Dropdown
+              value={lawsuitState}
+              onChange={(e) => setLawsuitState(e.value)}
+              options={lawsuitStates}
+              optionLabel="name"
+              placeholder="Select"
             />
           </div>
         </div>
 
-        <div className="col-12 xl:col-4 md:col-6">
-          <div className="mb-2">
-            <label htmlFor="HoTen">Trạng thái thi hành án</label>
+        {props.isJudgmentExecution && (
+          <div className="col-12 xl:col-4 md:col-6">
+            <div className="mb-2">
+              <label htmlFor="HoTen">Trạng thái thi hành án</label>
+            </div>
+            <div className={styles.inputContainer}>
+              <InputText
+                id="HoTen"
+                type="text"
+                value={inputSearch.trang_thai_thi_hanh_an}
+                onChange={(e) =>
+                  setInputSearch({ ...inputSearch, trang_thai_thi_hanh_an: e.target.value })
+                }
+              />
+            </div>
           </div>
-          <div className={styles.inputContainer}>
-            <InputText
-              id="HoTen"
-              type="text"
-              value={inputSearch.trang_thai_thi_hanh_an}
-              onChange={(e) =>
-                setInputSearch({ ...inputSearch, trang_thai_thi_hanh_an: e.target.value })
-              }
-            />
-          </div>
-        </div>
+        )}
 
         <div className="col-12 xl:col-4 md:col-6">
           <div className="mb-2">
@@ -341,7 +371,7 @@ const LawsuitSearch = (props) => {
           style={{ width: '93px', marginRight: '16px' }}
           onClick={() => handleDeleteFilter()}
         />
-        <Button label="Áp dụng" />
+        <Button label="Áp dụng" onClick={() => handleApplyFilter()} />
       </div>
     </div>
   )

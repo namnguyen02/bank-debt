@@ -31,3 +31,11 @@ export const updateLawsuit = (id, body) =>
       return isError ? err : data
     })
     .catch((error) => error)
+
+export const getListLawsuitFilter = (body) =>
+  LawsuitProcessAPI.getListLawsuitFilter(body)
+    .then((res) => {
+      const { isError, data, err } = res
+      return isError ? err : data
+    })
+    .catch((error) => error)

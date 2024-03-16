@@ -10,7 +10,7 @@ import LawsuitSearch from '@/components/lawsuitAndExecution/search/lawsuit-searc
 import ManageLawsuitTable from '@/components/lawsuitAndExecution/manageLawsuitTable/ManageLawsuitTable'
 
 import { getListCustomer } from 'actions/customer/Customer'
-import { getListLawsuit } from 'actions/tien-do-khoi-kien/tien-do-khoi-kien'
+import { getListLawsuit, getListLawsuitFilter } from 'actions/tien-do-khoi-kien/tien-do-khoi-kien'
 import { getListStaff } from 'actions/nhan-vien/nhan-vien'
 
 const ManageLawsuit = () => {
@@ -18,6 +18,7 @@ const ManageLawsuit = () => {
   const [customers, setCustomers] = useState([])
   const [staffs, setStaffs] = useState([])
   const [lawsuits, setLawsuits] = useState([])
+  const [filterBody, setFilterBody] = useState({})
   const toast = useRef(null)
 
   const getListCustomers = () => {
@@ -40,6 +41,14 @@ const ManageLawsuit = () => {
     getListLawsuit().then((res) => {
       if (res && res.count) {
         setLawsuits(res.results)
+      }
+    })
+  }
+
+  const getListLawsuitsWithFilter = (filter) => {
+    getListLawsuitFilter({ filter: filter }).then((res) => {
+      if (res && res.count >= 0) {
+        console.log(res.result)
       }
     })
   }
@@ -68,7 +77,13 @@ const ManageLawsuit = () => {
       <div>
         <Accordion>
           <AccordionTab header="Tìm kiếm">
-            <LawsuitSearch customers={customers} staffs={staffs} />
+            <LawsuitSearch
+              customers={customers}
+              staffs={staffs}
+              setFilterBody={setFilterBody}
+              getListLawsuitsWithFilter={getListLawsuitsWithFilter}
+              isJudgmentExecution
+            />
           </AccordionTab>
         </Accordion>
       </div>

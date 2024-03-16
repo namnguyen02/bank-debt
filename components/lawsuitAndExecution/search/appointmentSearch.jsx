@@ -8,6 +8,8 @@ import { Calendar } from 'primereact/calendar'
 import { InputNumber } from 'primereact/inputnumber'
 
 import { provinces, districts } from 'utils/provinces-districts/provinces-districts'
+import { lawsuitStates } from 'utils/lawsuit-states/lawsuit-states'
+import { judgmentExecutionStates } from 'utils/judgment-execution-states/judgment-execution-states'
 
 import styles from './index.module.scss'
 
@@ -30,6 +32,8 @@ const AppointmentSearch = (props) => {
   const [inputSearch, setInputSearch] = useState(initialInputSearch)
   const [fromDate, setFromDate] = useState(null)
   const [toDate, setToDate] = useState(null)
+  const [lawsuitState, setLawsuitState] = useState({})
+  const [judgmentExecutionState, setJudgmentExecutionState] = useState({})
 
   const search = (event, field) => {
     setTimeout(() => {
@@ -69,6 +73,25 @@ const AppointmentSearch = (props) => {
     setSelectedAutoValue1(null)
     setSelectedAutoValue2(null)
     setSelectedAutoValue3(null)
+  }
+
+  const handleApplyFilter = () => {
+    const filter = {
+      ma_khach_hang: selectedAutoValue1 ? selectedAutoValue1.ma_khach_hang : '',
+      tinh_tp: province.name,
+      quan_huyen: district.name,
+      ma_nhan_vien: selectedStaff ? selectedStaff.user_metadata?.ma_nhan_vien : '',
+      trang_thai: lawsuitState.name,
+      tu_ngay: fromDate,
+      den_ngay: toDate,
+    }
+    Object.keys(filter).forEach((item) => {
+      if (!filter[item]) {
+        delete filter[item]
+      }
+    })
+    props.setFilterBody(filter)
+    props.getListLawsuitsWithFilter(filter)
   }
 
   return (
@@ -157,74 +180,6 @@ const AppointmentSearch = (props) => {
 
         <div className="col-12 xl:col-4 md:col-6">
           <div className="mb-2">
-            <label htmlFor="HoTen">Trạng thái khởi kiện</label>
-          </div>
-          <div className={styles.inputContainer}>
-            <InputText
-              id="HoTen"
-              type="text"
-              value={inputSearch.trang_thai_khoi_kien}
-              onChange={(e) =>
-                setInputSearch({ ...inputSearch, trang_thai_khoi_kien: e.target.value })
-              }
-            />
-          </div>
-        </div>
-
-        <div className="col-12 xl:col-4 md:col-6">
-          <div className="mb-2">
-            <label htmlFor="HoTen">Trạng thái thi hành án</label>
-          </div>
-          <div className={styles.inputContainer}>
-            <InputText
-              id="HoTen"
-              type="text"
-              value={inputSearch.trang_thai_thi_hanh_an}
-              onChange={(e) =>
-                setInputSearch({ ...inputSearch, trang_thai_thi_hanh_an: e.target.value })
-              }
-            />
-          </div>
-        </div>
-
-        <div className="col-12 xl:col-4 md:col-6">
-          <div className="mb-2">
-            <label htmlFor="HoTen">Trạng thái án phí</label>
-          </div>
-          <div className={styles.inputContainer}>
-            <InputText
-              id="HoTen"
-              type="text"
-              value={inputSearch.trang_thai_an_phi}
-              onChange={(e) =>
-                setInputSearch({ ...inputSearch, trang_thai_an_phi: e.target.value })
-              }
-            />
-          </div>
-        </div>
-
-        <div className="col-12 xl:col-4 md:col-6">
-          <div className="mb-2">
-            <label htmlFor="HoTen">Người được ủy quyền</label>
-          </div>
-          <div className={styles.inputContainer}>
-            <AutoComplete
-              placeholder="Search"
-              id="dd"
-              dropdown
-              value={selectedStaff}
-              onChange={(e) => {
-                setSelectedStaff(e.value)
-              }}
-              suggestions={autoFilteredStaff}
-              completeMethod={(e) => searchStaff(e)}
-              field="user_metadata.ho_ten"
-            />
-          </div>
-        </div>
-
-        <div className="col-12 xl:col-4 md:col-6">
-          <div className="mb-2">
             <label htmlFor="HoTen">Tỉnh/Thành phố</label>
           </div>
           <div className={styles.inputContainer}>
@@ -252,6 +207,90 @@ const AppointmentSearch = (props) => {
             />
           </div>
         </div>
+
+        <div className="col-12 xl:col-4 md:col-6">
+          <div className="mb-2">
+            <label htmlFor="HoTen">Người được ủy quyền</label>
+          </div>
+          <div className={styles.inputContainer}>
+            <AutoComplete
+              placeholder="Search"
+              id="dd"
+              dropdown
+              value={selectedStaff}
+              onChange={(e) => {
+                setSelectedStaff(e.value)
+              }}
+              suggestions={autoFilteredStaff}
+              completeMethod={(e) => searchStaff(e)}
+              field="user_metadata.ho_ten"
+            />
+          </div>
+        </div>
+
+        <div className="col-12 xl:col-4 md:col-6">
+          <div className="mb-2">
+            <label htmlFor="HoTen">Trạng thái khởi kiện</label>
+          </div>
+          <div className={styles.inputContainer}>
+            {/* <InputText
+              id="HoTen"
+              type="text"
+              value={inputSearch.trang_thai_khoi_kien}
+              onChange={(e) =>
+                setInputSearch({ ...inputSearch, trang_thai_khoi_kien: e.target.value })
+              }
+            /> */}
+            <Dropdown
+              value={lawsuitState}
+              onChange={(e) => setLawsuitState(e.value)}
+              options={lawsuitStates}
+              optionLabel="name"
+              placeholder="Select"
+            />
+          </div>
+        </div>
+
+        <div className="col-12 xl:col-4 md:col-6">
+          <div className="mb-2">
+            <label htmlFor="HoTen">Trạng thái thi hành án</label>
+          </div>
+          <div className={styles.inputContainer}>
+            {/* <InputText
+              id="HoTen"
+              type="text"
+              value={inputSearch.trang_thai_thi_hanh_an}
+              onChange={(e) =>
+                setInputSearch({ ...inputSearch, trang_thai_thi_hanh_an: e.target.value })
+              }
+            /> */}
+            <Dropdown
+              value={judgmentExecutionState}
+              onChange={(e) => setJudgmentExecutionState(e.value)}
+              options={judgmentExecutionStates}
+              optionLabel="name"
+              placeholder="Select"
+            />
+          </div>
+        </div>
+
+        {props.isAdvanceCourtFee && (
+          <div className="col-12 xl:col-4 md:col-6">
+            <div className="mb-2">
+              <label htmlFor="HoTen">Trạng thái án phí</label>
+            </div>
+            <div className={styles.inputContainer}>
+              <InputText
+                id="HoTen"
+                type="text"
+                value={inputSearch.trang_thai_an_phi}
+                onChange={(e) =>
+                  setInputSearch({ ...inputSearch, trang_thai_an_phi: e.target.value })
+                }
+              />
+            </div>
+          </div>
+        )}
 
         {props.isAdvanceCourtFee && (
           <div className="col-12 xl:col-4 md:col-6">
