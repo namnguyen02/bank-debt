@@ -54,7 +54,8 @@ Get return data by sending data in filters using search function
             "ma_khach_hang": 519455,
             "ho_ten": "Dương Mỹ Duyên",
             "can_cuoc": "046202002065",
-            "nguoi_uy_quyen": "SHB-20240001"
+            "ma_nv_uy_quyen": "SHB-20240001",
+            "ten_nv_uy_quyen": "Lê Thành Trung"
         }
     ]
 }
