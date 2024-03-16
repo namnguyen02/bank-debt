@@ -33,6 +33,12 @@
   cursor: pointer;
 }
 
+.autoCompleteContainer {
+  ul {
+    width: calc(250px - 3rem);
+  }
+}
+
 @media only screen and (max-width: 576px) {
   .inputText {
     width: 100%;
@@ -40,5 +46,10 @@
   .inputTextDisable {
     width: 100%;
     background-color: #e6e6e6 !important;
+  }
+  .autoCompleteContainer {
+    ul {
+      width: calc(100% - 3rem);
+    }
   }
 }
