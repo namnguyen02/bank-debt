@@ -71,6 +71,7 @@ const LawsuitSearch = (props) => {
     setSelectedAutoValue1(null)
     setSelectedAutoValue2(null)
     setSelectedAutoValue3(null)
+    props.setFilterBody({ tempField: 'tempField' })
   }
 
   const handleApplyFilter = () => {
@@ -88,8 +89,13 @@ const LawsuitSearch = (props) => {
         delete filter[item]
       }
     })
-    props.setFilterBody(filter)
-    props.getListLawsuitsWithFilter(filter)
+    if (Object.keys(filter).length > 0) {
+      props.getListLawsuitsWithFilter(filter)
+      props.setFilterBody(filter)
+    } else {
+      props.setFilterBody({})
+      props.getListLawsuits()
+    }
   }
 
   return (
