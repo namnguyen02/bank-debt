@@ -48,7 +48,7 @@ const ManageLawsuit = () => {
   const getListLawsuitsWithFilter = (filter) => {
     getListLawsuitFilter({ filter: filter }).then((res) => {
       if (res && res.count >= 0) {
-        console.log(res.result)
+        setLawsuits(res.result)
       }
     })
   }
@@ -81,6 +81,7 @@ const ManageLawsuit = () => {
               customers={customers}
               staffs={staffs}
               setFilterBody={setFilterBody}
+              getListLawsuits={getListLawsuits}
               getListLawsuitsWithFilter={getListLawsuitsWithFilter}
               isJudgmentExecution
             />
@@ -109,11 +110,12 @@ const ManageLawsuit = () => {
             </Link>
           </div>
         </div>
-
+        {console.log(lawsuits)}
         <ManageLawsuitTable
           checkedList={checkedList}
           setCheckedList={setCheckedList}
           lawsuits={lawsuits}
+          isFiltering={Object.keys(filterBody).length > 0}
         />
       </div>
     </div>

@@ -11,11 +11,11 @@ const ManageLawsuitTable = (props) => {
   }
 
   const renderCustomerName = (rowData) => {
-    return <div>{rowData.khach_hang.ho_ten}</div>
+    return <div>{props.isFiltering ? rowData.ho_ten : rowData.khach_hang?.ho_ten}</div>
   }
 
   const renderCustomerCCCD = (rowData) => {
-    return <div>{rowData.khach_hang.can_cuoc}</div>
+    return <div>{props.isFiltering ? rowData.can_cuoc : rowData.khach_hang?.can_cuoc}</div>
   }
 
   const handleClickCheckbox = (id) => {
@@ -54,7 +54,8 @@ const ManageLawsuitTable = (props) => {
   const renderAuthorizedStaff = (rowData) => {
     return (
       <div>
-        {rowData.nhan_vien?.ho_ten} ({rowData.id_nguoi_duoc_uq})
+        {props.isFiltering ? rowData.ten_nv_uy_quyen : rowData.nhan_vien?.ho_ten} (
+        {props.isFiltering ? rowData.ma_nv_uy_quyen : rowData.id_nguoi_duoc_uq})
       </div>
     )
   }
