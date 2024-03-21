@@ -1,13 +1,26 @@
 import Action from '@/api/v1/models'
 import { transformToQuery } from '@/api/v1/helpers'
 
+function getNewId(newestId) {
+  'DGKK-0002'
+  const number = Number(newestId.substring(5, 9)) + 1
+  if (number < 10) {
+    return `DGKK-000${number}`
+  } else if (10 <= number && number < 100) {
+    return `DGKK-00${number}`
+  } else if (100 <= number && number < 1000) {
+    return `DGKK-0${number}`
+  } else return `DGKK-${number}`
+}
+
 export function GET(request) {
   const searchParams = request.nextUrl.searchParams
   const query = searchParams.get('ma_nhan_vien')
 
   const data = {
-    '': ['ma_to_trinh', 'trang_thai', 'danh_gia', 'ngay_tao'],
+    '': ['ma_to_trinh', 'trang_thai', 'danh_gia', 'created_at'],
     khach_hang: ['ma_khach_hang', 'ho_ten', 'can_cuoc'],
+    nhan_vien: ['ma_nhan_vien', 'ho_ten'],
   }
 
   if (query) {
@@ -21,11 +34,26 @@ export function GET(request) {
 
   return Action.read({
     table: 'to_trinh_khoi_kien',
-    query: transformToQuery({ ...data, nhan_vien: ['ma_nhan_vien, ho_ten'] }),
+    query: transformToQuery(data),
   })
 }
 
 export async function POST(request) {
   const res = await request.json()
+
+  // Create ma_to_trinh
+  const { data, error } = await supabase
+    .from('to_trinh_khoi_kien')
+    .select('ma_to_trinh')
+    .order('ma_to_trinh', { ascending: false })
+  if (error) return Response.json(error, { status: 400 })
+  else {
+    if (data.length === 0) {
+      res.ma_to_trinh = 'DGKK-0001'
+    } else {
+      res.ma_to_trinh = getNewId(data[0].ma_to_trinh)
+    }
+  }
+
   return Action.create({ table: 'to_trinh_khoi_kien', values: res })
 }

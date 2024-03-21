@@ -1,5 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
+import React, { useEffect, useRef, useState } from 'react'
+import Link from 'next/link'
+import { connect } from 'react-redux'
 
 import { Button } from 'primereact/button'
 import { Column } from 'primereact/column'
@@ -13,11 +16,10 @@ import { RadioButton } from 'primereact/radiobutton'
 import { Toast } from 'primereact/toast'
 import { Toolbar } from 'primereact/toolbar'
 import { classNames } from 'primereact/utils'
-import React, { useEffect, useRef, useState } from 'react'
 import { TTKKService } from '@/demo/service/TTKKService'
 
 /* @todo Used 'as any' for types here. Will fix in next version due to onSelectionChange event type issue. */
-const ToTrinhKhoiKien = () => {
+const ToTrinhKhoiKien = (props) => {
   let emptyTTKK = {
     id: '',
     trang_thai: '',
@@ -196,13 +198,11 @@ const ToTrinhKhoiKien = () => {
     return (
       <React.Fragment>
         <div className="my-2">
-          <Button
-            label="Thêm"
-            icon="pi pi-plus"
-            severity="success"
-            className="mr-2"
-            onClick={openNew}
-          />
+          {props.user.role === 'SHB' && (
+            <Link href={{ pathname: 'to-trinh-khoi-kien/chi-tiet', query: { createNew: true } }}>
+              <Button label="Thêm" icon="pi pi-plus" severity="success" className="mr-2" />
+            </Link>
+          )}
           <Button
             label="Xóa"
             icon="pi pi-trash"
@@ -290,7 +290,7 @@ const ToTrinhKhoiKien = () => {
 
   const header = (
     <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-      <h5 className="m-0">Quản lý tờ trình</h5>
+      <h5 className="m-0">Tờ trình đánh giá khởi kiện</h5>
       <span className="block mt-2 md:mt-0 p-input-icon-left">
         <i className="pi pi-search" />
         <InputText
@@ -358,6 +358,13 @@ const ToTrinhKhoiKien = () => {
               headerStyle={{ minWidth: '10rem' }}
             ></Column>
             <Column
+              field="id"
+              header="Khách hàng"
+              sortable
+              body={codeBodyTemplate}
+              headerStyle={{ minWidth: '10rem' }}
+            ></Column>
+            <Column
               field="trang_thai"
               header="Trạng thái"
               sortable
@@ -365,17 +372,17 @@ const ToTrinhKhoiKien = () => {
               headerStyle={{ minWidth: '10rem' }}
             ></Column>
             <Column
-              field="ngay_tao"
-              header="Ngày tạo"
-              sortable
-              body={dateBodyTemplate}
-              headerStyle={{ minWidth: '15rem' }}
-            ></Column>
-            <Column
               field="nhan_vien_phu_trach"
               header="Nhân viên phụ trách"
               body={staffBodyTemplate}
               sortable
+              headerStyle={{ minWidth: '15rem' }}
+            ></Column>
+            <Column
+              field="ngay_tao"
+              header="Ngày tạo"
+              sortable
+              body={dateBodyTemplate}
               headerStyle={{ minWidth: '15rem' }}
             ></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
@@ -530,4 +537,10 @@ const ToTrinhKhoiKien = () => {
   )
 }
 
-export default ToTrinhKhoiKien
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  }
+}
+
+export default connect(mapStateToProps)(ToTrinhKhoiKien)

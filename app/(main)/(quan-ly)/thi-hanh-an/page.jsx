@@ -68,7 +68,7 @@ const ManageJudgmentExecution = () => {
       <div>
         <Accordion>
           <AccordionTab header="Tìm kiếm">
-            <LawsuitSearch customers={customers} staffs={staffs} />
+            <LawsuitSearch customers={customers} staffs={staffs} isJudgmentExecution />
           </AccordionTab>
         </Accordion>
       </div>

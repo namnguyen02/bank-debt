@@ -27,7 +27,7 @@ export function GET(request) {
 
   if (query) {
     return Action.read({
-      table: 'to_trinh_khoi_kien',
+      table: 'to_trinh_mien_giam',
       query: transformToQuery(data),
       column: 'ma_nhan_vien',
       value: query,
