@@ -11,8 +11,8 @@ export async function POST(request) {
   if (filter['ma_khach_hang']) {
     query = query.eq('ma_khach_hang', filter['ma_khach_hang'])
   }
-  if (filter['ho_ten']) {
-    query = query.like('ho_ten', '%' + filter['ho_ten'] + '%')
+  if (filter['ten_khach_hang']) {
+    query = query.like('ten_khach_hang', '%' + filter['ten_khach_hang'] + '%')
   }
   if (filter['can_cuoc']) {
     query = query.eq('can_cuoc', filter['can_cuoc'])
@@ -20,11 +20,9 @@ export async function POST(request) {
   if (filter['trang_thai_kk']) {
     query = query.eq('trang_thai_kk', filter['trang_thai_kk'])
   }
+
   if (filter['trang_thai_tha']) {
     query = query.eq('trang_thai_tha', filter['trang_thai_tha'])
-  }
-  if (filter['trang_thai_an_phi']) {
-    query = query.eq('trang_thai_an_phi', filter['trang_thai_an_phi'])
   }
   if (filter['id_nguoi_uy_quyen']) {
     query = query.eq('id_nguoi_uy_quyen', filter['id_nguoi_uy_quyen'])
@@ -38,7 +36,7 @@ export async function POST(request) {
   if (filter['tu_ngay'] && filter['den_ngay']) {
     const tu_ngay = filter['tu_ngay'] + 'T00:00:00.000Z'
     const den_ngay = filter['den_ngay'] + 'T23:59:59.999Z'
-    query = query.gte('created_at', tu_ngay).lte('created_at', den_ngay)
+    query = query.gte('ngay_tao_lich_hen', tu_ngay).lte('ngay_tao_lich_hen', den_ngay)
   }
   const { count, data, error } = await query
 

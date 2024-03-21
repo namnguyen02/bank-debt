@@ -1,10 +1,10 @@
 - [filter\_khoikien](#filter_khoikien)
-  - [GET /api/filter\_khoikien](#get-apifilter_khoikien)
+  - [POST /api/filter\_khoikien](#post-apifilter_khoikien)
 
 # filter_khoikien
-## GET /api/filter_khoikien
+## POST /api/filter_khoikien
 
-Get return data by sending data in filters using search function
+Retrieve result by sending data in filters using search function
 
 **Request Body**
 - Request Body must have more than one key.
