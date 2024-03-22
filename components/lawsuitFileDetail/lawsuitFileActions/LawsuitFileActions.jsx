@@ -2,6 +2,8 @@
 
 import { Button } from 'primereact/button'
 
+import InDonKhoiKien from '@/components/files-to-print/don-khoi-kien/don-khoi-kien'
+
 const LawsuitFileActions = (props) => {
   const handleTransformState = () => {
     if (props.state === 'Nhập mới') {
@@ -132,7 +134,8 @@ const LawsuitFileActions = (props) => {
         />
       )}
       {statesHavePrintLawsuit.includes(props.state) && (
-        <Button label="In đơn KK" className="mr-4" style={{ height: '36px' }} />
+        // <Button label="In đơn KK" className="mr-4" style={{ height: '36px' }} />
+        <InDonKhoiKien />
       )}
 
       {!['Xét xử phúc thẩm', 'Hòa giải thành', 'Đình chỉ', 'Rút đơn'].includes(props.state) && (
