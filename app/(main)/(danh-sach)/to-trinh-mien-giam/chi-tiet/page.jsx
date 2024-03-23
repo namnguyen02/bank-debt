@@ -29,20 +29,20 @@ const ChiTietToTrinhMienGiam = (props) => {
   const code = searchParams.get('ma_to_trinh') ? searchParams.get('ma_to_trinh') : ''
   const router = useRouter()
 
-  const showSuccess = () => {
+  const showSuccess = (content) => {
     toast.current?.show({
       severity: 'success',
       summary: 'Thành công',
-      detail: 'Cập nhật thành công',
+      detail: content ? content : 'Cập nhật thành công',
       life: 3000,
     })
   }
 
-  const showError = () => {
+  const showError = (content) => {
     toast.current?.show({
       severity: 'error',
       summary: 'Lỗi',
-      detail: 'Cập nhật thất bại',
+      detail: content ? content : 'Cập nhật thất bại',
       life: 3000,
     })
   }
@@ -86,6 +86,32 @@ const ChiTietToTrinhMienGiam = (props) => {
         setCanPressSave(false)
       } else {
         showError()
+      }
+    })
+  }
+
+  const handleApprove = () => {
+    updateTTMG(code, {
+      action: 'approve',
+    }).then((res) => {
+      if (res && res.ma_to_trinh) {
+        setDetail({ ...detail, trang_thai: 'Đã duyệt' })
+        showSuccess('Phê duyệt thành công')
+      } else {
+        showError('Phê duyệt thất bại')
+      }
+    })
+  }
+
+  const handleDecline = () => {
+    updateTTMG(code, {
+      action: 'decline',
+    }).then((res) => {
+      if (res && res.ma_to_trinh) {
+        setDetail({ ...detail, trang_thai: 'Đã từ chối' })
+        showSuccess('Từ chối thành công')
+      } else {
+        showError('Từ chối thất bại')
       }
     })
   }
@@ -208,10 +234,14 @@ const ChiTietToTrinhMienGiam = (props) => {
                 severity="danger"
                 outlined
                 style={{ height: '36px' }}
-                onClick={() => handleUpdate()}
+                onClick={() => handleDecline()}
                 className="mr-3"
               />
-              <Button label="Phê duyệt" style={{ height: '36px' }} onClick={() => handleUpdate()} />
+              <Button
+                label="Phê duyệt"
+                style={{ height: '36px' }}
+                onClick={() => handleApprove()}
+              />
             </div>
           )
         )}

@@ -552,7 +552,7 @@ const ToTrinhMienGiam = (props) => {
               header="Mã tờ trình"
               sortable
               body={codeBodyTemplate}
-              headerStyle={{ minWidth: '10rem' }}
+              headerStyle={{ minWidth: '9rem' }}
             ></Column>
             <Column
               header="Khách hàng"
@@ -565,7 +565,7 @@ const ToTrinhMienGiam = (props) => {
               header="Trạng thái"
               sortable
               body={statusBodyTemplate}
-              headerStyle={{ minWidth: '10rem' }}
+              headerStyle={{ minWidth: '9rem' }}
             ></Column>
             <Column
               header="Nhân viên phụ trách"
@@ -581,7 +581,7 @@ const ToTrinhMienGiam = (props) => {
               headerStyle={{ minWidth: '10rem' }}
             ></Column>
 
-            <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
+            <Column body={actionBodyTemplate} headerStyle={{ minWidth: '12rem' }}></Column>
           </DataTable>
 
           <Dialog

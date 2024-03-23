@@ -11,12 +11,21 @@ import { Toast } from 'primereact/toast'
 import 'primeicons/primeicons.css'
 
 import ThongTinKhachHang from '@/components/to-trinh/thong-tin-khach-hang/thong-tin-khach-hang'
-import ThongTinGiamLai from '@/components/to-trinh/thong-tin-giam-lai/thong-tin-giam-lai'
+import DeXuat from '@/components/to-trinh/de-xuat/de-xuat'
+import DanhGia from '@/components/to-trinh/danh-gia/danh-gia'
+import TinhHinhXLNQuaHan from '@/components/to-trinh/tinh-hinh-xln-qua-han/tinh-hinh-xln-qua-han'
 
-import { addTTMG, getDetailTTMG, updateTTMG } from 'actions/to-trinh-mien-giam/to-trinh-mien-giam'
+import {
+  addTTDGKK,
+  getDetailTTDGKK,
+  updateTTDGKK,
+} from 'actions/to-trinh-danh-gia-khoi-kien/to-trinh-danh-gia-khoi-kien'
 
 const ChiTietToTrinhKhoiKien = (props) => {
   const toast = useRef(null)
+  const [suggestion, setSuggestion] = useState({})
+  const [evaluations, setEvaluations] = useState([])
+  const [xlnSituation, setXlnSituation] = useState({})
   const [displayConfirmation, setDisplayConfirmation] = useState(false)
   const [selectedCustomer, setSelectedCustomer] = useState([])
   const [amountToBePaid, setAmountToBePaid] = useState(null)
@@ -29,45 +38,45 @@ const ChiTietToTrinhKhoiKien = (props) => {
   const code = searchParams.get('ma_to_trinh') ? searchParams.get('ma_to_trinh') : ''
   const router = useRouter()
 
-  const showSuccess = () => {
+  const showSuccess = (content) => {
     toast.current?.show({
       severity: 'success',
       summary: 'Thành công',
-      detail: 'Cập nhật thành công',
+      detail: content ? content : 'Cập nhật thành công',
       life: 3000,
     })
   }
 
-  const showError = () => {
+  const showError = (content) => {
     toast.current?.show({
       severity: 'error',
       summary: 'Lỗi',
-      detail: 'Cập nhật thất bại',
+      detail: content ? content : 'Cập nhật thất bại',
       life: 3000,
     })
-  }
-
-  const convertDateObjToStr = () => {
-    const dateTime = new Date(calendarValue)
-    const date = dateTime.getDate() < 10 ? `0${dateTime.getDate()}` : dateTime.getDate()
-    const month =
-      dateTime.getMonth() + 1 < 10 ? `0${dateTime.getMonth() + 1}` : dateTime.getMonth() + 1
-    const year = dateTime.getFullYear()
-    return `${year}-${month}-${date}`
   }
 
   const handleAdd = () => {
     const body = {
-      so_tien_can_thanh_toan: amountToBePaid,
-      han_thanh_toan: convertDateObjToStr(),
-      so_tien_lai_giam: amountToBeDecreased,
       ma_khach_hang: selectedCustomer.ma_khach_hang,
       ma_nhan_vien: props.user.ma_nhan_vien,
+      danh_gia: evaluations,
+      toa_an: suggestion.toa_an,
+      du_no_den_ngay: suggestion.du_no_den_ngay,
+      von_goc: suggestion.von_goc,
+      tong_du_no: suggestion.tong_du_no,
+      pa_hoa_giai: suggestion.pa_hoa_giai,
+      pa_xet_xu: suggestion.pa_xet_xu,
+      dien_thoai: xlnSituation.dien_thoai,
+      gui_thu_cong_van: xlnSituation.gui_thu_cong_van,
+      den_nha_khach_hang: xlnSituation.den_nha_khach_hang,
+      den_cong_ty: xlnSituation.den_cong_ty,
+      tac_dong_khac: xlnSituation.tac_dong_khac,
     }
-    addTTMG(body).then((res) => {
+    addTTDGKK(body).then((res) => {
       if (res && res.ma_to_trinh) {
-        localStorage.setItem('addTTMG', 'success')
-        router.push('/to-trinh-mien-giam')
+        localStorage.setItem('addTTDGKK', 'success')
+        router.push('/to-trinh-khoi-kien')
       } else if (res && res.response?.status === 400) {
         showError()
       }
@@ -76,39 +85,80 @@ const ChiTietToTrinhKhoiKien = (props) => {
 
   const handleUpdate = () => {
     const body = {
-      so_tien_can_thanh_toan: amountToBePaid,
-      han_thanh_toan: convertDateObjToStr(),
-      so_tien_lai_giam: amountToBeDecreased,
+      ma_nhan_vien: props.user.ma_nhan_vien,
+      danh_gia: evaluations,
+      toa_an: suggestion.toa_an,
+      du_no_den_ngay: suggestion.du_no_den_ngay,
+      von_goc: suggestion.von_goc,
+      tong_du_no: suggestion.tong_du_no,
+      pa_hoa_giai: suggestion.pa_hoa_giai,
+      pa_xet_xu: suggestion.pa_xet_xu,
+      dien_thoai: xlnSituation.dien_thoai,
+      gui_thu_cong_van: xlnSituation.gui_thu_cong_van,
+      den_nha_khach_hang: xlnSituation.den_nha_khach_hang,
+      den_cong_ty: xlnSituation.den_cong_ty,
+      tac_dong_khac: xlnSituation.tac_dong_khac,
     }
-    updateTTMG(code, body).then((res) => {
+    updateTTDGKK(code, body).then((res) => {
       if (res && res.ma_to_trinh) {
         showSuccess()
-        setCanPressSave(false)
       } else {
         showError()
       }
     })
   }
 
-  const getDataMG = (data) => {
-    setAmountToBePaid(data.so_tien_can_thanh_toan)
-    setAmountToBeDecreased(data.so_tien_lai_giam)
-    let date = new Date()
-    const year = data.han_thanh_toan.substring(0, 4)
-    const month = Number(data.han_thanh_toan.substring(5, 7)) - 1
-    const day = data.han_thanh_toan.substring(8, 10)
-    date.setDate(day)
-    date.setMonth(month)
-    date.setFullYear(year)
-    setCalendarValue(date)
+  const handleApprove = () => {
+    updateTTDGKK(code, {
+      action: 'approve',
+    }).then((res) => {
+      if (res && res.ma_to_trinh) {
+        setDetail({ ...detail, trang_thai: 'Đã duyệt' })
+        showSuccess('Phê duyệt thành công')
+      } else {
+        showError('Phê duyệt thất bại')
+      }
+    })
+  }
+
+  const handleDecline = () => {
+    updateTTDGKK(code, {
+      action: 'decline',
+    }).then((res) => {
+      if (res && res.ma_to_trinh) {
+        setDetail({ ...detail, trang_thai: 'Đã từ chối' })
+        showSuccess('Từ chối thành công')
+      } else {
+        showError('Từ chối thất bại')
+      }
+    })
+  }
+
+  const getDataDGKK = (data) => {
+    setSuggestion({
+      toa_an: data.toa_an,
+      du_no_den_ngay: data.du_no_den_ngay,
+      von_goc: data.von_goc,
+      tong_du_no: data.tong_du_no,
+      pa_hoa_giai: data.pa_hoa_giai,
+      pa_xet_xu: data.pa_xet_xu,
+    })
+    setEvaluations([...data.danh_gia])
+    setXlnSituation({
+      dien_thoai: data.dien_thoai,
+      gui_thu_cong_van: data.gui_thu_cong_van,
+      den_nha_khach_hang: data.den_nha_khach_hang,
+      den_cong_ty: data.den_cong_ty,
+      tac_dong_khac: data.tac_dong_khac,
+    })
   }
 
   useEffect(() => {
     if (code && !isCreateNew) {
-      getDetailTTMG(code).then((res) => {
+      getDetailTTDGKK(code).then((res) => {
         if (res && res.ma_to_trinh) {
           setDetail(res)
-          getDataMG(res)
+          getDataDGKK(res)
         }
       })
     }
@@ -194,12 +244,7 @@ const ChiTietToTrinhKhoiKien = (props) => {
             onClick={() => handleAdd()}
           />
         ) : props.user.role !== 'NPD' ? (
-          <Button
-            label="Lưu thay đổi"
-            style={{ height: '36px' }}
-            onClick={() => handleUpdate()}
-            disabled={!canPressSave}
-          />
+          <Button label="Lưu thay đổi" style={{ height: '36px' }} onClick={() => handleUpdate()} />
         ) : (
           detail.trang_thai?.toLowerCase() === 'chưa duyệt' && (
             <div>
@@ -208,10 +253,14 @@ const ChiTietToTrinhKhoiKien = (props) => {
                 severity="danger"
                 outlined
                 style={{ height: '36px' }}
-                onClick={() => handleUpdate()}
+                onClick={() => handleDecline()}
                 className="mr-3"
               />
-              <Button label="Phê duyệt" style={{ height: '36px' }} onClick={() => handleUpdate()} />
+              <Button
+                label="Phê duyệt"
+                style={{ height: '36px' }}
+                onClick={() => handleApprove()}
+              />
             </div>
           )
         )}
@@ -229,18 +278,12 @@ const ChiTietToTrinhKhoiKien = (props) => {
         setSelectedCustomer={setSelectedCustomer}
         detail={detail}
       />
-      <ThongTinGiamLai
-        isCreateNew={isCreateNew}
-        amountToBePaid={amountToBePaid}
-        setAmountToBePaid={setAmountToBePaid}
-        calendarValue={calendarValue}
-        setCalendarValue={setCalendarValue}
-        amountToBeDecreased={amountToBeDecreased}
-        setAmountToBeDecreased={setAmountToBeDecreased}
-        detail={detail}
-        setCanPressSave={setCanPressSave}
-        isNPD={props.user.role === 'NPD'}
-      />
+
+      <DeXuat suggestion={suggestion} setSuggestion={setSuggestion} />
+
+      <DanhGia evaluations={evaluations} setEvaluations={setEvaluations} />
+
+      <TinhHinhXLNQuaHan xlnSituation={xlnSituation} setXlnSituation={setXlnSituation} />
     </div>
   )
 }
