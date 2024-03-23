@@ -16,7 +16,12 @@ import { RadioButton } from 'primereact/radiobutton'
 import { Toast } from 'primereact/toast'
 import { Toolbar } from 'primereact/toolbar'
 import { classNames } from 'primereact/utils'
-import { TTKKService } from '@/demo/service/TTKKService'
+
+import {
+  getListTTDGKK,
+  deleteTTDGKK,
+  updateTTDGKK,
+} from 'actions/to-trinh-danh-gia-khoi-kien/to-trinh-danh-gia-khoi-kien'
 
 /* @todo Used 'as any' for types here. Will fix in next version due to onSelectionChange event type issue. */
 const ToTrinhKhoiKien = (props) => {
@@ -27,19 +32,39 @@ const ToTrinhKhoiKien = (props) => {
     nhan_vien_phu_trach: '',
   }
 
-  const [ttkks, setTTKKs] = useState(null)
+  const [ttkks, setTTKKs] = useState([])
   const [ttkkDialog, setTTKKDialog] = useState(false)
   const [deleteTTKKDialog, setDeleteTTKKDialog] = useState(false)
   const [deleteTTKKsDialog, setDeleteTTKKsDialog] = useState(false)
+  const [approveTTKKDialog, setApproveTTKKDialog] = useState(false)
+  const [declineTTKKDialog, setDeclineTTKKDialog] = useState(false)
   const [ttkk, setTTKK] = useState(emptyTTKK)
   const [selectedTTKKs, setSelectedTTKKs] = useState(null)
+  const [ttdgkkClicked, setTtdgkkClicked] = useState({})
   const [submitted, setSubmitted] = useState(false)
   const [globalFilter, setGlobalFilter] = useState('')
   const toast = useRef(null)
   const dt = useRef(null)
 
+  const showAddSuccessfully = () => {
+    toast.current?.show({
+      severity: 'success',
+      summary: 'Thành công',
+      detail: 'Thêm tờ trình đánh giá khởi kiện thành công',
+      life: 3000,
+    })
+  }
+
   useEffect(() => {
-    TTKKService.getTTKKs().then((data) => setTTKKs(data))
+    if (localStorage.getItem('addTTDGKK') === 'success') {
+      showAddSuccessfully()
+      localStorage.removeItem('addTTDGKK')
+    }
+    getListTTDGKK().then((res) => {
+      if (res && res.count) {
+        setTTKKs(res.results)
+      }
+    })
   }, [])
 
   const openNew = () => {
@@ -53,7 +78,7 @@ const ToTrinhKhoiKien = (props) => {
     setTTKKDialog(false)
   }
 
-  const hideDeleteProductDialog = () => {
+  const hideDeleteTTDGKKDialog = () => {
     setDeleteTTKKDialog(false)
   }
 
@@ -100,21 +125,32 @@ const ToTrinhKhoiKien = (props) => {
     setTTKKDialog(true)
   }
 
-  const confirmDeleteProduct = (product) => {
-    setTTKK(product)
+  const confirmDeleteProduct = (rowData) => {
+    setTtdgkkClicked(rowData)
     setDeleteTTKKDialog(true)
   }
 
-  const deleteProduct = () => {
-    let _products = ttkks?.filter((val) => val.id !== ttkk.id)
-    setTTKKs(_products)
-    setDeleteTTKKDialog(false)
-    setTTKK(emptyTTKK)
-    toast.current?.show({
-      severity: 'success',
-      summary: 'Successful',
-      detail: 'Tờ trình đã xóa',
-      life: 3000,
+  const handleDeleteTTDGKK = () => {
+    deleteTTDGKK(ttdgkkClicked.ma_to_trinh).then((res) => {
+      if (res && res.message === 'xoa thanh cong') {
+        setDeleteTTKKDialog(false)
+        const newTTDGKKs = ttkks.filter((item) => item.ma_to_trinh !== ttdgkkClicked.ma_to_trinh)
+        setTTKKs([...newTTDGKKs])
+        toast.current?.show({
+          severity: 'success',
+          summary: 'Successful',
+          detail: 'Tờ trình đã được xóa',
+          life: 3000,
+        })
+      } else {
+        setDeleteTTKKDialog(false)
+        toast.current?.show({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Xóa tờ trình thất bại',
+          life: 3000,
+        })
+      }
     })
   }
 
@@ -155,7 +191,7 @@ const ToTrinhKhoiKien = (props) => {
     dt.current?.exportCSV()
   }
 
-  const confirmDeleteSelected = () => {
+  const confirmDeleteSelected = (rowData) => {
     setDeleteTTKKsDialog(true)
   }
 
@@ -194,6 +230,74 @@ const ToTrinhKhoiKien = (props) => {
     setTTKK(_product)
   }
 
+  const confirmApprove = (data) => {
+    setTtdgkkClicked(data)
+    setApproveTTKKDialog(true)
+  }
+
+  const confirmDecline = (data) => {
+    setTtdgkkClicked(data)
+    setDeclineTTKKDialog(true)
+  }
+
+  const approveTTKK = () => {
+    updateTTDGKK(ttdgkkClicked.ma_to_trinh, {
+      action: 'approve',
+    }).then((res) => {
+      if (res && res.ma_to_trinh) {
+        hideApproveDialog()
+        getListTTDGKK().then((res) => {
+          if (res && res.count) {
+            setTTKKs(res.results)
+          }
+        })
+        toast.current?.show({
+          severity: 'success',
+          summary: 'Thành công',
+          detail: 'Đã phê duyệt tờ trình',
+          life: 3000,
+        })
+      } else {
+        hideApproveDialog()
+        toast.current?.show({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Phê duyệt tờ trình thất bại',
+          life: 3000,
+        })
+      }
+    })
+  }
+
+  const declineTTKK = () => {
+    updateTTDGKK(ttdgkkClicked.ma_to_trinh, {
+      action: 'decline',
+    }).then((res) => {
+      if (res && res.ma_to_trinh) {
+        hideDeclineDialog()
+        getListTTDGKK().then((res) => {
+          if (res && res.count) {
+            setTTKKs(res.results)
+          }
+        })
+        toast.current?.show({
+          severity: 'success',
+          summary: 'Thành công',
+          detail: 'Đã từ chối tờ trình',
+          life: 3000,
+        })
+      } else {
+        hideApproveDialog()
+        toast.current?.show({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Từ chối tờ trình thất bại',
+          life: 3000,
+        })
+      }
+    })
+  }
+
   const leftToolbarTemplate = () => {
     return (
       <React.Fragment>
@@ -230,15 +334,6 @@ const ToTrinhKhoiKien = (props) => {
     )
   }
 
-  const codeBodyTemplate = (rowData) => {
-    return (
-      <>
-        <span className="p-column-title">Mã tờ trình</span>
-        {rowData.id}
-      </>
-    )
-  }
-
   const statusBodyTemplate = (rowData) => {
     return (
       <>
@@ -251,11 +346,24 @@ const ToTrinhKhoiKien = (props) => {
   }
 
   const dateBodyTemplate = (rowData) => {
+    const tempDate = new Date(rowData.created_at)
+    const date = tempDate.getDate() < 10 ? `0${tempDate.getDate()}` : tempDate.getDate()
+    const month =
+      tempDate.getMonth() + 1 < 10 ? `0${tempDate.getMonth() + 1}` : tempDate.getMonth() + 1
+    const year = tempDate.getFullYear()
     return (
       <>
         <span className="p-column-title">Ngày tạo</span>
-        {rowData.ngay_tao}
+        {date}/{month}/{year}
       </>
+    )
+  }
+
+  const renderCustomer = (rowData) => {
+    return (
+      <div>
+        {rowData.khach_hang?.ho_ten} ({rowData.khach_hang?.ma_khach_hang})
+      </div>
     )
   }
 
@@ -263,29 +371,95 @@ const ToTrinhKhoiKien = (props) => {
     return (
       <>
         <span className="p-column-title">Nhân viên phụ trách</span>
-        {rowData.nhan_vien_phu_trach}
+        {rowData.nhan_vien?.ho_ten} ({rowData.nhan_vien?.ma_nhan_vien})
       </>
     )
   }
 
   const actionBodyTemplate = (rowData) => {
-    return (
-      <>
-        <Button
-          icon="pi pi-pencil"
-          rounded
-          severity="success"
-          className="mr-2"
-          onClick={() => editProduct(rowData)}
-        />
-        <Button
-          icon="pi pi-trash"
-          rounded
-          severity="warning"
-          onClick={() => confirmDeleteProduct(rowData)}
-        />
-      </>
-    )
+    if (props.user.role === 'SHB' || props.user.role === 'NDH') {
+      return rowData.trang_thai.toLowerCase() === 'chưa duyệt' ? (
+        <>
+          <Link
+            href={{
+              pathname: 'to-trinh-khoi-kien/chi-tiet',
+              query: { ma_to_trinh: rowData.ma_to_trinh },
+            }}
+          >
+            <Button icon="pi pi-pencil" rounded severity="success" className="mr-2" />
+          </Link>
+
+          {rowData.trang_thai.toLowerCase() === 'chưa duyệt' && (
+            <Button
+              icon="pi pi-trash"
+              rounded
+              severity="warning"
+              onClick={() => confirmDeleteProduct(rowData)}
+            />
+          )}
+        </>
+      ) : (
+        <>
+          <Link
+            href={{
+              pathname: 'to-trinh-khoi-kien/chi-tiet',
+              query: { ma_to_trinh: rowData.ma_to_trinh },
+            }}
+          >
+            <Button icon={'pi pi-search'} rounded severity="success" className="mr-2" />
+          </Link>
+        </>
+      )
+    } else if (props.user.role === 'NPD') {
+      return rowData.trang_thai.toLowerCase() === 'chưa duyệt' ? (
+        <>
+          <Link
+            href={{
+              pathname: 'to-trinh-khoi-kien/chi-tiet',
+              query: { ma_to_trinh: rowData.ma_to_trinh },
+            }}
+          >
+            <Button
+              icon={props.user.role === 'NPD' ? 'pi pi-search' : 'pi pi-pencil'}
+              rounded
+              severity="success"
+              className="mr-2"
+            />
+          </Link>
+
+          <Button
+            icon="pi pi-check"
+            rounded
+            severity="primary"
+            onClick={() => confirmApprove(rowData)}
+            className="mr-2"
+          />
+
+          <Button
+            icon="pi pi-times"
+            rounded
+            severity="warning"
+            onClick={() => confirmDecline(rowData)}
+          />
+        </>
+      ) : (
+        <>
+          <Link
+            href={{
+              pathname: 'to-trinh-khoi-kien/chi-tiet',
+              query: { ma_to_trinh: rowData.ma_to_trinh },
+            }}
+          >
+            <Button
+              icon={props.user.role === 'NPD' ? 'pi pi-search' : 'pi pi-pencil'}
+              rounded
+              severity="success"
+              className="mr-2"
+            />
+          </Link>
+        </>
+      )
+    }
   }
 
   const header = (
@@ -302,22 +476,44 @@ const ToTrinhKhoiKien = (props) => {
     </div>
   )
 
+  const hideApproveDialog = () => {
+    setApproveTTKKDialog(false)
+  }
+
+  const hideDeclineDialog = () => {
+    setDeclineTTKKDialog(false)
+  }
+
   const productDialogFooter = (
     <>
       <Button label="Hủy" icon="pi pi-times" text onClick={hideDialog} />
       <Button label="Lưu" icon="pi pi-check" text onClick={saveProduct} />
     </>
   )
-  const deleteProductDialogFooter = (
+  const deleteTTDGKKDialogFooter = (
     <>
-      <Button label="Hủy" icon="pi pi-times" text onClick={hideDeleteProductDialog} />
-      <Button label="Có" icon="pi pi-check" text onClick={deleteProduct} />
+      <Button label="Hủy" icon="pi pi-times" text onClick={hideDeleteTTDGKKDialog} />
+      <Button label="Có" icon="pi pi-check" text onClick={handleDeleteTTDGKK} />
     </>
   )
   const deleteProductsDialogFooter = (
     <>
       <Button label="Hủy" icon="pi pi-times" text onClick={hideDeleteProductsDialog} />
       <Button label="Có" icon="pi pi-check" text onClick={deleteSelectedProducts} />
+    </>
+  )
+
+  const approveProductDialogFooter = (
+    <>
+      <Button label="Hủy" icon="pi pi-times" text onClick={hideApproveDialog} />
+      <Button label="Có" icon="pi pi-check" text onClick={approveTTKK} />
+    </>
+  )
+
+  const declineProductDialogFooter = (
+    <>
+      <Button label="Hủy" icon="pi pi-times" text onClick={hideDeclineDialog} />
+      <Button label="Có" icon="pi pi-check" text onClick={declineTTKK} />
     </>
   )
 
@@ -351,25 +547,24 @@ const ToTrinhKhoiKien = (props) => {
           >
             <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
             <Column
-              field="id"
+              field="ma_to_trinh"
               header="Mã tờ trình"
               sortable
-              body={codeBodyTemplate}
-              headerStyle={{ minWidth: '10rem' }}
+              headerStyle={{ minWidth: '9rem' }}
             ></Column>
             <Column
               field="id"
               header="Khách hàng"
               sortable
-              body={codeBodyTemplate}
-              headerStyle={{ minWidth: '10rem' }}
+              body={renderCustomer}
+              headerStyle={{ minWidth: '15rem' }}
             ></Column>
             <Column
               field="trang_thai"
               header="Trạng thái"
               sortable
               body={statusBodyTemplate}
-              headerStyle={{ minWidth: '10rem' }}
+              headerStyle={{ minWidth: '9rem' }}
             ></Column>
             <Column
               field="nhan_vien_phu_trach"
@@ -383,9 +578,9 @@ const ToTrinhKhoiKien = (props) => {
               header="Ngày tạo"
               sortable
               body={dateBodyTemplate}
-              headerStyle={{ minWidth: '15rem' }}
+              headerStyle={{ minWidth: '10rem' }}
             ></Column>
-            <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
+            <Column body={actionBodyTemplate} headerStyle={{ minWidth: '12rem' }}></Column>
           </DataTable>
 
           <Dialog
@@ -505,14 +700,14 @@ const ToTrinhKhoiKien = (props) => {
             style={{ width: '450px' }}
             header="Xác nhận"
             modal
-            footer={deleteProductDialogFooter}
-            onHide={hideDeleteProductDialog}
+            footer={deleteTTDGKKDialogFooter}
+            onHide={hideDeleteTTDGKKDialog}
           >
             <div className="flex align-items-center justify-content-center">
               <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
               {ttkk && (
                 <span>
-                  Bạn có chắc chắn muốn xóa <b>{ttkk.id}</b>?
+                  Bạn có chắc chắn muốn xóa tờ trình <b>{ttdgkkClicked.ma_to_trinh} </b>không?
                 </span>
               )}
             </div>
@@ -529,6 +724,42 @@ const ToTrinhKhoiKien = (props) => {
             <div className="flex align-items-center justify-content-center">
               <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
               {ttkk && <span>Bạn có chắc chắn muốn xóa những tờ trình đã chọn không?</span>}
+            </div>
+          </Dialog>
+
+          <Dialog
+            visible={approveTTKKDialog}
+            style={{ width: '450px' }}
+            header="Xác nhận"
+            modal
+            footer={approveProductDialogFooter}
+            onHide={hideApproveDialog}
+          >
+            <div className="flex align-items-center justify-content-center">
+              <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+              {ttkk && (
+                <span>
+                  Bạn có chắc chắn muốn phê duyệt tờ trình <b>{ttdgkkClicked.ma_to_trinh} </b>không?
+                </span>
+              )}
+            </div>
+          </Dialog>
+
+          <Dialog
+            visible={declineTTKKDialog}
+            style={{ width: '450px' }}
+            header="Xác nhận"
+            modal
+            footer={declineProductDialogFooter}
+            onHide={hideDeclineDialog}
+          >
+            <div className="flex align-items-center justify-content-center">
+              <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+              {ttkk && (
+                <span>
+                  Bạn có chắc chắn muốn từ chối tờ trình <b>{ttdgkkClicked.ma_to_trinh} </b>không?
+                </span>
+              )}
             </div>
           </Dialog>
         </div>
