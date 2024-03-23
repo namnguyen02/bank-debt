@@ -15,3 +15,11 @@ export const getListAppointments = (query) =>
       return isError ? err : data
     })
     .catch((error) => error)
+
+export const getListAppointmentFilter = (body) =>
+  AppointmentAPI.getListAppointmentFilter(body)
+    .then((res) => {
+      const { isError, data, err } = res
+      return isError ? err : data
+    })
+    .catch((error) => error)

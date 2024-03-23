@@ -3,15 +3,14 @@ import Link from 'next/link'
 
 import { Column } from 'primereact/column'
 import { DataTable } from 'primereact/datatable'
-import { Checkbox } from 'primereact/checkbox'
 
 const ManageAppointmentTable = (props) => {
   const renderName = (rowData) => {
-    return <div>{rowData.khach_hang.ho_ten}</div>
+    return <div>{props.isFiltering ? rowData.ten_khach_hang : rowData.khach_hang.ho_ten}</div>
   }
 
   const renderCCCD = (rowData) => {
-    return <div>{rowData.khach_hang.can_cuoc}</div>
+    return <div>{props.isFiltering ? rowData.can_cuoc : rowData.khach_hang.can_cuoc}</div>
   }
 
   const renderAuthorized = (rowData) => {
@@ -50,7 +49,8 @@ const ManageAppointmentTable = (props) => {
   }
 
   const renderUpdateTime = (rowData) => {
-    const data = rowData.updated_at
+    console.log(props.isFiltering, rowData)
+    const data = props.isFiltering ? rowData.ngay_cap_nhat : rowData.updated_at
     const year = data.substr(0, 4)
     const month = data.substr(5, 2)
     const date = data.substr(8, 2)
@@ -116,7 +116,7 @@ const ManageAppointmentTable = (props) => {
         <Column header="Ngày hẹn" style={{ minWidth: '7rem' }} body={renderAppointmentDate} />
         <Column field="noi_dung_hen" header="Nội dung" style={{ minWidth: '15rem' }} />
         <Column
-          field="nguoi_tao_lich_hen"
+          field="nhan_vien.ho_ten"
           header="Nhân viên thực hiện"
           style={{ minWidth: '12rem' }}
         />

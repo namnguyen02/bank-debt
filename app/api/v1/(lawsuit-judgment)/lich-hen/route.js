@@ -9,6 +9,7 @@ export async function GET(request) {
   const data = {
     '': ['*'],
     khach_hang: ['ho_ten', 'can_cuoc', 'ma_khach_hang'],
+    nhan_vien: ['ho_ten', 'ma_nhan_vien'],
     khoi_kien: ['*', 'nhan_vien (ma_nhan_vien, ho_ten)'],
     thi_hanh_an: ['*', 'nhan_vien (ma_nhan_vien, ho_ten)'],
   }
