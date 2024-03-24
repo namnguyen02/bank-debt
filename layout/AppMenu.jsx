@@ -53,7 +53,10 @@ const AppMenu = (props) => {
   const model = [
     {
       label: 'Home',
-      items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }],
+      items: [
+        { label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' },
+        { label: 'Thống kê', icon: 'pi pi-fw pi-home', to: '/thong-ke' },
+      ],
     },
     {
       label: 'Danh mục',
