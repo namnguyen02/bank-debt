@@ -22,7 +22,6 @@ Retrieve result by sending data in filters using search function
 POST body
 {
     "filter":{
-        "ma_khoi_kien":15,
         "ten_khach_hang": "Dương Mỹ Duyên",
         "tu_ngay": "2024-01-01",
         "den_ngay": "2024-02-27"
