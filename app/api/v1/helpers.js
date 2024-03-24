@@ -1,4 +1,5 @@
 import supabase from 'utils/supabase/client'
+import Action from './models'
 
 export function transformToQuery(data) {
   return Object.entries(data)
@@ -60,4 +61,8 @@ export async function createLog(table, values, id) {
     data: data,
     error: error,
   }
+}
+
+export async function recordHistory(table, values) {
+  return Action.create({ table: table, values: values })
 }

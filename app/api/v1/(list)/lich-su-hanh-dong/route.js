@@ -30,5 +30,5 @@ export function GET(request) {
 
 export async function POST(request) {
   const res = await request.json()
-  return Action.create({ table: 'lich_su_hanh_dong', values: res })
+  return Action.createAndRecord({ table: 'lich_su_hanh_dong', values: res })
 }
