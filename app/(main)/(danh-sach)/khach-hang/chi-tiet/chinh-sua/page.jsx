@@ -16,6 +16,8 @@ const EditNonePerformingLoan = () => {
   const [customerForm, setCustomerForm] = useState({})
   const [editCustomerForm, setEditCustomerForm] = useState({})
   const [customerId, setCustomerId] = useState()
+  const [debtInfoForm, setDebtInfoForm] = useState({})
+
   const getCustomerInfo = () => {
     const url = window.location.href
     const id = url.slice(url.indexOf('id=') + 3)
@@ -55,7 +57,7 @@ const EditNonePerformingLoan = () => {
           />
         </TabPanel>
         <TabPanel header="Thông tin dư nợ">
-          <EditDebtInformation />
+          <EditDebtInformation debtInfoForm={debtInfoForm} setDebtInfoForm={setDebtInfoForm} />
         </TabPanel>
         <TabPanel header="Nhân viên phụ trách">
           <EditCaseworker />
