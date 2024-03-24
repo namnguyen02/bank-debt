@@ -8,7 +8,7 @@ import { Dropdown } from 'primereact/dropdown'
 import styles from './index.module.scss'
 
 const EditDebtInformation = (props) => {
-  const [process, setProcess] = useState({})
+  const [process, setProcess] = useState({ name: 'Chưa khởi kiện' })
   const [processNote, setProcessNote] = useState('')
 
   return (

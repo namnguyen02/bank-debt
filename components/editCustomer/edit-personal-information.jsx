@@ -7,6 +7,8 @@ import { Calendar } from 'primereact/calendar'
 
 import EditRelative from './edit-relative'
 
+import { formatDate } from 'utils/format-date/format-date'
+
 import styles from './index.module.scss'
 
 const EditPersonalInformation = (props) => {
@@ -20,7 +22,21 @@ const EditPersonalInformation = (props) => {
   }
   const [birthday, setBirthday] = useState(null)
   const [calendarValue, setCalendarValue] = useState(null)
-  const [relatives, setRelatives] = useState([emptyRelativeForm])
+  const [relatives, setRelatives] = useState(
+    props.customerForm.nguoi_than_khach_hang?.length > 0
+      ? props.customerForm.nguoi_than_khach_hang
+      : [emptyRelativeForm]
+  )
+
+  const getBirthdayFormatted = (birthday) => {
+    if (!birthday) return null
+    const firstSlashPos = birthday.indexOf('/')
+    const secondSlashPos = birthday.lastIndexOf('/')
+    const day = birthday.substring(0, firstSlashPos)
+    const month = birthday.substring(firstSlashPos + 1, secondSlashPos)
+    const year = birthday.substring(secondSlashPos + 1)
+    return new Date(year, month - 1, day)
+  }
 
   return (
     <div>
@@ -32,7 +48,7 @@ const EditPersonalInformation = (props) => {
           <InputText
             type="text"
             disabled={props.isAdding ? false : true}
-            className={props.isAdding ? styles.inputText : styles.inputTextDisable}
+            className={styles.inputText}
             onChange={(e) => props.handleChange('ma_khach_hang', e.target.value)}
             value={props.customerForm.ma_khach_hang}
           />
@@ -78,8 +94,13 @@ const EditPersonalInformation = (props) => {
             className={styles.inputText}
             showIcon
             showButtonBar
-            value={calendarValue}
-            onChange={(e) => setCalendarValue(e.value ?? null)}
+            // value={calendarValue}
+            value={getBirthdayFormatted(props.customerForm.ngay_sinh)}
+            onChange={(e) => {
+              console.log(e.value)
+              setCalendarValue(e.value ?? null)
+            }}
+            formatDateTime={formatDate}
           />
         </div>
       </div>
@@ -175,36 +196,15 @@ const EditPersonalInformation = (props) => {
       </div>
 
       <EditRelative
-        relatives={relatives}
-        setRelatives={setRelatives}
+        relatives={
+          props.customerForm.nguoi_than_khach_hang &&
+          props.customerForm.nguoi_than_khach_hang?.length > 0
+            ? props.customerForm.nguoi_than_khach_hang
+            : [emptyRelativeForm]
+        }
+        setRelatives={(fieldName, data) => props.handleChange(fieldName, data)}
         emptyRelativeForm={emptyRelativeForm}
       />
-      {/* <div className="field grid">
-        <div className="col-12 mb-2 md:col-3 sm:col-4 sm:mb-0 sm:flex sm:justify-content-end sm:align-items-center">
-          <label htmlFor="relative_name">Tên người thân:</label>
-        </div>
-        <div className="col-12 md:col-9 sm:col-8">
-          <InputText id="relative_name" type="text" className={styles.inputText} />
-        </div>
-      </div>
-
-      <div className="field grid">
-        <div className="col-12 mb-2 md:col-3 sm:col-4 sm:mb-0 sm:flex sm:justify-content-end sm:align-items-center">
-          <label htmlFor="relative_phone_number">Số điện thoại người thân:</label>
-        </div>
-        <div className="col-12 md:col-9 sm:col-8">
-          <InputText id="relative_phone_number" type="text" className={styles.inputText} />
-        </div>
-      </div>
-
-      <div className="field grid">
-        <div className="col-12 mb-2 md:col-3 sm:col-4 sm:mb-0 sm:flex sm:justify-content-end sm:align-items-center">
-          <label htmlFor="relationship">Quan hệ:</label>
-        </div>
-        <div className="col-12 md:col-9 sm:col-8">
-          <InputText id="relationship" type="text" className={styles.inputText} />
-        </div>
-      </div> */}
 
       <div className="flex justify-content-end">
         <Button
@@ -224,7 +224,7 @@ const EditPersonalInformation = (props) => {
           <Button
             label="Lưu"
             style={{ width: '90px', height: '36px' }}
-            onClick={props.handleEditCustomer}
+            onClick={() => console.log(props.customerForm)}
           />
         )}
       </div>

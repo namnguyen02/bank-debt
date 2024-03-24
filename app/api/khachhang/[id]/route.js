@@ -28,6 +28,31 @@ export async function GET(request, { params }) {
       }
     )
   }
+
+  // Get relatives of customer
+  let tempData
+  if (!error) {
+    const { data, error } = await supabase
+      .from('nguoi_than_khach_hang')
+      .select('*')
+      .eq('ma_khach_hang', id)
+
+    if (error)
+      return NextResponse.json(
+        {
+          body: JSON.stringify(error),
+        },
+        {
+          status: 500,
+        }
+      )
+    else {
+      tempData = [...data]
+    }
+  }
+
+  data[0].nguoi_than_khach_hang = tempData
+
   return NextResponse.json({ count: count, results: data }, { status: 200 })
 }
 
