@@ -39,6 +39,11 @@
   }
 }
 
+.dropdownStyle {
+  width: 250px;
+  line-height: 20px;
+}
+
 @media only screen and (max-width: 576px) {
   .inputText {
     width: 100%;
@@ -51,5 +56,8 @@
     ul {
       width: calc(100% - 3rem);
     }
+  }
+  .dropdownStyle {
+    width: 100%;
   }
 }

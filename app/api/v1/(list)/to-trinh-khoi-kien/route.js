@@ -1,4 +1,5 @@
 import Action from '@/api/v1/models'
+import supabase from 'utils/supabase/client'
 import { transformToQuery } from '@/api/v1/helpers'
 
 function getNewId(newestId) {
@@ -18,8 +19,8 @@ export function GET(request) {
   const query = searchParams.get('ma_nhan_vien')
 
   const data = {
-    '': ['ma_to_trinh', 'trang_thai', 'danh_gia', 'created_at'],
-    khach_hang: ['ma_khach_hang', 'ho_ten', 'can_cuoc'],
+    '': ['*'],
+    khach_hang: ['ma_khach_hang', 'ho_ten'],
     nhan_vien: ['ma_nhan_vien', 'ho_ten'],
   }
 
@@ -54,6 +55,6 @@ export async function POST(request) {
       res.ma_to_trinh = getNewId(data[0].ma_to_trinh)
     }
   }
-
+  res.trang_thai = 'Chưa duyệt' // Add trang_thai
   return Action.create({ table: 'to_trinh_khoi_kien', values: res })
 }

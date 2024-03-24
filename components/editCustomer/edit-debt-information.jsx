@@ -1,10 +1,16 @@
-import { InputText } from 'primereact/inputtext'
+'use client'
+import React, { useEffect, useState } from 'react'
 
+import { InputText } from 'primereact/inputtext'
 import { Button } from 'primereact/button'
+import { Dropdown } from 'primereact/dropdown'
 
 import styles from './index.module.scss'
 
 const EditDebtInformation = (props) => {
+  const [process, setProcess] = useState({ name: 'Chưa khởi kiện' })
+  const [processNote, setProcessNote] = useState('')
+
   return (
     <div>
       <div className="field grid">
@@ -20,6 +26,7 @@ const EditDebtInformation = (props) => {
             onChange={(e) => {
               props.setDebtInfoForm({ ...props.debtInfoForm, khu_vuc: e.target.value })
             }}
+            disabled
           />
         </div>
       </div>
@@ -37,6 +44,7 @@ const EditDebtInformation = (props) => {
             onChange={(e) => {
               props.setDebtInfoForm({ ...props.debtInfoForm, chi_nhanh: e.target.value })
             }}
+            disabled
           />
         </div>
       </div>
@@ -54,6 +62,7 @@ const EditDebtInformation = (props) => {
             onChange={(e) => {
               props.setDebtInfoForm({ ...props.debtInfoForm, don_vi_chiu_no: e.target.value })
             }}
+            disabled
           />
         </div>
       </div>
@@ -71,6 +80,7 @@ const EditDebtInformation = (props) => {
             onChange={(e) => {
               props.setDebtInfoForm({ ...props.debtInfoForm, don_vi_quan_ly: e.target.value })
             }}
+            disabled
           />
         </div>
       </div>
@@ -88,6 +98,7 @@ const EditDebtInformation = (props) => {
             onChange={(e) => {
               props.setDebtInfoForm({ ...props.debtInfoForm, so_the: e.target.value })
             }}
+            disabled
           />
         </div>
       </div>
@@ -105,6 +116,7 @@ const EditDebtInformation = (props) => {
             onChange={(e) => {
               props.setDebtInfoForm({ ...props.debtInfoForm, khu_vuc: e.target.value })
             }}
+            disabled
           />
         </div>
       </div>
@@ -114,7 +126,7 @@ const EditDebtInformation = (props) => {
           <label htmlFor="ngay_mo_the">Ngày mở thẻ:</label>
         </div>
         <div className="col-12 md:col-9 sm:col-8">
-          <InputText id="ngay_mo_the" type="text" className={styles.inputText} />
+          <InputText id="ngay_mo_the" type="text" className={styles.inputText} disabled />
         </div>
       </div>
 
@@ -123,7 +135,7 @@ const EditDebtInformation = (props) => {
           <label htmlFor="ncn3">Ngày chuyển nhóm 3:</label>
         </div>
         <div className="col-12 md:col-9 sm:col-8">
-          <InputText id="ncn3" type="text" className={styles.inputText} />
+          <InputText id="ncn3" type="text" className={styles.inputText} disabled />
         </div>
       </div>
 
@@ -132,7 +144,7 @@ const EditDebtInformation = (props) => {
           <label htmlFor="ngnut">Nợ gốc nhận ủy thác:</label>
         </div>
         <div className="col-12 md:col-9 sm:col-8">
-          <InputText id="ngnut" type="text" className={styles.inputText} />
+          <InputText id="ngnut" type="text" className={styles.inputText} disabled />
         </div>
       </div>
 
@@ -141,7 +153,7 @@ const EditDebtInformation = (props) => {
           <label htmlFor="nlnut">Nợ lãi nhận ủy thác:</label>
         </div>
         <div className="col-12 md:col-9 sm:col-8">
-          <InputText id="nlnut" type="text" className={styles.inputText} />
+          <InputText id="nlnut" type="text" className={styles.inputText} disabled />
         </div>
       </div>
 
@@ -150,7 +162,7 @@ const EditDebtInformation = (props) => {
           <label htmlFor="tdnut">Tổng dư nợ ủy thác:</label>
         </div>
         <div className="col-12 md:col-9 sm:col-8">
-          <InputText id="tdnut" type="text" className={styles.inputText} />
+          <InputText id="tdnut" type="text" className={styles.inputText} disabled />
         </div>
       </div>
 
@@ -159,7 +171,7 @@ const EditDebtInformation = (props) => {
           <label htmlFor="nght">Nợ gốc hiện tại:</label>
         </div>
         <div className="col-12 md:col-9 sm:col-8">
-          <InputText id="nght" type="text" className={styles.inputText} />
+          <InputText id="nght" type="text" className={styles.inputText} disabled />
         </div>
       </div>
 
@@ -168,7 +180,7 @@ const EditDebtInformation = (props) => {
           <label htmlFor="nlht">Nợ lãi hiện tại:</label>
         </div>
         <div className="col-12 md:col-9 sm:col-8">
-          <InputText id="nlht" type="text" className={styles.inputText} />
+          <InputText id="nlht" type="text" className={styles.inputText} disabled />
         </div>
       </div>
 
@@ -177,7 +189,7 @@ const EditDebtInformation = (props) => {
           <label htmlFor="tdnht">Tổng dư nợ hiện tại:</label>
         </div>
         <div className="col-12 md:col-9 sm:col-8">
-          <InputText id="tdnht" type="text" className={styles.inputText} />
+          <InputText id="tdnht" type="text" className={styles.inputText} disabled />
         </div>
       </div>
 
@@ -186,7 +198,7 @@ const EditDebtInformation = (props) => {
           <label htmlFor="stdtt">Số tiền đã thanh toán:</label>
         </div>
         <div className="col-12 md:col-9 sm:col-8">
-          <InputText id="stdtt" type="text" className={styles.inputText} />
+          <InputText id="stdtt" type="text" className={styles.inputText} disabled />
         </div>
       </div>
 
@@ -195,7 +207,7 @@ const EditDebtInformation = (props) => {
           <label htmlFor="lsthad">Lãi suất trong hạn áp dụng:</label>
         </div>
         <div className="col-12 md:col-9 sm:col-8">
-          <InputText id="lsthad" type="text" className={styles.inputText} />
+          <InputText id="lsthad" type="text" className={styles.inputText} disabled />
         </div>
       </div>
 
@@ -204,7 +216,52 @@ const EditDebtInformation = (props) => {
           <label htmlFor="lsqhad">Lãi suất quá hạn áp dụng:</label>
         </div>
         <div className="col-12 md:col-9 sm:col-8">
-          <InputText id="lsqhad" type="text" className={styles.inputText} />
+          <InputText id="lsqhad" type="text" className={styles.inputText} disabled />
+        </div>
+      </div>
+
+      <div className="field grid">
+        <div className="col-12 mb-2 md:col-3 sm:col-4 sm:mb-0 sm:flex sm:justify-content-end sm:align-items-center">
+          <label htmlFor="lsqhad">Hạn mức:</label>
+        </div>
+        <div className="col-12 md:col-9 sm:col-8">
+          <InputText id="lsqhad" type="text" className={styles.inputText} disabled />
+        </div>
+      </div>
+
+      <div className="field grid">
+        <div className="col-12 mb-2 md:col-3 sm:col-4 sm:mb-0 sm:flex sm:justify-content-end sm:align-items-center">
+          <label htmlFor="lsqhad">Tiến độ CN/PGD:</label>
+        </div>
+        <div className="col-12 md:col-9 sm:col-8">
+          <Dropdown
+            value={process}
+            onChange={(e) => setProcess(e.value)}
+            options={[
+              { name: 'Chưa khởi kiện' },
+              { name: 'Đã khởi kiện' },
+              { name: 'Chưa thi hành án' },
+              { name: 'Đã thi hành án' },
+            ]}
+            optionLabel="name"
+            placeholder="Select"
+            className={styles.dropdownStyle}
+          />
+        </div>
+      </div>
+
+      <div className="field grid">
+        <div className="col-12 mb-2 md:col-3 sm:col-4 sm:mb-0 sm:flex sm:justify-content-end sm:align-items-center">
+          <label htmlFor="lsqhad">Nội dung ghi chú tiến độ CN/PGD:</label>
+        </div>
+        <div className="col-12 md:col-9 sm:col-8">
+          <InputText
+            id="lsqhad"
+            type="text"
+            className={styles.inputText}
+            value={processNote}
+            onChange={(e) => setProcessNote(e.target.value)}
+          />
         </div>
       </div>
 

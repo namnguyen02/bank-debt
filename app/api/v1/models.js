@@ -1,5 +1,6 @@
 import supabase from 'utils/supabase/client'
 import { createLog } from './helpers'
+import { recordHistory } from './helpers'
 
 const Action = {
   create: async ({ table, values }) => {
@@ -23,6 +24,20 @@ const Action = {
       ).then((res) => {
         if (res.error) return Response.json(error, { status: 400 })
       })
+    }
+
+    return Response.json(data)
+  },
+  // For record debt recovery action histories
+  createAndRecord: async ({ table, values }) => {
+    const { data, error } = await supabase.from(table).insert(values).select().single()
+
+    if (error) return Response.json(error, { status: 400 })
+    else {
+      const dataToRecord = values
+      delete dataToRecord.ngay_cap_nhat
+      const { error } = recordHistory('ghi_chep_ls_hanh_dong', dataToRecord)
+      if (error) return Response.json(error, { status: 400 })
     }
 
     return Response.json(data)

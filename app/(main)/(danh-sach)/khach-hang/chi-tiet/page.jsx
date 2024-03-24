@@ -51,7 +51,30 @@ const NonePerformingLoanDetail = () => {
   return (
     <div>
       <Toast ref={toast} />
-      <div className="flex justify-content-end">
+      <div className="flex justify-content-between">
+        <div
+          className="relative cursor-pointer flex align-items-center"
+          style={{ marginBottom: '1rem' }}
+          onClick={() => {
+            history.back()
+          }}
+        >
+          <div
+            style={{
+              position: 'absolute',
+              left: '-9px',
+              top: '8.5px',
+            }}
+          >
+            <i className="pi pi-angle-left" style={{ color: 'slateblue', fontSize: '1.8rem' }}></i>
+          </div>
+          <div
+            className="font-bold text-xl text-primary"
+            style={{ lineHeight: '23px', marginLeft: '16px' }}
+          >
+            Quay lại
+          </div>
+        </div>
         <Link
           href={`/khach-hang/chi-tiet/chinh-sua?id=${customerId}`}
           style={{ color: '#ffffff', fontWeight: '600', marginBottom: '1rem' }}

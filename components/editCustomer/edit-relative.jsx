@@ -13,9 +13,10 @@ const EditRelative = (props) => {
       ...tempArray[index],
       [fieldName]: e.target.value,
     }
-    props.setRelatives(tempArray)
+    props.setRelatives('nguoi_than_khach_hang', tempArray)
   }
-
+  if ((typeof props.relatives !== 'array' && !props.relatives) || props.relatives?.length === 0)
+    return <div></div>
   return props.relatives.map((relative, index) => {
     return (
       <div key={index}>
@@ -142,7 +143,10 @@ const EditRelative = (props) => {
                 rounded
                 outlined
                 onClick={() => {
-                  props.setRelatives([...props.relatives, props.emptyRelativeForm])
+                  props.setRelatives('nguoi_than_khach_hang', [
+                    ...props.relatives,
+                    props.emptyRelativeForm,
+                  ])
                 }}
               />
             </div>
