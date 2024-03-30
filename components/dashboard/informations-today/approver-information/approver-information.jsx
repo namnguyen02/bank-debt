@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import InformationTemplate from '../information-template/information-template'
 
-const ApproverInformation = () => {
+const ApproverInformation = (props) => {
   return (
     <div className="grid mb-2">
       <InformationTemplate
@@ -12,12 +12,17 @@ const ApproverInformation = () => {
           {
             data: (
               <span>
-                Hôm nay có <span className="text-green-500 font-medium">24 tờ trình miễn giảm</span>{' '}
+                Hôm nay có{' '}
+                <span className="text-green-500 font-medium">
+                  {props.NPDTodayInfo.ttmgNotApproved?.length} tờ trình miễn giảm
+                </span>{' '}
                 chưa phê duyệt (hoặc từ chối)
               </span>
             ),
           },
         ]}
+        data={props.NPDTodayInfo}
+        isNPD
       />
       <InformationTemplate
         title="Tờ trình đánh giá khởi kiện"
@@ -27,12 +32,16 @@ const ApproverInformation = () => {
             data: (
               <span>
                 Hôm nay có{' '}
-                <span className="text-green-500 font-medium">24 tờ trình đánh giá khởi kiện</span>{' '}
+                <span className="text-green-500 font-medium">
+                  {props.NPDTodayInfo.ttdgkkNotApproved?.length} tờ trình đánh giá khởi kiện
+                </span>{' '}
                 chưa phê duyệt (hoặc từ chối)
               </span>
             ),
           },
         ]}
+        data={props.NPDTodayInfo}
+        isNPD
       />
     </div>
   )

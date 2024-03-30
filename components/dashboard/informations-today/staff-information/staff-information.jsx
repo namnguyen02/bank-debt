@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import InformationTemplate from '../information-template/information-template'
 
-const StaffInformation = () => {
+const StaffInformation = (props) => {
   return (
     <div className="grid mb-2">
       <InformationTemplate
@@ -10,10 +10,18 @@ const StaffInformation = () => {
         firstInformation="500"
         secondInformation={[
           {
-            data: '24 khách hàng nợ xấu nhóm 3 mới',
+            data: (
+              <span>
+                Hôm nay có{' '}
+                <span className="text-green-500 font-medium">
+                  {props.SHBTodayInfo.new_khach_hang?.length} khách hàng nợ xấu nhóm 3 mới
+                </span>
+              </span>
+            ),
           },
         ]}
-        isNewCustomer
+        isSHB
+        data={props.SHBTodayInfo}
       />
       <InformationTemplate
         title="Thu hồi nợ"
@@ -22,7 +30,10 @@ const StaffInformation = () => {
           {
             data: (
               <span>
-                Hôm nay có <span className="text-green-500 font-medium">24 khách hàng mới</span>{' '}
+                Hôm nay có{' '}
+                <span className="text-green-500 font-medium">
+                  {props.SHBTodayInfo.customersHaventBeenRecoveried?.length} khách hàng mới
+                </span>{' '}
                 chưa thực hiện thu hồi nợ
               </span>
             ),
@@ -30,12 +41,17 @@ const StaffInformation = () => {
           {
             data: (
               <span>
-                Hôm nay có <span className="text-green-500 font-medium">45 khách hàng</span> chưa
-                thực hiện thu hồi nợ hơn 1 tuần
+                Hôm nay có{' '}
+                <span className="text-green-500 font-medium">
+                  {props.SHBTodayInfo.customers7Days?.length} khách hàng
+                </span>{' '}
+                chưa thực hiện thu hồi nợ hơn 1 tuần
               </span>
             ),
           },
         ]}
+        isSHB
+        data={props.SHBTodayInfo}
       />
       <InformationTemplate
         title="Đánh giá khởi kiện"
@@ -44,12 +60,14 @@ const StaffInformation = () => {
           {
             data: (
               <span>
-                Hôm nay có <span className="text-green-500 font-medium">24 khách hàng</span> cần
+                Hôm nay có <span className="text-green-500 font-medium">10 khách hàng</span> cần
                 đánh giá khởi kiện
               </span>
             ),
           },
         ]}
+        isSHB
+        data={props.SHBTodayInfo}
       />
       <InformationTemplate
         title="Tờ trình đánh giá khởi kiện"
@@ -59,7 +77,9 @@ const StaffInformation = () => {
             data: (
               <span>
                 Hôm nay có{' '}
-                <span className="text-green-500 font-medium">2 tờ trình đánh giá khởi kiện</span>{' '}
+                <span className="text-green-500 font-medium">
+                  {props.SHBTodayInfo.ttdgkkNotApproved?.length} tờ trình đánh giá khởi kiện
+                </span>{' '}
                 chưa được duyệt
               </span>
             ),
@@ -68,8 +88,10 @@ const StaffInformation = () => {
             data: (
               <span>
                 Hôm nay có{' '}
-                <span className="text-green-500 font-medium">2 tờ trình đánh giá khởi kiện</span> đã
-                được phê duyệt
+                <span className="text-green-500 font-medium">
+                  {props.SHBTodayInfo.ttdgkkApproved?.length} tờ trình đánh giá khởi kiện
+                </span>{' '}
+                đã được phê duyệt
               </span>
             ),
           },
@@ -77,12 +99,57 @@ const StaffInformation = () => {
             data: (
               <span>
                 Hôm nay có{' '}
-                <span className="text-green-500 font-medium">2 tờ trình đánh giá khởi kiện</span> đã
-                bị từ chối
+                <span className="text-green-500 font-medium">
+                  {props.SHBTodayInfo.ttdgkkDeclined?.length} tờ trình đánh giá khởi kiện
+                </span>{' '}
+                đã bị từ chối
               </span>
             ),
           },
         ]}
+        isSHB
+        data={props.SHBTodayInfo}
+      />
+      <InformationTemplate
+        title="Tờ trình miễn giảm"
+        firstInformation="500"
+        secondInformation={[
+          {
+            data: (
+              <span>
+                Hôm nay có{' '}
+                <span className="text-green-500 font-medium">
+                  {props.SHBTodayInfo.ttmgNotApproved?.length} tờ trình miễn giảm
+                </span>{' '}
+                chưa được duyệt
+              </span>
+            ),
+          },
+          {
+            data: (
+              <span>
+                Hôm nay có{' '}
+                <span className="text-green-500 font-medium">
+                  {props.SHBTodayInfo.ttmgApproved?.length} tờ trình miễn giảm
+                </span>{' '}
+                đã được phê duyệt
+              </span>
+            ),
+          },
+          {
+            data: (
+              <span>
+                Hôm nay có{' '}
+                <span className="text-green-500 font-medium">
+                  {props.SHBTodayInfo.ttmgDeclined?.length} tờ trình miễn giảm
+                </span>{' '}
+                đã bị từ chối
+              </span>
+            ),
+          },
+        ]}
+        isSHB
+        data={props.SHBTodayInfo}
       />
       <InformationTemplate
         title="Khởi kiện và thi hành án"
@@ -91,20 +158,28 @@ const StaffInformation = () => {
           {
             data: (
               <span>
-                Hôm nay có <span className="text-green-500 font-medium">24 khách hàng</span> đang
-                trong quá trình khởi kiện
+                Hôm nay có{' '}
+                <span className="text-green-500 font-medium">
+                  {props.SHBTodayInfo.customersInLawsuit?.length} khách hàng
+                </span>{' '}
+                đang trong quá trình khởi kiện
               </span>
             ),
           },
           {
             data: (
               <span>
-                Hôm nay có <span className="text-green-500 font-medium">24 khách hàng</span> đang
-                trong quá trình thi hành án
+                Hôm nay có{' '}
+                <span className="text-green-500 font-medium">
+                  {props.SHBTodayInfo.customersInJudgmentExecution?.length} khách hàng
+                </span>{' '}
+                đang trong quá trình thi hành án
               </span>
             ),
           },
         ]}
+        isSHB
+        data={props.SHBTodayInfo}
       />
       <InformationTemplate
         title="Lịch hẹn"
@@ -113,12 +188,17 @@ const StaffInformation = () => {
           {
             data: (
               <span>
-                Có <span className="text-green-500 font-medium">10 lịch hẹn sắp tới hẹn</span> trong
-                3 ngày tới
+                Có{' '}
+                <span className="text-green-500 font-medium">
+                  {props.SHBTodayInfo.next3DaysApointments?.length} lịch hẹn sắp tới hẹn
+                </span>{' '}
+                trong 3 ngày tới
               </span>
             ),
           },
         ]}
+        isSHB
+        data={props.SHBTodayInfo}
       />
     </div>
   )
