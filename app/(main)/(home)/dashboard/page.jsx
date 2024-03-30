@@ -13,14 +13,40 @@ import StaffKKTHA from '@/components/dashboard/staff-kk-tha/staff-kk-tha'
 import OperatorStaffProportion from '@/components/dashboard/operator-staff-proportion/operator-staff-proportion'
 import OperatorStaffCustomers from '@/components/dashboard/operator-staff-customers/operator-staff-customers'
 
+import { getTodayInfoSHB, getTodayInfoNPD } from 'actions/today-info/today-info'
+
 const ThongKe = (props) => {
+  const [SHBTodayInfo, setSHBTodayInfo] = useState({})
+  const [NPDTodayInfo, setNPDTodayInfo] = useState({})
+
+  const todayInfos = () => {
+    if (props.user.role === 'SHB') {
+      getTodayInfoSHB().then((res) => {
+        if (res && res.result) {
+          setSHBTodayInfo(res.result)
+        }
+      })
+    }
+    if (props.user.role === 'NPD') {
+      getTodayInfoNPD().then((res) => {
+        if (res && res.result) {
+          setNPDTodayInfo(res.result)
+        }
+      })
+    }
+  }
+
+  useEffect(() => {
+    todayInfos()
+  }, [])
+
   return (
     <div className="card">
       <div className="font-bold text-xl mb-4">Dashboard</div>
 
       {props.user.role === 'SHB' && (
         <div>
-          <StaffInformation />
+          <StaffInformation SHBTodayInfo={SHBTodayInfo} />
           <Accordion activeIndex={0}>
             <AccordionTab header="Biểu đồ tình hình thu hồi nợ">
               <StaffDebtRecovery />
@@ -48,7 +74,7 @@ const ThongKe = (props) => {
 
       {props.user.role === 'NPD' && (
         <div>
-          <ApproverInformation />
+          <ApproverInformation NPDTodayInfo={NPDTodayInfo} />
         </div>
       )}
     </div>
