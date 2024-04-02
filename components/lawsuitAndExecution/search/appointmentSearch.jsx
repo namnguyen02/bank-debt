@@ -10,6 +10,7 @@ import { InputNumber } from 'primereact/inputnumber'
 import { provinces, districts } from 'utils/provinces-districts/provinces-districts'
 import { lawsuitStates } from 'utils/lawsuit-states/lawsuit-states'
 import { judgmentExecutionStates } from 'utils/judgment-execution-states/judgment-execution-states'
+import { formatDate } from 'utils/format-date/format-date'
 
 import styles from './index.module.scss'
 
@@ -73,6 +74,8 @@ const AppointmentSearch = (props) => {
     setSelectedAutoValue1(null)
     setSelectedAutoValue2(null)
     setSelectedAutoValue3(null)
+    setLawsuitState({})
+    setJudgmentExecutionState({})
   }
 
   const handleApplyFilter = () => {
@@ -80,10 +83,11 @@ const AppointmentSearch = (props) => {
       ma_khach_hang: selectedAutoValue1 ? selectedAutoValue1.ma_khach_hang : '',
       tinh_tp: province.name,
       quan_huyen: district.name,
-      ma_nhan_vien: selectedStaff ? selectedStaff.user_metadata?.ma_nhan_vien : '',
-      trang_thai: lawsuitState.name,
+      id_nguoi_uy_quyen: selectedStaff ? selectedStaff.user_metadata?.ma_nhan_vien : '',
       tu_ngay: fromDate,
       den_ngay: toDate,
+      trang_thai_kk: lawsuitState.name,
+      trang_thai_tha: judgmentExecutionState.name,
     }
     Object.keys(filter).forEach((item) => {
       if (!filter[item]) {
@@ -326,6 +330,7 @@ const AppointmentSearch = (props) => {
               onChange={(e) => {
                 setFromDate(e.value ?? null)
               }}
+              formatDateTime={formatDate}
             />
           </div>
         </div>
@@ -342,6 +347,7 @@ const AppointmentSearch = (props) => {
               onChange={(e) => {
                 setToDate(e.value ?? null)
               }}
+              formatDateTime={formatDate}
             />
           </div>
         </div>

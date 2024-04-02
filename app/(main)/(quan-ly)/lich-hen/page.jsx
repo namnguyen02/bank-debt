@@ -29,7 +29,8 @@ const ManageAppointment = () => {
   const getAppointmentsFilter = (filter) => {
     getListAppointmentFilter({ filter: filter }).then((res) => {
       if (res && res.count >= 0) {
-        setData(res.result)
+        setData([...res.result])
+        console.log('444444')
       }
     })
   }

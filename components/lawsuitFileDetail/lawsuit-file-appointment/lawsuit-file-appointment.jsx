@@ -151,7 +151,7 @@ const LawsuitFileAppointment = (props) => {
     if (rowData.updated_at === 'Được thêm sau khi lưu') {
       return <div>Được thêm sau khi lưu</div>
     }
-    const dateTime = new Date(rowData.updated_at)
+    const dateTime = new Date(rowData.created_at)
     const date = dateTime.getDate() < 10 ? `0${dateTime.getDate()}` : dateTime.getDate()
     const month =
       dateTime.getMonth() + 1 < 10 ? `0${dateTime.getMonth() + 1}` : dateTime.getMonth() + 1
@@ -215,7 +215,7 @@ const LawsuitFileAppointment = (props) => {
           />
           <Column
             field="updated_at"
-            header="Thời gian cập nhật"
+            header="Ngày tạo lịch hẹn"
             style={{ minWidth: '11rem' }}
             body={renderUpdateTime}
           />

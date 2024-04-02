@@ -9,6 +9,7 @@ import { InputNumber } from 'primereact/inputnumber'
 
 import { provinces, districts } from 'utils/provinces-districts/provinces-districts'
 import { lawsuitStates } from 'utils/lawsuit-states/lawsuit-states'
+import { formatDate } from 'utils/format-date/format-date'
 
 import styles from './index.module.scss'
 
@@ -350,6 +351,7 @@ const LawsuitSearch = (props) => {
               onChange={(e) => {
                 setFromDate(e.value ?? null)
               }}
+              formatDateTime={formatDate}
             />
           </div>
         </div>
@@ -366,6 +368,7 @@ const LawsuitSearch = (props) => {
               onChange={(e) => {
                 setToDate(e.value ?? null)
               }}
+              formatDateTime={formatDate}
             />
           </div>
         </div>

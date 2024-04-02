@@ -34,8 +34,10 @@ export async function POST(request) {
     query = query.eq('quan_huyen', filter['quan_huyen'])
   }
   if (filter['tu_ngay'] && filter['den_ngay']) {
-    const tu_ngay = filter['tu_ngay'] + 'T00:00:00.000Z'
-    const den_ngay = filter['den_ngay'] + 'T23:59:59.999Z'
+    // const tu_ngay = filter['tu_ngay'] + 'T00:00:00.000Z'
+    // const den_ngay = filter['den_ngay'] + 'T23:59:59.999Z'
+    const tu_ngay = filter['tu_ngay']
+    const den_ngay = filter['den_ngay']
     query = query.gte('ngay_tao_lich_hen', tu_ngay).lte('ngay_tao_lich_hen', den_ngay)
   }
   const { count, data, error } = await query
