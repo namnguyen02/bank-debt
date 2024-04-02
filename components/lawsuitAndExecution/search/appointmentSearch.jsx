@@ -73,8 +73,6 @@ const AppointmentSearch = (props) => {
     setSelectedAutoValue1(null)
     setSelectedAutoValue2(null)
     setSelectedAutoValue3(null)
-    setLawsuitState({})
-    setJudgmentExecutionState({})
   }
 
   const handleApplyFilter = () => {
@@ -83,8 +81,7 @@ const AppointmentSearch = (props) => {
       tinh_tp: province.name,
       quan_huyen: district.name,
       ma_nhan_vien: selectedStaff ? selectedStaff.user_metadata?.ma_nhan_vien : '',
-      trang_thai_kk: lawsuitState.name,
-      trang_thai_tha: judgmentExecutionState.name,
+      trang_thai: lawsuitState.name,
       tu_ngay: fromDate,
       den_ngay: toDate,
     }
@@ -93,10 +90,9 @@ const AppointmentSearch = (props) => {
         delete filter[item]
       }
     })
-
     if (Object.keys(filter).length > 0) {
-      props.setFilterBody(filter)
       props.getAppointmentsFilter(filter)
+      props.setFilterBody(filter)
     } else {
       props.setFilterBody({})
       props.getAppointments()
@@ -242,6 +238,14 @@ const AppointmentSearch = (props) => {
             <label htmlFor="HoTen">Trạng thái khởi kiện</label>
           </div>
           <div className={styles.inputContainer}>
+            {/* <InputText
+              id="HoTen"
+              type="text"
+              value={inputSearch.trang_thai_khoi_kien}
+              onChange={(e) =>
+                setInputSearch({ ...inputSearch, trang_thai_khoi_kien: e.target.value })
+              }
+            /> */}
             <Dropdown
               value={lawsuitState}
               onChange={(e) => setLawsuitState(e.value)}
@@ -252,22 +256,28 @@ const AppointmentSearch = (props) => {
           </div>
         </div>
 
-        {!props.isAdvanceCourtFee && (
-          <div className="col-12 xl:col-4 md:col-6">
-            <div className="mb-2">
-              <label htmlFor="HoTen">Trạng thái thi hành án</label>
-            </div>
-            <div className={styles.inputContainer}>
-              <Dropdown
-                value={judgmentExecutionState}
-                onChange={(e) => setJudgmentExecutionState(e.value)}
-                options={judgmentExecutionStates}
-                optionLabel="name"
-                placeholder="Select"
-              />
-            </div>
+        <div className="col-12 xl:col-4 md:col-6">
+          <div className="mb-2">
+            <label htmlFor="HoTen">Trạng thái thi hành án</label>
           </div>
-        )}
+          <div className={styles.inputContainer}>
+            {/* <InputText
+              id="HoTen"
+              type="text"
+              value={inputSearch.trang_thai_thi_hanh_an}
+              onChange={(e) =>
+                setInputSearch({ ...inputSearch, trang_thai_thi_hanh_an: e.target.value })
+              }
+            /> */}
+            <Dropdown
+              value={judgmentExecutionState}
+              onChange={(e) => setJudgmentExecutionState(e.value)}
+              options={judgmentExecutionStates}
+              optionLabel="name"
+              placeholder="Select"
+            />
+          </div>
+        </div>
 
         {props.isAdvanceCourtFee && (
           <div className="col-12 xl:col-4 md:col-6">
