@@ -90,8 +90,13 @@ const AppointmentSearch = (props) => {
         delete filter[item]
       }
     })
-    props.setFilterBody(filter)
-    props.getListLawsuitsWithFilter(filter)
+    if (Object.keys(filter).length > 0) {
+      props.getAppointmentsFilter(filter)
+      props.setFilterBody(filter)
+    } else {
+      props.setFilterBody({})
+      props.getAppointments()
+    }
   }
 
   return (
@@ -365,7 +370,7 @@ const AppointmentSearch = (props) => {
           style={{ width: '93px', marginRight: '16px' }}
           onClick={() => handleDeleteFilter()}
         />
-        <Button label="Áp dụng" />
+        <Button label="Áp dụng" onClick={() => handleApplyFilter()} />
       </div>
     </div>
   )

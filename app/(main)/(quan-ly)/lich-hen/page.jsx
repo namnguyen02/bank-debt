@@ -7,7 +7,7 @@ import { Button } from 'primereact/button'
 import AppointmentSearch from '@/components/lawsuitAndExecution/search/appointmentSearch'
 import ManageAppointmentTable from '@/components/lawsuitAndExecution/manage-appointment-table/manage-appointment-table'
 
-import { getListAppointments } from 'actions/lich-hen/lich-hen'
+import { getListAppointments, getListAppointmentFilter } from 'actions/lich-hen/lich-hen'
 import { getListCustomer } from 'actions/customer/Customer'
 import { getListStaff } from 'actions/nhan-vien/nhan-vien'
 
@@ -16,11 +16,20 @@ const ManageAppointment = () => {
   const [data, setData] = useState([])
   const [customers, setCustomers] = useState([])
   const [staffs, setStaffs] = useState([])
+  const [filterBody, setFilterBody] = useState({})
 
   const getAppointments = () => {
     getListAppointments('offset=0&limit=10').then((res) => {
       if (res && res.count >= 0) {
         setData(res.results)
+      }
+    })
+  }
+
+  const getAppointmentsFilter = (filter) => {
+    getListAppointmentFilter({ filter: filter }).then((res) => {
+      if (res && res.count >= 0) {
+        setData(res.result)
       }
     })
   }
@@ -52,7 +61,14 @@ const ManageAppointment = () => {
       <div>
         <Accordion>
           <AccordionTab header="Tìm kiếm">
-            <AppointmentSearch customers={customers} staffs={staffs} isAppointment />
+            <AppointmentSearch
+              customers={customers}
+              staffs={staffs}
+              isAppointment
+              setFilterBody={setFilterBody}
+              getAppointments={getAppointments}
+              getAppointmentsFilter={getAppointmentsFilter}
+            />
           </AccordionTab>
         </Accordion>
       </div>
@@ -68,6 +84,7 @@ const ManageAppointment = () => {
           checkedList={checkedList}
           setCheckedList={setCheckedList}
           data={data}
+          isFiltering={Object.keys(filterBody).length > 0}
         />
       </div>
     </div>
