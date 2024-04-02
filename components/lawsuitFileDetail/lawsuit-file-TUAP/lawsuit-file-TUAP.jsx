@@ -300,7 +300,7 @@ const LawsuitFileTUAP = (props) => {
     if (rowData.updated_at === 'Được thêm sau khi lưu') {
       return <div>Được thêm sau khi lưu</div>
     }
-    const dateTime = new Date(rowData.updated_at)
+    const dateTime = new Date(rowData.created_at)
     const date = dateTime.getDate() < 10 ? `0${dateTime.getDate()}` : dateTime.getDate()
     const month =
       dateTime.getMonth() + 1 < 10 ? `0${dateTime.getMonth() + 1}` : dateTime.getMonth() + 1
@@ -367,11 +367,7 @@ const LawsuitFileTUAP = (props) => {
           <Column header="Số tiền hoàn" style={{ minWidth: '10rem' }} body={renderSoTienHoan} />
           <Column header="Ngày hoàn TUAP" style={{ minWidth: '8rem' }} body={renderNgayHoanTUAP} />
           <Column field="nguoi_thuc_hien" header="Người thực hiện" style={{ minWidth: '12rem' }} />
-          <Column
-            header="Thời gian cập nhật"
-            style={{ minWidth: '13rem' }}
-            body={renderUpdateTime}
-          />
+          <Column header="Ngày tạo TUAP" style={{ minWidth: '13rem' }} body={renderUpdateTime} />
         </DataTable>
       </div>
     </div>

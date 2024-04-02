@@ -97,7 +97,6 @@ const EditPersonalInformation = (props) => {
             // value={calendarValue}
             value={getBirthdayFormatted(props.customerForm.ngay_sinh)}
             onChange={(e) => {
-              console.log(e.value)
               setCalendarValue(e.value ?? null)
             }}
             formatDateTime={formatDate}

@@ -6,14 +6,18 @@ import { DataTable } from 'primereact/datatable'
 
 const ManageAppointmentTable = (props) => {
   const renderName = (rowData) => {
-    return <div>{props.isFiltering ? rowData.ten_khach_hang : rowData.khach_hang.ho_ten}</div>
+    return <div>{props.isFiltering ? rowData.ten_khach_hang : rowData.khach_hang?.ho_ten}</div>
   }
 
   const renderCCCD = (rowData) => {
-    return <div>{props.isFiltering ? rowData.can_cuoc : rowData.khach_hang.can_cuoc}</div>
+    return <div>{props.isFiltering ? rowData.can_cuoc : rowData.khach_hang?.can_cuoc}</div>
   }
 
   const renderAuthorized = (rowData) => {
+    if (props.isFiltering) {
+      return <div>{rowData.ten_nhan_vien}</div>
+    }
+
     return (
       <div>
         {rowData.khoi_kien
@@ -49,8 +53,10 @@ const ManageAppointmentTable = (props) => {
   }
 
   const renderUpdateTime = (rowData) => {
-    console.log(props.isFiltering, rowData)
-    const data = props.isFiltering ? rowData.ngay_cap_nhat : rowData.updated_at
+    const data = props.isFiltering ? rowData.ngay_tao_lich_hen : rowData.created_at
+    if (!data) {
+      return <div></div>
+    }
     const year = data.substr(0, 4)
     const month = data.substr(5, 2)
     const date = data.substr(8, 2)
@@ -62,12 +68,22 @@ const ManageAppointmentTable = (props) => {
   }
 
   const renderLawsuitStatus = (rowData) => {
+    if (props.isFiltering) {
+      if (rowData.ma_khoi_kien) {
+        return <div>{rowData.trang_thai_kk}</div>
+      }
+    }
     if (rowData.ma_khoi_kien) {
       return <div>{rowData.trang_thai_ho_so}</div>
     }
   }
 
   const renderJudgmentStatus = (rowData) => {
+    if (props.isFiltering) {
+      if (rowData.ma_thi_hanh_an) {
+        return <div>{rowData.trang_thai_tha}</div>
+      }
+    }
     if (rowData.ma_thi_hanh_an) {
       return <div>{rowData.trang_thai_ho_so}</div>
     }
@@ -78,7 +94,6 @@ const ManageAppointmentTable = (props) => {
   //     {rowData.trang_thai_}
   //   </div>)
   // }
-
   return (
     <div>
       <DataTable
@@ -116,11 +131,11 @@ const ManageAppointmentTable = (props) => {
         <Column header="Ngày hẹn" style={{ minWidth: '7rem' }} body={renderAppointmentDate} />
         <Column field="noi_dung_hen" header="Nội dung" style={{ minWidth: '15rem' }} />
         <Column
-          field="nhan_vien.ho_ten"
+          field={props.isFiltering ? 'ten_nhan_vien' : 'nhan_vien.ho_ten'}
           header="Nhân viên thực hiện"
           style={{ minWidth: '12rem' }}
         />
-        <Column header="Thời gian cập nhật" style={{ minWidth: '12rem' }} body={renderUpdateTime} />
+        <Column header="Ngày tạo lịch hẹn" style={{ minWidth: '12rem' }} body={renderUpdateTime} />
       </DataTable>
     </div>
   )
