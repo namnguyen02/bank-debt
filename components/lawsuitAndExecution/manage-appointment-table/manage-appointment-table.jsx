@@ -28,12 +28,28 @@ const ManageAppointmentTable = (props) => {
   }
 
   const renderProvince = (rowData) => {
+    if (props.isFiltering) {
+      if (rowData.ma_khoi_kien) {
+        return <div>{rowData.tinh_tp_kk}</div>
+      } else {
+        return <div>{rowData.tinh_tp_tha}</div>
+      }
+    }
+
     return (
       <div>{rowData.khoi_kien ? rowData.khoi_kien?.tinh_tp : rowData.thi_hanh_an?.tinh_tp}</div>
     )
   }
 
   const renderDistrict = (rowData) => {
+    if (props.isFiltering) {
+      if (rowData.ma_khoi_kien) {
+        return <div>{rowData.quan_huyen_kk}</div>
+      } else {
+        return <div>{rowData.quan_huyen_tha}</div>
+      }
+    }
+
     return (
       <div>
         {rowData.khoi_kien ? rowData.khoi_kien?.quan_huyen : rowData.thi_hanh_an?.quan_huyen}
