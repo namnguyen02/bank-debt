@@ -7,7 +7,7 @@ Retrieves total number of proportions based on the "Hanh dong thu hoi no" activi
 - **offset** (optional) - Offset for pagination (default is 0)
 - **limit** (optional) - Number of records per page (default is 20)
 
-**Response**
+**Response**:
 
 - 500 Internal Server Error: When database query fails
 - 200 OK: No error
