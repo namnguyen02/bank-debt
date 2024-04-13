@@ -5,6 +5,8 @@ import { Chart } from 'primereact/chart'
 import { Calendar } from 'primereact/calendar'
 import { Button } from 'primereact/button'
 
+import { getCustomerCountOfStaffs } from 'actions/dashboard/dashboard-quan-ly/dashboard-quan-ly'
+
 const OperatorStaffCustomers = () => {
   const barOptions = {
     plugins: {
@@ -58,6 +60,8 @@ const OperatorStaffCustomers = () => {
   const [fromDate, setFromDate] = useState(null)
   const [toDate, setToDate] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [data, setData] = useState([])
+  const [staffs, setStaffs] = useState([])
 
   const onLoadingClick = () => {
     setLoading(true)
@@ -67,9 +71,30 @@ const OperatorStaffCustomers = () => {
     }, 2000)
   }
 
+  const getCustomerCounts = () => {
+    getCustomerCountOfStaffs().then((res) => {
+      if (res && res.results) {
+        setStaffs(
+          res.results.map((item) => {
+            return item.nhan_vien?.ho_ten
+          })
+        )
+        setData(
+          res.results.map((item) => {
+            return item.total_customers
+          })
+        )
+      }
+    })
+  }
+
+  useEffect(() => {
+    getCustomerCounts()
+  }, [])
+
   return (
     <div className="card">
-      <div className="field grid">
+      {/* <div className="field grid">
         <div className="flex mr-5">
           <div className="sm:flex sm:justify-content-end sm:align-items-center mr-2">
             <label htmlFor="lsqhad">Từ</label>
@@ -101,8 +126,22 @@ const OperatorStaffCustomers = () => {
           onClick={onLoadingClick}
           className="ml-4"
         />
-      </div>
-      <Chart type="bar" data={tempData} options={barOptions}></Chart>
+      </div> */}
+      <Chart
+        type="bar"
+        data={{
+          labels: staffs,
+          datasets: [
+            {
+              backgroundColor: '#6366f1',
+              borderColor: '#6366f1',
+              data: data,
+              label: 'Số khách hàng',
+            },
+          ],
+        }}
+        options={barOptions}
+      ></Chart>
     </div>
   )
 }

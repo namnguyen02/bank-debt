@@ -51,9 +51,9 @@ const ThongKe = (props) => {
             <AccordionTab header="Biểu đồ tình hình thu hồi nợ">
               <StaffDebtRecovery />
             </AccordionTab>
-            <AccordionTab header="Biểu đồ tình hình khởi kiện - thi hành án">
+            {/* <AccordionTab header="Biểu đồ tình hình khởi kiện - thi hành án">
               <StaffKKTHA />
-            </AccordionTab>
+            </AccordionTab> */}
           </Accordion>
         </div>
       )}
