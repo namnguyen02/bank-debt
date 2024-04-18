@@ -23,6 +23,11 @@ import {
   updateTTDGKK,
 } from 'actions/to-trinh-danh-gia-khoi-kien/to-trinh-danh-gia-khoi-kien'
 
+import { utils as XLXSUtils, writeFile } from 'xlsx'
+import * as fs from 'file-saver'
+const ExcelJS = require('exceljs')
+import { Workbook } from 'exceljs'
+
 /* @todo Used 'as any' for types here. Will fix in next version due to onSelectionChange event type issue. */
 const ToTrinhKhoiKien = (props) => {
   let emptyTTKK = {
@@ -191,6 +196,116 @@ const ToTrinhKhoiKien = (props) => {
     dt.current?.exportCSV()
   }
 
+  const exportToExcel = async (fileName, sheetName, title, header, data) => {
+    const titleStyle = {
+      height: 40,
+      font: { size: 15, bold: true, color: { argb: '000000' } },
+      alignment: { horizontal: 'center', vertical: 'middle' },
+    }
+
+    const headerStyle = {
+      height: 20,
+      font: { size: 13, bold: true, color: { argb: '000000' } },
+      alignment: { horizontal: 'center', vertical: 'middle' },
+    }
+
+    const dataStyle = {
+      height: 15,
+      font: { size: 12, bold: false, color: { argb: '000000' } },
+    }
+
+    const widths = [
+      { width: 8 },
+      { width: 15 },
+      { width: 35 },
+      { width: 15 },
+      { width: 35 },
+      { width: 15 },
+    ]
+
+    const wb = new Workbook()
+    const ws = wb.addWorksheet(sheetName)
+    ws.columns = widths
+
+    const newDate = new Date()
+    let dateRow = addRow(ws, [
+      `Được xuất bởi: ${props.user?.ho_ten} (${props.user?.ma_nhan_vien})`,
+      '',
+      '',
+      `Thời gian xuất: ${newDate.getHours()}:${newDate.getMinutes()} ${newDate.getDate()}/${
+        newDate.getMonth() + 1
+      }/${newDate.getFullYear()}`,
+      '',
+      '',
+    ])
+    mergeCells(ws, dateRow, 1, 3)
+    mergeCells(ws, dateRow, 4, 6)
+
+    let titleRow = addRow(ws, [title], titleStyle)
+    mergeCells(ws, titleRow, 1, header.length)
+
+    addRow(ws, header, headerStyle)
+
+    data.forEach((item, index) => {
+      addRow(
+        ws,
+        [
+          index + 1,
+          item.ma_to_trinh,
+          `${item.khach_hang?.ho_ten} (${item.khach_hang?.ma_khach_hang})`,
+          item.trang_thai,
+          `${item.nhan_vien?.ho_ten} (${item.nhan_vien?.ma_nhan_vien})`,
+          convertDateToString(item.created_at),
+        ],
+        dataStyle,
+        'data'
+      )
+    })
+
+    const buf = await wb.xlsx.writeBuffer()
+    fs.saveAs(new Blob([buf]), `${fileName}.xlsx`)
+  }
+
+  const addRow = (ws, data, section, rowType) => {
+    const borderStyle = {
+      top: { style: 'thin' },
+      left: { style: 'thin' },
+      bottom: { style: 'thin' },
+      right: { style: 'thin' },
+    }
+    const row = ws.addRow(data)
+
+    row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+      if (section?.border) {
+        cell.border = borderStyle
+      }
+      if (section?.alignment) {
+        cell.alignment = section.alignment
+      }
+      if (section?.font) {
+        cell.font = section.font
+      }
+      if (section?.fill) {
+        cell.fill = section.fill
+      }
+      if (rowType === 'data') {
+        if ([1, 2, 4, 6].includes(colNumber)) {
+          cell.alignment = { horizontal: 'center', vertical: 'middle' }
+        }
+      }
+    })
+
+    if (section?.height > 0) {
+      row.height = section.height
+    }
+
+    return row
+  }
+
+  const mergeCells = (ws, row, from, to) => {
+    ws.mergeCells(`${row.getCell(from)._address}:${row.getCell(to)._address}`)
+  }
+
   const confirmDeleteSelected = (rowData) => {
     setDeleteTTKKsDialog(true)
   }
@@ -320,6 +435,14 @@ const ToTrinhKhoiKien = (props) => {
   }
 
   const rightToolbarTemplate = () => {
+    const headers = [
+      'STT',
+      'Mã tờ trình',
+      'Khách hàng',
+      'Trạng thái',
+      'Người tạo tờ trình',
+      'Ngày tạo',
+    ]
     return (
       <React.Fragment>
         <FileUpload
@@ -329,7 +452,20 @@ const ToTrinhKhoiKien = (props) => {
           chooseLabel="Nhập file"
           className="mr-2 inline-block"
         />
-        <Button label="Xuất CSV" icon="pi pi-upload" severity="help" onClick={exportCSV} />
+        <Button
+          label="Xuất excel"
+          icon="pi pi-upload"
+          severity="help"
+          onClick={() =>
+            exportToExcel(
+              'TTMG_Report',
+              'TTMG_Report',
+              'Danh sách tờ trình đánh giá khởi kiện',
+              headers,
+              ttkks
+            )
+          }
+        />
       </React.Fragment>
     )
   }
@@ -343,6 +479,16 @@ const ToTrinhKhoiKien = (props) => {
         </span>
       </>
     )
+  }
+
+  const convertDateToString = (createdDate) => {
+    if (!createdDate) return ''
+    const tempDate = new Date(createdDate)
+    const date = tempDate.getDate() < 10 ? `0${tempDate.getDate()}` : tempDate.getDate()
+    const month =
+      tempDate.getMonth() + 1 < 10 ? `0${tempDate.getMonth() + 1}` : tempDate.getMonth() + 1
+    const year = tempDate.getFullYear()
+    return `${date}/${month}/${year}`
   }
 
   const dateBodyTemplate = (rowData) => {
