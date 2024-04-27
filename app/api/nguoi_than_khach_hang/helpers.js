@@ -25,7 +25,6 @@ const checkLogicParams = (obj) => {
   const { ho_ten, sdt, can_cuoc, email } = obj
   if (ho_ten) {
     if (!checkStringIsCharacters(ho_ten)) {
-      console.log(ho_ten)
       throw NextResponse.json(
         {
           body: 'Invalid "ho_ten" parameter',

@@ -30,7 +30,6 @@ const ManageAppointment = () => {
     getListAppointmentFilter({ filter: filter }).then((res) => {
       if (res && res.count >= 0) {
         setData([...res.result])
-        console.log('444444')
       }
     })
   }

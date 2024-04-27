@@ -32,7 +32,6 @@ const TreeDemo = () => {
       <div className="col-12">
         <div className="card">
           <h5>TreeTable</h5>
-          {console.log(files2)}
           <TreeTable
             value={files2}
             selectionMode="checkbox"

@@ -263,6 +263,7 @@ const DebtRecoveryActions = (props) => {
       ma_ket_qua: result.ma_ket_qua,
       ghi_chu: note,
       ngay_cap_nhat: time,
+      ma_nhan_vien: props.user.ma_nhan_vien,
     }
     updateDebtRecoveryResult(id, body).then((res) => {
       if (res && res.id) {

@@ -138,6 +138,24 @@ const Action = {
 
     return Response.json(data)
   },
+  updateAndRecord: async ({ table, values, column, value }) => {
+    const { data, error } = await supabase
+      .from(table)
+      .update(values)
+      .eq(column, value)
+      .select()
+      .single()
+
+    if (error) return Response.json(error, { status: 400 })
+    else {
+      const dataToRecord = values
+      delete dataToRecord.ngay_cap_nhat
+      const { error } = recordHistory('ghi_chep_ls_hanh_dong', dataToRecord)
+      if (error) return Response.json(error, { status: 400 })
+    }
+
+    return Response.json(data)
+  },
   updateWithLog: async ({ table, values, column, value, logData = null }) => {
     const { data, error } = await supabase
       .from(table)

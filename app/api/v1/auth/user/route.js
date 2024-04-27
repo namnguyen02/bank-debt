@@ -49,7 +49,6 @@ export async function POST(request) {
       other.ma_nhan_vien = `${other.permission}-${year}0001`
     } else {
       other.ma_nhan_vien = getNewId(data[0].ma_nhan_vien, other.permission, year)
-      console.log(other.ma_nhan_vien)
     }
 
     if (error) return Response.json(error, { status: 400 })
