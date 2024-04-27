@@ -31,7 +31,6 @@ const checkLogicParams = (obj) => {
   // TenCongTy: '',
   if (ho_ten) {
     if (!checkStringIsCharacters(ho_ten)) {
-      console.log(ho_ten)
       throw NextResponse.json(
         {
           body: 'Invalid "ho_ten" parameter',

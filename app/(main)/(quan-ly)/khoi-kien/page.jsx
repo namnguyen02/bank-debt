@@ -110,7 +110,6 @@ const ManageLawsuit = () => {
             </Link>
           </div>
         </div>
-        {console.log(lawsuits)}
         <ManageLawsuitTable
           checkedList={checkedList}
           setCheckedList={setCheckedList}
