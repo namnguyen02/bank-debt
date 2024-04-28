@@ -248,7 +248,9 @@ const DebtRecoveryActions = (props) => {
     // Get results
     const localActionResults = actionResultCategories.filter(
       (item) =>
-        item.hanh_dong.ten_hanh_dong.toLowerCase() === data.hanh_dong?.ten_hanh_dong?.toLowerCase()
+        item.hanh_dong.ten_hanh_dong.toLowerCase() ===
+          data.hanh_dong?.ten_hanh_dong?.toLowerCase() &&
+        item.hanh_dong.loai_hanh_dong.toLowerCase() === data.hanh_dong?.loai_hanh_dong.toLowerCase()
     )
     setResults(localActionResults)
     // Get result
@@ -474,7 +476,9 @@ const DebtRecoveryActions = (props) => {
                     actionResultCategories.filter(
                       (item) =>
                         item.hanh_dong.ten_hanh_dong.toLowerCase() ===
-                        e.value.ten_hanh_dong.toLowerCase()
+                          e.value.ten_hanh_dong.toLowerCase() &&
+                        item.hanh_dong.loai_hanh_dong.toLowerCase() ===
+                          actionType.name.toLowerCase()
                     )
                   )
                 }}
@@ -647,7 +651,9 @@ const DebtRecoveryActions = (props) => {
                     actionResultCategories.filter(
                       (item) =>
                         item.hanh_dong.ten_hanh_dong.toLowerCase() ===
-                        e.value.ten_hanh_dong.toLowerCase()
+                          e.value.ten_hanh_dong.toLowerCase() &&
+                        item.hanh_dong.loai_hanh_dong.toLowerCase() ===
+                          actionType.name.toLowerCase()
                     )
                   )
                   setErrorForm({ ...errorForm, actionNameError: false, actionResultError: false })
