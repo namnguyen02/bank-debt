@@ -69,3 +69,18 @@ export const results = {
   'Đến địa chỉ khác': [{ name: 'Còn cư trú' }, { name: 'Không còn cư trú' }],
   'Đã đánh giá khởi kiện': [{ name: 'Đã đánh giá khởi kiện' }],
 }
+
+export const evaluations = [
+  { name: '0 - Chưa thực hiện (mặc định)', point: 0 },
+  { name: '2 - Kết quả xấu, thực hiện thu hồi nợ không thành công', point: 2 },
+  {
+    name: '4 - Kết quả không khả quan, khách hàng gặp khó khăn về tài chính, hứa trả nợ',
+    point: 4,
+  },
+  { name: '6 - Chưa có phản hồi', point: 6 },
+  {
+    name: '8 - Kết quả có chút khả quan, khách hàng không gặp khó khăn về tài chính, hứa trả nợ',
+    point: 8,
+  },
+  { name: '10 - Kết quả tốt, thực hiện thu hồi nợ thành công', point: 10 },
+]
