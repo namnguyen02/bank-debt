@@ -36,6 +36,7 @@ const Action = {
     else {
       const dataToRecord = values
       delete dataToRecord.ngay_cap_nhat
+      dataToRecord.id_ls_hanh_dong = data.id
       const { error } = recordHistory('ghi_chep_ls_hanh_dong', dataToRecord)
       if (error) return Response.json(error, { status: 400 })
     }
@@ -150,6 +151,7 @@ const Action = {
     else {
       const dataToRecord = values
       delete dataToRecord.ngay_cap_nhat
+      dataToRecord.id_ls_hanh_dong = value
       const { error } = recordHistory('ghi_chep_ls_hanh_dong', dataToRecord)
       if (error) return Response.json(error, { status: 400 })
     }
