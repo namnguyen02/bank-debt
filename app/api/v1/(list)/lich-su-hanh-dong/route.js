@@ -6,7 +6,7 @@ export function GET(request) {
   const query = searchParams.get('ma_nhan_vien')
 
   const data = {
-    '': ['id', 'ghi_chu', 'ngay_thuc_hien', 'ngay_cap_nhat'],
+    '': ['id', 'ghi_chu', 'ngay_thuc_hien', 'ngay_cap_nhat', 'danh_gia'],
     khach_hang: ['ma_khach_hang', 'ho_ten', 'can_cuoc'],
     hanh_dong: ['ma_hanh_dong', 'loai_hanh_dong', 'ten_hanh_dong'],
     ket_qua: ['ma_ket_qua', 'ghi_chu_ket_qua'],
