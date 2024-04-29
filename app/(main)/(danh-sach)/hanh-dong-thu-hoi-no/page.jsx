@@ -211,6 +211,7 @@ const DebtRecoveryActions = (props) => {
         setNote('')
         setEvaluationPoint(0)
         setEvaluation({})
+        onCancel()
         informAddSuccessfully()
       } else {
         setAddedError(true)
@@ -287,6 +288,7 @@ const DebtRecoveryActions = (props) => {
       if (res && res.id) {
         getActions()
         setShowUpdateDialog(false)
+        onCancelUpdate()
         informUpdateSuccessfully()
       }
     })
