@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
+import { connect } from 'react-redux'
 
 import { FilterMatchMode, FilterOperator } from 'primereact/api'
 
@@ -13,7 +14,7 @@ import { Toast } from 'primereact/toast'
 
 import { getListCustomer, deleteCustomer } from 'actions/customer/Customer'
 
-const NonePerformingLoanList = () => {
+const NonePerformingLoanList = (props) => {
   const [customers, setCustomers] = useState([])
   const [filters1, setFilters1] = useState({})
   const [loading, setLoading] = useState(true)
@@ -22,7 +23,7 @@ const NonePerformingLoanList = () => {
   const toast = useRef(null)
 
   const getCustomers = () => {
-    getListCustomer('queryAll=true').then((res) => {
+    getListCustomer(`queryAll=true&ma_nhan_vien=${props.user.ma_nhan_vien}`).then((res) => {
       setCustomers(res.results)
       setLoading(false)
     })
@@ -231,4 +232,10 @@ const NonePerformingLoanList = () => {
   )
 }
 
-export default NonePerformingLoanList
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  }
+}
+
+export default connect(mapStateToProps)(NonePerformingLoanList)
