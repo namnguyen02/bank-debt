@@ -60,7 +60,7 @@ const DebtRecoveryActions = (props) => {
   const toast = useRef(null)
 
   const getActions = () => {
-    getListActions(query).then((res) => {
+    getListActions(`ma_nhan_vien=${props.user?.ma_nhan_vien}&` + query).then((res) => {
       setData(res.results)
     })
   }

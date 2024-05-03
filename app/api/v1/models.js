@@ -43,25 +43,34 @@ const Action = {
 
     return Response.json(data)
   },
-  read: async ({ table, query, column = null, value = null }, single = false) => {
+  read: async (
+    { table, query, column = null, value = null, sortField = '', sortAscending = false },
+    single = false
+  ) => {
     if (single) {
-      const { data, error } = await supabase.from(table).select(query).eq(column, value).single()
+      let apiQuery = supabase.from(table).select(query).eq(column, value).single()
+      const { data, error } = await apiQuery
 
       if (error) return Response.json(error, { status: 400 })
 
       return Response.json(data)
     }
 
-    const { count, data, error } = await (column && value
-      ? supabase
-          .from(table)
-          .select(query, {
+    let apiQuery =
+      column && value
+        ? supabase
+            .from(table)
+            .select(query, {
+              count: 'exact',
+            })
+            .eq(column, value)
+        : supabase.from(table).select(query, {
             count: 'exact',
           })
-          .eq(column, value)
-      : supabase.from(table).select(query, {
-          count: 'exact',
-        }))
+    if (sortField) {
+      apiQuery = apiQuery.order(sortField, { ascending: sortAscending })
+    }
+    const { count, data, error } = await apiQuery
 
     if (error) return Response.json(error, { status: 400 })
 

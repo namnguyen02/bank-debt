@@ -19,12 +19,14 @@ export function GET(request) {
       query: transformToQuery(data),
       column: 'ma_nhan_vien',
       value: query,
+      sortField: 'ngay_cap_nhat',
     })
   }
 
   return Action.read({
     table: 'lich_su_hanh_dong',
     query: transformToQuery({ ...data, nhan_vien: ['ho_ten'] }),
+    sortField: 'ngay_cap_nhat',
   })
 }
 

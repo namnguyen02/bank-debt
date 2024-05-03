@@ -8,6 +8,8 @@ export async function GET(request) {
 
   const offset = obj['offset'] ? parseInt(obj['offset']) : 0 // Offset default = 0
   const limit = obj['limit'] ? parseInt(obj['limit']) : 20 // Limit default = 20
+  const ma_nhan_vien = obj['ma_nhan_vien']
+
   if (obj['offset'] && obj['limit']) {
     const { data, error } = await supabase.from('khach_hang').select('*').range(offset, limit)
     if (error) {
@@ -24,7 +26,11 @@ export async function GET(request) {
       { status: 200 }
     )
   } else {
-    const { count, data, error } = await supabase.from('khach_hang').select('*', { count: 'exact' })
+    let apiQuery = supabase.from('khach_hang').select('*', { count: 'exact' })
+    if (ma_nhan_vien && ma_nhan_vien.indexOf('SHB') >= 0) {
+      apiQuery = apiQuery.eq('nhan_vien_phu_trach_1', ma_nhan_vien)
+    }
+    const { count, data, error } = await apiQuery
     if (error) {
       return NextResponse.json(
         {
