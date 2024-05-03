@@ -27,6 +27,7 @@ import { getListActionCategories } from 'actions/danh-muc-hanh-dong/danh-muc-han
 import { getDebtRecoveryResult } from 'actions/ket-qua-thu-hoi-no/Ket-qua-thu-hoi-no'
 import { getListCustomer } from 'actions/customer/Customer'
 import { getListStaff } from 'actions/nhan-vien/nhan-vien'
+import { getDataToTrain } from 'actions/get-data-to-train/get-data-to-train'
 
 import { actionTypes, evaluations } from './const'
 
@@ -741,6 +742,15 @@ const DebtRecoveryActions = (props) => {
           {/* {checkedList.length > 0 && (
             <Button label="Xóa" style={{ height: '37px', width: '74px' }} />
           )} */}
+          <Button
+            label="Get data to train"
+            style={{ height: '36px' }}
+            onClick={() => {
+              getDataToTrain().then((res) => {
+                console.log(res)
+              })
+            }}
+          />
           <Button
             label="Thêm"
             style={{ height: '36px', width: '100px' }}
