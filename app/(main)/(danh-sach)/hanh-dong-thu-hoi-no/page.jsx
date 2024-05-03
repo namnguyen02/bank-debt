@@ -28,7 +28,7 @@ import { getDebtRecoveryResult } from 'actions/ket-qua-thu-hoi-no/Ket-qua-thu-ho
 import { getListCustomer } from 'actions/customer/Customer'
 import { getListStaff } from 'actions/nhan-vien/nhan-vien'
 
-import { actionTypes } from './const'
+import { actionTypes, evaluations } from './const'
 
 const DebtRecoveryActions = (props) => {
   const [checkedList, setCheckedList] = useState([])
@@ -54,6 +54,8 @@ const DebtRecoveryActions = (props) => {
   const [selectedAutoValue3, setSelectedAutoValue3] = useState(null)
   const [autoFilteredValue, setAutoFilteredValue] = useState([])
   const [isUpdating, setIsUpdating] = useState(false)
+  const [evaluation, setEvaluation] = useState({})
+  const [evaluationPoint, setEvaluationPoint] = useState(0)
 
   const toast = useRef(null)
 
@@ -113,6 +115,8 @@ const DebtRecoveryActions = (props) => {
     setActionName({})
     setResult({})
     setNote('')
+    setEvaluationPoint(0)
+    setEvaluation({})
     setAddedError(false)
     setShowDialog(false)
   }
@@ -179,6 +183,11 @@ const DebtRecoveryActions = (props) => {
       tempErrorForm.actionResultError = true
       noError = false
     }
+    if (!evaluation.name) {
+      tempErrorForm.evaluationError = true
+      noError = false
+    }
+
     setErrorForm(tempErrorForm)
     return noError
   }
@@ -190,6 +199,7 @@ const DebtRecoveryActions = (props) => {
       ma_ket_qua: result.ma_ket_qua,
       ma_nhan_vien: props.user.ma_nhan_vien,
       ghi_chu: note,
+      danh_gia: evaluationPoint,
     }
     addDebtRecoveryResult(form).then((res) => {
       if (res && res.id) {
@@ -199,6 +209,9 @@ const DebtRecoveryActions = (props) => {
         setActionName({})
         setResult({})
         setNote('')
+        setEvaluationPoint(0)
+        setEvaluation({})
+        onCancel()
         informAddSuccessfully()
       } else {
         setAddedError(true)
@@ -236,7 +249,9 @@ const DebtRecoveryActions = (props) => {
     // Get results
     const localActionResults = actionResultCategories.filter(
       (item) =>
-        item.hanh_dong.ten_hanh_dong.toLowerCase() === data.hanh_dong?.ten_hanh_dong?.toLowerCase()
+        item.hanh_dong.ten_hanh_dong.toLowerCase() ===
+          data.hanh_dong?.ten_hanh_dong?.toLowerCase() &&
+        item.hanh_dong.loai_hanh_dong.toLowerCase() === data.hanh_dong?.loai_hanh_dong.toLowerCase()
     )
     setResults(localActionResults)
     // Get result
@@ -252,6 +267,9 @@ const DebtRecoveryActions = (props) => {
     }
     // Get note
     setNote(data.ghi_chu)
+    // Get evaluation
+    setEvaluationPoint(data.danh_gia)
+    setEvaluation(evaluations.filter((item) => item.point == data.danh_gia)[0])
   }
 
   const handleUpdate = () => {
@@ -263,11 +281,14 @@ const DebtRecoveryActions = (props) => {
       ma_ket_qua: result.ma_ket_qua,
       ghi_chu: note,
       ngay_cap_nhat: time,
+      ma_nhan_vien: props.user.ma_nhan_vien,
+      danh_gia: evaluationPoint,
     }
     updateDebtRecoveryResult(id, body).then((res) => {
       if (res && res.id) {
         getActions()
         setShowUpdateDialog(false)
+        onCancelUpdate()
         informUpdateSuccessfully()
       }
     })
@@ -457,7 +478,9 @@ const DebtRecoveryActions = (props) => {
                     actionResultCategories.filter(
                       (item) =>
                         item.hanh_dong.ten_hanh_dong.toLowerCase() ===
-                        e.value.ten_hanh_dong.toLowerCase()
+                          e.value.ten_hanh_dong.toLowerCase() &&
+                        item.hanh_dong.loai_hanh_dong.toLowerCase() ===
+                          actionType.name.toLowerCase()
                     )
                   )
                 }}
@@ -495,6 +518,24 @@ const DebtRecoveryActions = (props) => {
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 className={errorForm.SDTError ? 'p-invalid' : ''}
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="danh_gia">
+                Đánh giá <span style={{ color: 'red' }}>*</span>
+              </label>
+              <Dropdown
+                value={evaluation}
+                onChange={(e) => {
+                  setEvaluation(e.value)
+                  setEvaluationPoint(e.value?.point)
+                  setErrorForm({ ...errorForm, evaluationError: false })
+                }}
+                options={evaluations}
+                optionLabel="name"
+                placeholder="Chọn đánh giá"
+                className={errorForm.evaluationError ? 'p-invalid' : ''}
               />
             </div>
 
@@ -612,7 +653,9 @@ const DebtRecoveryActions = (props) => {
                     actionResultCategories.filter(
                       (item) =>
                         item.hanh_dong.ten_hanh_dong.toLowerCase() ===
-                        e.value.ten_hanh_dong.toLowerCase()
+                          e.value.ten_hanh_dong.toLowerCase() &&
+                        item.hanh_dong.loai_hanh_dong.toLowerCase() ===
+                          actionType.name.toLowerCase()
                     )
                   )
                   setErrorForm({ ...errorForm, actionNameError: false, actionResultError: false })
@@ -651,6 +694,24 @@ const DebtRecoveryActions = (props) => {
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 className={errorForm.SDTError ? 'p-invalid' : ''}
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="danh_gia">
+                Đánh giá <span style={{ color: 'red' }}>*</span>
+              </label>
+              <Dropdown
+                value={evaluation}
+                onChange={(e) => {
+                  setEvaluation(e.value)
+                  setEvaluationPoint(e.value?.point)
+                  setErrorForm({ ...errorForm, evaluationError: false })
+                }}
+                options={evaluations}
+                optionLabel="name"
+                placeholder="Chọn đánh giá"
+                className={errorForm.evaluationError ? 'p-invalid' : ''}
               />
             </div>
 

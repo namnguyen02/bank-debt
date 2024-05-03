@@ -2,7 +2,12 @@ import Action from '@/api/v1/models'
 
 export async function PATCH(request, { params }) {
   const res = await request.json()
-  return Action.update({ table: 'lich_su_hanh_dong', values: res, column: 'id', value: params.id })
+  return Action.updateAndRecord({
+    table: 'lich_su_hanh_dong',
+    values: res,
+    column: 'id',
+    value: params.id,
+  })
 }
 
 export function DELETE(_, { params }) {

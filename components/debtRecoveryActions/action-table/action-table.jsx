@@ -40,7 +40,6 @@ const ActionTable = (props) => {
           severity="primary"
           style={{ width: '96px', height: '36px', marginLeft: '20px' }}
           onClick={() => {
-            console.log(rowData)
             props.setIsUpdating(true)
             props.setShowUpdateDialog(true)
             props.setActionData(rowData)

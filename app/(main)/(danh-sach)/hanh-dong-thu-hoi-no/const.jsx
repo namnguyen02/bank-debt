@@ -69,3 +69,18 @@ export const results = {
   'Đến địa chỉ khác': [{ name: 'Còn cư trú' }, { name: 'Không còn cư trú' }],
   'Đã đánh giá khởi kiện': [{ name: 'Đã đánh giá khởi kiện' }],
 }
+
+export const evaluations = [
+  { name: '0 - Chưa thực hiện (mặc định)', point: 0 },
+  { name: '2 - Kết quả xấu', point: 2 },
+  {
+    name: '4 - Kết quả không mấy khả quan',
+    point: 4,
+  },
+  { name: '6 - Chưa có phản hồi', point: 6 },
+  {
+    name: '8 - Kết quả có chút khả quan',
+    point: 8,
+  },
+  { name: '10 - Kết quả tốt', point: 10 },
+]
