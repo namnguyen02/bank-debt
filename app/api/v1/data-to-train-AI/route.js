@@ -67,6 +67,7 @@ export async function GET() {
 
   const actionIndex = getActionIndex(data)
   const dataArr = {}
+  const recordLength = data.length
 
   if (true) {
     const { data, error } = await supabase
@@ -89,15 +90,21 @@ export async function GET() {
         const tempArr = dataArr[item.ma_khach_hang]
         tempArr[actionIndex[item.ma_ket_qua]] = item.danh_gia
         dataArr[item.ma_khach_hang] = tempArr
-        console.log('444')
       } else {
         const tempArr = Array(27).fill(0)
         tempArr[actionIndex[item.ma_ket_qua]] = item.danh_gia
         dataArr[item.ma_khach_hang] = tempArr
       }
     })
-    console.log(dataArr)
   }
 
-  return NextResponse.json({ results: data }, { status: 200 })
+  let xTrain = [],
+    yTrain = []
+  Object.keys(dataArr).forEach((item) => {
+    const tempRecord = dataArr[item]
+    xTrain.push(tempRecord.slice(0, recordLength - 1))
+    yTrain.push(tempRecord[recordLength - 1])
+  })
+
+  return NextResponse.json({ xTrain: xTrain, yTrain: yTrain }, { status: 200 })
 }
