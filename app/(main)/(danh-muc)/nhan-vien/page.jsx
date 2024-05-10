@@ -256,7 +256,7 @@ const StaffList = () => {
           <InputText
             id="SDT"
             type="text"
-            placeholder="Số điện thoại"
+            placeholder="+84xxx"
             value={staffForm.phone}
             onChange={(e) => handleChange('phone', e.target.value)}
             className={errorForm.SDTError ? 'p-invalid' : ''}
