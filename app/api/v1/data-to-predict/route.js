@@ -1,5 +1,3 @@
-import Action from '@/api/v1/models'
-import { transformToQuery } from '@/api/v1/helpers'
 import supabase from 'utils/supabase/client'
 import { NextResponse } from 'next/server'
 
@@ -51,7 +49,9 @@ const getActionIndex = (data) => {
   return actionIndex
 }
 
-export async function GET() {
+export async function GET(request) {
+  const searchParams = request.nextUrl.searchParams
+  const ma_khach_hang = searchParams.get('ma_khach_hang')
   const { data, error } = await supabase.from('ket_qua').select('*', {
     count: 'exact',
   })
@@ -69,12 +69,13 @@ export async function GET() {
   const dataArr = {}
   const recordLength = data.length
 
-  if (true) {
+  if (ma_khach_hang) {
     const { data, error } = await supabase
       .from('ghi_chep_ls_hanh_dong')
       .select('ma_khach_hang, ma_ket_qua, danh_gia', {
         count: 'exact',
       })
+      .eq('ma_khach_hang', ma_khach_hang)
 
     if (error) {
       return NextResponse.json(
@@ -98,19 +99,18 @@ export async function GET() {
     })
   }
 
-  let xTrain = [],
-    yTrain = []
-  Object.keys(dataArr).forEach((item) => {
-    const tempRecord = dataArr[item]
-    xTrain.push(tempRecord.slice(0, recordLength - 1))
-    yTrain.push(tempRecord[recordLength - 1])
-  })
-
-  const newYTrain = yTrain.map((item) => {
-    if (item == 0 || item == 2) {
-      return 0
-    } else return 1
-  })
-
-  return NextResponse.json({ xTrain: xTrain, yTrain: newYTrain }, { status: 200 })
+  //   let xTrain = [],
+  //     yTrain = []
+  //   Object.keys(dataArr).forEach((item) => {
+  //     const tempRecord = dataArr[item]
+  //     xTrain.push(tempRecord.slice(0, recordLength - 1))
+  //     yTrain.push(tempRecord[recordLength - 1])
+  //   })
+  if (!dataArr[ma_khach_hang.toString()]) {
+    return NextResponse.json({ data: Array(recordLength).fill(0) }, { status: 200 })
+  }
+  return NextResponse.json(
+    { data: dataArr[ma_khach_hang.toString()].slice(0, recordLength - 1) },
+    { status: 200 }
+  )
 }
