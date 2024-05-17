@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
+import axios from 'axios'
 
 import { Accordion, AccordionTab } from 'primereact/accordion'
 import { Button } from 'primereact/button'
@@ -28,6 +29,7 @@ import { getDebtRecoveryResult } from 'actions/ket-qua-thu-hoi-no/Ket-qua-thu-ho
 import { getListCustomer } from 'actions/customer/Customer'
 import { getListStaff } from 'actions/nhan-vien/nhan-vien'
 import { getDataToTrain } from 'actions/get-data-to-train/get-data-to-train'
+import { getDataToPredict } from 'actions/get-data-to-predict/get-data-to-predict'
 
 import { actionTypes, evaluations } from './const'
 
@@ -38,6 +40,7 @@ const DebtRecoveryActions = (props) => {
   const [actionNames, setActionNames] = useState([])
   const [results, setResults] = useState([])
   const [showDialog, setShowDialog] = useState(false)
+  const [showKNKKDialog, setShowKNKKDialog] = useState(false)
   const [showUpdateDialog, setShowUpdateDialog] = useState(false)
   const [errorForm, setErrorForm] = useState({})
   const [actionName, setActionName] = useState({})
@@ -57,6 +60,8 @@ const DebtRecoveryActions = (props) => {
   const [isUpdating, setIsUpdating] = useState(false)
   const [evaluation, setEvaluation] = useState({})
   const [evaluationPoint, setEvaluationPoint] = useState(0)
+  const [dataToPredict, setDataToPredict] = useState([])
+  const [searchResult, setSearchResult] = useState('')
 
   const toast = useRef(null)
 
@@ -131,10 +136,36 @@ const DebtRecoveryActions = (props) => {
     setShowUpdateDialog(false)
   }
 
+  const onCancelSearchKNKK = () => {
+    setSelectedAutoValue1(null)
+    setSelectedAutoValue2(null)
+    setSelectedAutoValue3(null)
+    setDataToPredict([])
+    setSearchResult('')
+    setShowKNKKDialog(false)
+  }
+
   const informAddSuccessfully = () => {
     toast.current?.show({
       severity: 'success',
       detail: 'Thêm thành công',
+      life: 3000,
+    })
+  }
+
+  const informTrainSuccessfully = () => {
+    toast.current?.show({
+      severity: 'success',
+      detail: 'Train model AI thành công',
+      life: 3000,
+    })
+  }
+
+  const informTrainFailed = () => {
+    toast.current?.show({
+      severity: 'error',
+      summary: 'Lỗi',
+      detail: 'Train model AI thất bại',
       life: 3000,
     })
   }
@@ -316,6 +347,68 @@ const DebtRecoveryActions = (props) => {
     getListCustomers()
     getStaffList()
   }, [])
+
+  const trainModelAI = async () => {
+    getDataToTrain().then((res) => {
+      if (res && res.xTrain && res.yTrain) {
+        fetch('https://test-fastapi-7m21.onrender.com/train', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(res),
+        })
+          .then((response) => {
+            if (response.ok) {
+              return response.json()
+            } else {
+              throw new Error('Request failed')
+            }
+          })
+          .then((data) => {
+            if (data && data.result === 'success') {
+              informTrainSuccessfully()
+            } else {
+              informTrainFailed()
+            }
+          })
+          .catch((error) => {
+            console.error(error)
+            informTrainFailed()
+          })
+      } else {
+        return 'Error'
+      }
+    })
+  }
+
+  const handleSearchKNKK = () => {
+    fetch('https://test-fastapi-7m21.onrender.com/predict', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        data: dataToPredict,
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        } else {
+          throw new Error('Request failed')
+        }
+      })
+      .then((data) => {
+        if (data && (data.result === '0' || data.result === '1')) {
+          setSearchResult(data.result)
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+        informTrainFailed()
+      })
+  }
 
   return (
     <div className="card">
@@ -737,26 +830,205 @@ const DebtRecoveryActions = (props) => {
           </div>
         </Dialog>
 
+        <Dialog
+          header="Tra cứu khả năng khởi kiện"
+          visible={showKNKKDialog}
+          onHide={() => onCancelSearchKNKK()}
+          style={{ width: '400px' }}
+          modal
+        >
+          <div className="p-fluid">
+            <div className="field">
+              <label htmlFor="ma_nv">
+                Mã khách hàng <span style={{ color: 'red' }}>*</span>
+              </label>
+              <AutoComplete
+                placeholder="Search"
+                id="dd"
+                dropdown
+                value={selectedAutoValue1}
+                onChange={(e) => {
+                  setSelectedAutoValue1(e.value)
+                  if (typeof e.value === 'object') {
+                    setDataToPredict([])
+                    setSearchResult('')
+                    setErrorForm({
+                      ...errorForm,
+                      cccdError: false,
+                      hoVaTenError: false,
+                      maKhachHangError: false,
+                    })
+                    setSelectedAutoValue2(e.value)
+                    setSelectedAutoValue3(e.value)
+                    getDataToPredict(`ma_khach_hang=${e.value.ma_khach_hang}`).then((res) => {
+                      if (res && res.data) {
+                        setDataToPredict([res.data])
+                      }
+                    })
+                  } else {
+                    setSelectedAutoValue2(null)
+                    setSelectedAutoValue3(null)
+                    setDataToPredict([])
+                    setSearchResult('')
+                  }
+                }}
+                suggestions={autoFilteredValue}
+                completeMethod={(e) => search(e, 'ma_khach_hang')}
+                field="ma_khach_hang"
+                className={errorForm.maKhachHangError ? styles.autoCompleteError : ''}
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="ho_ten">
+                Họ và tên <span style={{ color: 'red' }}>*</span>
+              </label>
+              <AutoComplete
+                placeholder="Search"
+                id="ho_ten"
+                dropdown
+                value={selectedAutoValue3}
+                onChange={(e) => {
+                  setSelectedAutoValue3(e.value)
+                  if (typeof e.value === 'object') {
+                    setDataToPredict([])
+                    setSearchResult('')
+                    setErrorForm({
+                      ...errorForm,
+                      cccdError: false,
+                      hoVaTenError: false,
+                      maKhachHangError: false,
+                    })
+                    setSelectedAutoValue1(e.value)
+                    setSelectedAutoValue2(e.value)
+                    getDataToPredict(`ma_khach_hang=${e.value.ma_khach_hang}`).then((res) => {
+                      if (res && res.data) {
+                        setDataToPredict([res.data])
+                      }
+                    })
+                  } else {
+                    setSelectedAutoValue1(null)
+                    setSelectedAutoValue2(null)
+                    setDataToPredict([])
+                    setSearchResult('')
+                  }
+                }}
+                suggestions={autoFilteredValue}
+                completeMethod={(e) => search(e, 'ho_ten')}
+                field="ho_ten"
+                className={errorForm.hoVaTenError ? styles.autoCompleteError : ''}
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="CCCD">
+                Căn cước công dân <span style={{ color: 'red' }}>*</span>
+              </label>
+              <AutoComplete
+                placeholder="Search"
+                id="dd"
+                dropdown
+                value={selectedAutoValue2}
+                onChange={(e) => {
+                  setSelectedAutoValue2(e.value)
+                  if (typeof e.value === 'object') {
+                    setDataToPredict([])
+                    setSearchResult('')
+                    setErrorForm({
+                      ...errorForm,
+                      cccdError: false,
+                      hoVaTenError: false,
+                      maKhachHangError: false,
+                    })
+                    setSelectedAutoValue1(e.value)
+                    setSelectedAutoValue3(e.value)
+                    getDataToPredict(`ma_khach_hang=${e.value.ma_khach_hang}`).then((res) => {
+                      if (res && res.data) {
+                        setDataToPredict([res.data])
+                      }
+                    })
+                  } else {
+                    setSelectedAutoValue1(null)
+                    setSelectedAutoValue3(null)
+                    setDataToPredict([])
+                    setSearchResult('')
+                  }
+                }}
+                suggestions={autoFilteredValue}
+                completeMethod={(e) => search(e, 'can_cuoc')}
+                field="can_cuoc"
+                className={errorForm.cccdError ? styles.autoCompleteError : ''}
+              />
+            </div>
+            {selectedAutoValue1 && searchResult !== '' && (
+              <div style={searchResult === '0' ? { color: 'red' } : { color: 'green' }}>
+                Khởi kiện khách hàng {selectedAutoValue1.ho_ten} lúc này có khả năng sẽ{' '}
+                {searchResult === '0' ? 'bị từ chối' : 'được thụ lý'}
+              </div>
+            )}
+
+            <div>
+              <div className="flex justify-content-center mt-5">
+                <Button
+                  label="Hủy"
+                  severity="primary"
+                  outlined
+                  style={{ width: '80px', height: '36px' }}
+                  onClick={() => onCancelSearchKNKK()}
+                />
+                <Button
+                  label="Tra cứu"
+                  style={{ width: '96px', height: '36px', marginLeft: '16px' }}
+                  onClick={() => {
+                    handleSearchKNKK()
+                  }}
+                  disabled={dataToPredict.length === 0}
+                />
+              </div>
+            </div>
+          </div>
+        </Dialog>
+
         <div className="flex justify-content-between align-items-center mt-3 mb-3">
           <div className="font-bold text-xl mt-4 mb-2">Lịch sử hành động thu hồi nợ</div>
           {/* {checkedList.length > 0 && (
             <Button label="Xóa" style={{ height: '37px', width: '74px' }} />
           )} */}
-          <Button
-            label="Get data to train"
-            style={{ height: '36px' }}
-            onClick={() => {
-              getDataToTrain().then((res) => {
-                console.log(res)
-              })
-            }}
-          />
-          <Button
-            label="Thêm"
-            style={{ height: '36px', width: '100px' }}
-            onClick={() => setShowDialog(true)}
-          />
+          <div className="flex gap-3">
+            {/* <Button
+              label="Get data to train"
+              style={{ height: '36px' }}
+              onClick={() => {
+                getDataToTrain().then((res) => {
+                  console.log(res)
+                })
+              }}
+            /> */}
+            <Button
+              label="Tra cứu khả năng khởi kiện"
+              style={{ height: '36px' }}
+              onClick={() => {
+                setSelectedAutoValue1(null)
+                setSelectedAutoValue2(null)
+                setSelectedAutoValue3(null)
+                setDataToPredict([])
+                setSearchResult('')
+                setShowKNKKDialog(true)
+              }}
+            />
+            <Button
+              label="Train model AI"
+              style={{ height: '36px' }}
+              onClick={() => trainModelAI()}
+            />
+            <Button
+              label="Thêm"
+              style={{ height: '36px', width: '100px' }}
+              onClick={() => setShowDialog(true)}
+            />
+          </div>
         </div>
+
         <div>
           <ActionTable
             data={data}
