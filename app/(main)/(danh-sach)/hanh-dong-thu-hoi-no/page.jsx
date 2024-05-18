@@ -1004,23 +1004,28 @@ const DebtRecoveryActions = (props) => {
                 })
               }}
             /> */}
-            <Button
-              label="Tra cứu khả năng khởi kiện"
-              style={{ height: '36px' }}
-              onClick={() => {
-                setSelectedAutoValue1(null)
-                setSelectedAutoValue2(null)
-                setSelectedAutoValue3(null)
-                setDataToPredict([])
-                setSearchResult('')
-                setShowKNKKDialog(true)
-              }}
-            />
-            <Button
-              label="Train model AI"
-              style={{ height: '36px' }}
-              onClick={() => trainModelAI()}
-            />
+            {(props.user.role === 'NPD' || props.user.role === 'SHB') && (
+              <Button
+                label="Tra cứu khả năng khởi kiện"
+                style={{ height: '36px' }}
+                onClick={() => {
+                  setSelectedAutoValue1(null)
+                  setSelectedAutoValue2(null)
+                  setSelectedAutoValue3(null)
+                  setDataToPredict([])
+                  setSearchResult('')
+                  setShowKNKKDialog(true)
+                }}
+              />
+            )}
+
+            {props.user.role === 'NDH' && (
+              <Button
+                label="Train model AI"
+                style={{ height: '36px' }}
+                onClick={() => trainModelAI()}
+              />
+            )}
             <Button
               label="Thêm"
               style={{ height: '36px', width: '100px' }}
