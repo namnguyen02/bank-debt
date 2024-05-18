@@ -445,13 +445,6 @@ const ToTrinhKhoiKien = (props) => {
     ]
     return (
       <React.Fragment>
-        <FileUpload
-          mode="basic"
-          accept="image/*"
-          maxFileSize={1000000}
-          chooseLabel="Nhập file"
-          className="mr-2 inline-block"
-        />
         <Button
           label="Xuất excel"
           icon="pi pi-upload"

@@ -321,13 +321,6 @@ const ToTrinhMienGiam = (props) => {
   const rightToolbarTemplate = () => {
     return (
       <React.Fragment>
-        <FileUpload
-          mode="basic"
-          accept="image/*"
-          maxFileSize={1000000}
-          chooseLabel="Nhập file"
-          className="mr-2 inline-block"
-        />
         <Button label="Xuất CSV" icon="pi pi-upload" severity="help" onClick={exportCSV} />
       </React.Fragment>
     )
