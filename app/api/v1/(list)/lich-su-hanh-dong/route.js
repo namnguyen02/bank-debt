@@ -25,7 +25,7 @@ export function GET(request) {
 
   return Action.read({
     table: 'lich_su_hanh_dong',
-    query: transformToQuery({ ...data, nhan_vien: ['ho_ten'] }),
+    query: transformToQuery(data),
     sortField: 'ngay_cap_nhat',
   })
 }

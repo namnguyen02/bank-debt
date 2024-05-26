@@ -219,7 +219,7 @@ const ChiTietToTrinhMienGiam = (props) => {
             style={{ height: '36px', width: '100px' }}
             onClick={() => handleAdd()}
           />
-        ) : props.user.role !== 'NPD' ? (
+        ) : props.user.role === 'SHB' && detail.trang_thai === 'Chưa duyệt' ? (
           <Button
             label="Lưu thay đổi"
             style={{ height: '36px' }}
@@ -269,7 +269,7 @@ const ChiTietToTrinhMienGiam = (props) => {
         setAmountToBeDecreased={setAmountToBeDecreased}
         detail={detail}
         setCanPressSave={setCanPressSave}
-        isNPD={props.user.role === 'NPD'}
+        role={props.user.role}
       />
     </div>
   )

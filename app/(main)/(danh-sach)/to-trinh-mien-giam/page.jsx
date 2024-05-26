@@ -51,11 +51,13 @@ const ToTrinhMienGiam = (props) => {
   }
 
   const getTTMGs = () => {
-    getListTTMG().then((res) => {
-      if (res && res.count) {
-        setData(res.results)
+    getListTTMG(props.user.role === 'SHB' ? `ma_nhan_vien=${props.user.ma_nhan_vien}` : '').then(
+      (res) => {
+        if (res && res.count) {
+          setData(res.results)
+        }
       }
-    })
+    )
   }
 
   useEffect(() => {
@@ -387,7 +389,12 @@ const ToTrinhMienGiam = (props) => {
               query: { ma_to_trinh: rowData.ma_to_trinh },
             }}
           >
-            <Button icon="pi pi-pencil" rounded severity="success" className="mr-2" />
+            <Button
+              icon={props.user.role === 'SHB' ? 'pi pi-pencil' : 'pi pi-search'}
+              rounded
+              severity="success"
+              className="mr-2"
+            />
           </Link>
 
           {rowData.trang_thai.toLowerCase() === 'chưa duyệt' && (

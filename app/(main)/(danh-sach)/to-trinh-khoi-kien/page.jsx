@@ -8,7 +8,6 @@ import { Button } from 'primereact/button'
 import { Column } from 'primereact/column'
 import { DataTable } from 'primereact/datatable'
 import { Dialog } from 'primereact/dialog'
-import { FileUpload } from 'primereact/fileupload'
 import { InputNumber } from 'primereact/inputnumber'
 import { InputText } from 'primereact/inputtext'
 import { InputTextarea } from 'primereact/inputtextarea'
@@ -65,11 +64,13 @@ const ToTrinhKhoiKien = (props) => {
       showAddSuccessfully()
       localStorage.removeItem('addTTDGKK')
     }
-    getListTTDGKK().then((res) => {
-      if (res && res.count) {
-        setTTKKs(res.results)
+    getListTTDGKK(props.user.role === 'SHB' ? `ma_nhan_vien=${props.user.ma_nhan_vien}` : '').then(
+      (res) => {
+        if (res && res.count) {
+          setTTKKs(res.results)
+        }
       }
-    })
+    )
   }, [])
 
   const openNew = () => {
@@ -361,7 +362,7 @@ const ToTrinhKhoiKien = (props) => {
     }).then((res) => {
       if (res && res.ma_to_trinh) {
         hideApproveDialog()
-        getListTTDGKK().then((res) => {
+        getListTTDGKK(`?ma_nhan_vien=${props.user.ma_nhan_vien}`).then((res) => {
           if (res && res.count) {
             setTTKKs(res.results)
           }
@@ -390,7 +391,7 @@ const ToTrinhKhoiKien = (props) => {
     }).then((res) => {
       if (res && res.ma_to_trinh) {
         hideDeclineDialog()
-        getListTTDGKK().then((res) => {
+        getListTTDGKK(`?ma_nhan_vien=${props.user.ma_nhan_vien}`).then((res) => {
           if (res && res.count) {
             setTTKKs(res.results)
           }
@@ -422,13 +423,15 @@ const ToTrinhKhoiKien = (props) => {
               <Button label="Thêm" icon="pi pi-plus" severity="success" className="mr-2" />
             </Link>
           )}
-          <Button
-            label="Xóa"
-            icon="pi pi-trash"
-            severity="danger"
-            onClick={confirmDeleteSelected}
-            disabled={!selectedTTKKs || !selectedTTKKs.length}
-          />
+          {['SHB', 'NPD'].includes(props.user.role) && (
+            <Button
+              label="Xóa"
+              icon="pi pi-trash"
+              severity="danger"
+              onClick={confirmDeleteSelected}
+              disabled={!selectedTTKKs || !selectedTTKKs.length}
+            />
+          )}
         </div>
       </React.Fragment>
     )
@@ -525,7 +528,12 @@ const ToTrinhKhoiKien = (props) => {
               query: { ma_to_trinh: rowData.ma_to_trinh },
             }}
           >
-            <Button icon="pi pi-pencil" rounded severity="success" className="mr-2" />
+            <Button
+              icon={props.user.role === 'NDH' ? 'pi pi-search' : 'pi pi-pencil'}
+              rounded
+              severity="success"
+              className="mr-2"
+            />
           </Link>
 
           {rowData.trang_thai.toLowerCase() === 'chưa duyệt' && (

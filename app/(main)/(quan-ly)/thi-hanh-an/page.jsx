@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import { connect } from 'react-redux'
 
 import { Accordion, AccordionTab } from 'primereact/accordion'
 import { Button } from 'primereact/button'
@@ -13,15 +14,15 @@ import { getJudgments } from 'actions/tien-do-thi-hanh-an/tien-do-thi-hanh-an'
 import { getListCustomer } from 'actions/customer/Customer'
 import { getListStaff } from 'actions/nhan-vien/nhan-vien'
 
-const ManageJudgmentExecution = () => {
+const ManageJudgmentExecution = (props) => {
   const [checkedList, setCheckedList] = useState([])
   const [data, setData] = useState([])
   const [customers, setCustomers] = useState([])
   const [staffs, setStaffs] = useState([])
   const toast = useRef(null)
 
-  const getListJudgments = () => {
-    getJudgments().then((res) => {
+  const getListJudgments = (query) => {
+    getJudgments(query ? query : `ma_nhan_vien=${props.user.ma_nhan_vien}`).then((res) => {
       if (res && !res.error) {
         setData(res.results)
       }
@@ -105,4 +106,10 @@ const ManageJudgmentExecution = () => {
   )
 }
 
-export default ManageJudgmentExecution
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  }
+}
+
+export default connect(mapStateToProps)(ManageJudgmentExecution)

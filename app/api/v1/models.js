@@ -98,7 +98,7 @@ const Action = {
       if (!error) {
         const res = await supabase
           .from('lich_hen')
-          .select('*')
+          .select('*, nhan_vien(ho_ten, ma_nhan_vien)')
           .eq(table === 'khoi_kien' ? 'ma_khoi_kien' : 'ma_thi_hanh_an', value) // value is ma_khoi_kien or ma_thi_hanh_an
           .order('updated_at', { ascending: false })
         if (!res.error) {
@@ -110,7 +110,7 @@ const Action = {
       if (!error && table === 'khoi_kien') {
         const res = await supabase
           .from('tam_ung_an_phi')
-          .select('*')
+          .select('*, nhan_vien(ho_ten, ma_nhan_vien)')
           .eq('ma_khoi_kien', value) // value is ma_khoi_kien
           .order('updated_at', { ascending: false })
         if (!res.error) {

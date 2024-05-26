@@ -5,6 +5,7 @@ export async function GET(request) {
   const searchParams = request.nextUrl.searchParams
   const offset = searchParams.get('offset')
   const limit = searchParams.get('limit')
+  const ma_nhan_vien = searchParams.get('ma_nhan_vien')
 
   const data = {
     '': ['*'],
@@ -12,6 +13,15 @@ export async function GET(request) {
     nhan_vien: ['ho_ten', 'ma_nhan_vien'],
     khoi_kien: ['*', 'nhan_vien (ma_nhan_vien, ho_ten)'],
     thi_hanh_an: ['*', 'nhan_vien (ma_nhan_vien, ho_ten)'],
+  }
+
+  if (ma_nhan_vien) {
+    return Action.read({
+      table: 'lich_hen',
+      query: transformToQuery(data),
+      column: 'ma_nhan_vien',
+      value: ma_nhan_vien,
+    })
   }
 
   return Action.read({

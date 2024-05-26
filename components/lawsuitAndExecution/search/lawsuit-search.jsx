@@ -6,6 +6,7 @@ import { AutoComplete } from 'primereact/autocomplete'
 import { Dropdown } from 'primereact/dropdown'
 import { Calendar } from 'primereact/calendar'
 import { InputNumber } from 'primereact/inputnumber'
+import { connect } from 'react-redux'
 
 import { provinces, districts } from 'utils/provinces-districts/provinces-districts'
 import { lawsuitStates } from 'utils/lawsuit-states/lawsuit-states'
@@ -95,7 +96,7 @@ const LawsuitSearch = (props) => {
       props.setFilterBody(filter)
     } else {
       props.setFilterBody({})
-      props.getListLawsuits()
+      props.getListLawsuits(`ma_nhan_vien=${props.user.ma_nhan_vien}`)
     }
   }
 
@@ -386,4 +387,10 @@ const LawsuitSearch = (props) => {
   )
 }
 
-export default LawsuitSearch
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  }
+}
+
+export default connect(mapStateToProps)(LawsuitSearch)
