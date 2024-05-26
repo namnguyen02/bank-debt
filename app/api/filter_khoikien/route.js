@@ -8,6 +8,9 @@ export async function POST(request) {
   let query = supabase.from('khoi_kien_filter').select(`*`, { count: 'exact' })
 
   // Condition chaining for filters
+  if (filter['ma_nv_uy_quyen']) {
+    query = query.eq('ma_nv_uy_quyen', filter['ma_nv_uy_quyen'])
+  }
   if (filter['ma_khoi_kien']) {
     query = query.eq('ma_khoi_kien', filter['ma_khoi_kien'])
   }

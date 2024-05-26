@@ -97,7 +97,9 @@ const ActionTable = (props) => {
           style={{ minWidth: '12rem' }}
         />
         <Column header="Ngày thực hiện" style={{ minWidth: '10rem' }} body={renderDate} />
-        <Column header="" style={{ minWidth: '14rem' }} body={renderBtn} />
+        {props.role === 'SHB' && (
+          <Column header="" style={{ minWidth: '14rem' }} body={renderBtn} />
+        )}
       </DataTable>
     </div>
   )

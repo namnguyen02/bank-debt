@@ -5,11 +5,21 @@ export function GET(request) {
   const searchParams = request.nextUrl.searchParams
   const offset = searchParams.get('offset')
   const limit = searchParams.get('limit')
+  const ma_nhan_vien = searchParams.get('ma_nhan_vien')
 
   const data = {
     '': ['*'],
     khach_hang: ['ho_ten', 'can_cuoc'],
     nhan_vien: ['ho_ten'],
+  }
+
+  if (ma_nhan_vien) {
+    return Action.read({
+      table: 'thi_hanh_an',
+      query: transformToQuery(data),
+      column: 'id_nguoi_duoc_uq',
+      value: ma_nhan_vien,
+    })
   }
 
   return Action.read({

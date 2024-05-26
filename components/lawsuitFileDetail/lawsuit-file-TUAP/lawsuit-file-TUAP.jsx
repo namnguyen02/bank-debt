@@ -93,10 +93,11 @@ const LawsuitFileTUAP = (props) => {
         ngay_dong_tuap: year2 ? `${year2}-${month2}-${date2}` : null,
         ngay_hoan_tuap: year3 ? `${year3}-${month3}-${date3}` : null,
         trang_thai_tuap: apState.name,
-        nguoi_thuc_hien: props.user.ho_ten,
+        // nguoi_thuc_hien: props.user.ho_ten,
         ma_khoi_kien: props.id,
         updated_at: 'Được thêm sau khi lưu',
         ma_khach_hang: props.data.ma_khach_hang,
+        ma_nhan_vien: props.user.ma_nhan_vien,
       },
       ...props.tuapForm,
     ])
@@ -296,6 +297,21 @@ const LawsuitFileTUAP = (props) => {
     )
   }
 
+  const renderTUAPCreator = (rowData) => {
+    if (rowData.updated_at === 'Được thêm sau khi lưu') {
+      return (
+        <div>
+          {props.user.ho_ten} ({props.user.ma_nhan_vien})
+        </div>
+      )
+    }
+    return (
+      <div>
+        {rowData.nhan_vien?.ho_ten} ({rowData.nhan_vien?.ma_nhan_vien})
+      </div>
+    )
+  }
+
   const renderUpdateTime = (rowData) => {
     if (rowData.updated_at === 'Được thêm sau khi lưu') {
       return <div>Được thêm sau khi lưu</div>
@@ -366,7 +382,7 @@ const LawsuitFileTUAP = (props) => {
           <Column field="so_bien_lai" header="Số biên lai" style={{ minWidth: '8rem' }} />
           <Column header="Số tiền hoàn" style={{ minWidth: '10rem' }} body={renderSoTienHoan} />
           <Column header="Ngày hoàn TUAP" style={{ minWidth: '8rem' }} body={renderNgayHoanTUAP} />
-          <Column field="nguoi_thuc_hien" header="Người thực hiện" style={{ minWidth: '12rem' }} />
+          <Column header="Người thực hiện" style={{ minWidth: '12rem' }} body={renderTUAPCreator} />
           <Column header="Ngày tạo TUAP" style={{ minWidth: '13rem' }} body={renderUpdateTime} />
         </DataTable>
       </div>

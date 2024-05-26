@@ -17,7 +17,7 @@ function getNewId(newestId) {
 export function GET(request) {
   const searchParams = request.nextUrl.searchParams
   const query = searchParams.get('ma_nhan_vien')
-
+  console.log(query)
   const data = {
     '': ['*'],
     khach_hang: ['ma_khach_hang', 'ho_ten'],

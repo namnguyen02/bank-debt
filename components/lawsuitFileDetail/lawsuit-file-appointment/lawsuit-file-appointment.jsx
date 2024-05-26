@@ -102,10 +102,11 @@ const LawsuitFileAppointment = (props) => {
                       ngay_hen: calendarValue.toString(),
                       noi_dung_hen: appointmentContent,
                       trang_thai_ho_so: props.state,
-                      nguoi_tao_lich_hen: props.user.ho_ten,
+                      // nguoi_tao_lich_hen: props.user.ho_ten,
                       ma_khoi_kien: props.id,
                       updated_at: 'Được thêm sau khi lưu',
                       ma_khach_hang: props.data.ma_khach_hang,
+                      ma_nhan_vien: props.user.ma_nhan_vien,
                     },
                     ...props.appointments,
                   ])
@@ -163,6 +164,21 @@ const LawsuitFileAppointment = (props) => {
     )
   }
 
+  const renderAppointmentCreator = (rowData) => {
+    if (rowData.updated_at === 'Được thêm sau khi lưu') {
+      return (
+        <div>
+          {props.user.ho_ten} ({props.user.ma_nhan_vien})
+        </div>
+      )
+    }
+    return (
+      <div>
+        {rowData.nhan_vien?.ho_ten} ({rowData.nhan_vien?.ma_nhan_vien})
+      </div>
+    )
+  }
+
   return (
     <div className="mt-3">
       <Dialog
@@ -209,9 +225,9 @@ const LawsuitFileAppointment = (props) => {
           <Column header="Ngày hẹn" style={{ minWidth: '8rem' }} body={renderAppointmentDate} />
           <Column field="noi_dung_hen" header="Nội dung hẹn" style={{ minWidth: '14rem' }} />
           <Column
-            field="nguoi_tao_lich_hen"
             header="Người tạo lịch hẹn"
-            style={{ minWidth: '12rem' }}
+            style={{ minWidth: '14rem' }}
+            body={renderAppointmentCreator}
           />
           <Column
             field="updated_at"
