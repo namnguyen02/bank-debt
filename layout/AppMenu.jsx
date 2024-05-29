@@ -38,14 +38,14 @@ const AppMenu = (props) => {
           icon: 'pi pi-fw pi-box',
           to: '/danh-muc-hanh-dong-thu-hoi-no',
         },
-        {
-          label: 'Kết quả thu hồi',
-          icon: 'pi pi-fw pi-inbox',
-        },
-        {
-          label: 'Biểu mẫu',
-          icon: 'pi pi-fw pi-paperclip',
-        },
+        // {
+        //   label: 'Kết quả thu hồi',
+        //   icon: 'pi pi-fw pi-inbox',
+        // },
+        // {
+        //   label: 'Biểu mẫu',
+        //   icon: 'pi pi-fw pi-paperclip',
+        // },
       ]
     }
   }

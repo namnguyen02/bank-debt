@@ -31,7 +31,7 @@ export async function GET(request) {
   } else {
     let apiQuery = supabase
       .from('khach_hang')
-      .select('*, du_no_the_td(id, nhom_no, so_ngay_qua_han, tong_du_no, da_thanh_toan)', {
+      .select('*, du_no_the_td(id, nhom_no, tong_du_no, da_thanh_toan)', {
         count: 'exact',
       })
     if (ma_nhan_vien && ma_nhan_vien.indexOf('SHB') >= 0) {
@@ -92,10 +92,30 @@ export async function POST(request) {
       return error
     }
 
+    let nguoi_than = []
+    if (dataToCreate.nguoi_than_khach_hang) {
+      nguoi_than = dataToCreate.nguoi_than_khach_hang
+      delete dataToCreate.nguoi_than_khach_hang
+    }
+
     const { error } = await supabase.from('khach_hang').insert(dataToCreate)
 
     if (error) {
       return NextResponse.json({ body: JSON.stringify(error) }, { status: 500 })
+    }
+
+    // Add relatives
+    if (nguoi_than.length > 0) {
+      const addedCustomerIdArr = nguoi_than.map((item) => {
+        return {
+          ...item,
+          ma_khach_hang: dataToCreate.ma_khach_hang,
+        }
+      })
+      const { error } = await supabase.from('nguoi_than_khach_hang').insert(addedCustomerIdArr)
+      if (error) {
+        return NextResponse.json({ body: JSON.stringify(error) }, { status: 500 })
+      }
     }
 
     return NextResponse.json({ body: 'Inserted' }, { status: 200 })

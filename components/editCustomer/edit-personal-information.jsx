@@ -38,6 +38,14 @@ const EditPersonalInformation = (props) => {
     return new Date(year, month - 1, day)
   }
 
+  const convertBirthday = (birthday) => {
+    const newDate = new Date(birthday)
+    const day = newDate.getDate()
+    const month = newDate.getMonth() - 1
+    const year = newDate.getFullYear()
+    return `${day}/${month}/${year}`
+  }
+
   return (
     <div>
       <div className="field grid">
@@ -95,9 +103,11 @@ const EditPersonalInformation = (props) => {
             showIcon
             showButtonBar
             // value={calendarValue}
-            value={getBirthdayFormatted(props.customerForm.ngay_sinh)}
+            value={calendarValue}
             onChange={(e) => {
               setCalendarValue(e.value ?? null)
+              console.log(convertBirthday(e.value.toISOString()))
+              props.handleChange('ngay_sinh', convertBirthday(e.value.toISOString()))
             }}
             formatDateTime={formatDate}
           />
@@ -217,7 +227,7 @@ const EditPersonalInformation = (props) => {
             label="Thêm"
             style={{ width: '90px', height: '36px' }}
             // onClick={props.handleAddCustomer}
-            onClick={() => console.log(relatives)}
+            onClick={() => props.handleAddCustomer()}
           />
         ) : (
           <Button

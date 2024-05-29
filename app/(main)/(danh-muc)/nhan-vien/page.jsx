@@ -274,6 +274,7 @@ const StaffList = () => {
             Vai trò <span style={{ color: 'red' }}>*</span>
           </label>
           <Dropdown
+            id="role"
             value={role}
             onChange={(e) => {
               setRole(e.value)
@@ -332,6 +333,7 @@ const StaffList = () => {
               onClick={() => onCancel()}
             />
             <Button
+              id="add-button"
               label="Tạo"
               style={{ width: '80px', height: '36px', marginLeft: '16px' }}
               onClick={() => handleAddStaff()}
@@ -372,7 +374,12 @@ const StaffList = () => {
             </div>
 
             <div className="flex mt-3" style={{ width: '100%' }}>
-              <div style={{ width: '80px', textAlign: 'right', marginRight: '8px' }}>Email:</div>
+              <div
+                id="create-success"
+                style={{ width: '80px', textAlign: 'right', marginRight: '8px' }}
+              >
+                Email:
+              </div>
               <div>
                 <b>{createdEmail}</b>
               </div>
