@@ -22,7 +22,7 @@ const TinhHinhXLNQuaHan = (props) => {
             onChange={(e) =>
               props.setXlnSituation({ ...props.xlnSituation, dien_thoai: e.target.value })
             }
-            disabled={props.role !== 'SHB' || props.approvedOrRefused}
+            disabled={props.role !== 'SHB' || (!props.isCreateNew && props.approvedOrRefused)}
           />
         </div>
       </div>
@@ -39,7 +39,7 @@ const TinhHinhXLNQuaHan = (props) => {
             onChange={(e) =>
               props.setXlnSituation({ ...props.xlnSituation, gui_thu_cong_van: e.target.value })
             }
-            disabled={props.role !== 'SHB' || props.approvedOrRefused}
+            disabled={props.role !== 'SHB' || (!props.isCreateNew && props.approvedOrRefused)}
           />
         </div>
       </div>
@@ -56,7 +56,7 @@ const TinhHinhXLNQuaHan = (props) => {
             onChange={(e) =>
               props.setXlnSituation({ ...props.xlnSituation, den_nha_khach_hang: e.target.value })
             }
-            disabled={props.role !== 'SHB' || props.approvedOrRefused}
+            disabled={props.role !== 'SHB' || (!props.isCreateNew && props.approvedOrRefused)}
           />
         </div>
       </div>
@@ -73,7 +73,7 @@ const TinhHinhXLNQuaHan = (props) => {
             onChange={(e) =>
               props.setXlnSituation({ ...props.xlnSituation, den_cong_ty: e.target.value })
             }
-            disabled={props.role !== 'SHB' || props.approvedOrRefused}
+            disabled={props.role !== 'SHB' || (!props.isCreateNew && props.approvedOrRefused)}
           />
         </div>
       </div>
@@ -90,7 +90,7 @@ const TinhHinhXLNQuaHan = (props) => {
             onChange={(e) =>
               props.setXlnSituation({ ...props.xlnSituation, tac_dong_khac: e.target.value })
             }
-            disabled={props.role !== 'SHB' || props.approvedOrRefused}
+            disabled={props.role !== 'SHB' || (!props.isCreateNew && props.approvedOrRefused)}
           />
         </div>
       </div>

@@ -23,7 +23,10 @@ const ThongTinGiamLai = (props) => {
                 props.setCanPressSave(true)
               }}
               mode="decimal"
-              disabled={props.role !== 'SHB' || props.detail.trang_thai !== 'Chưa duyệt'}
+              disabled={
+                props.role !== 'SHB' ||
+                (!props.isCreateNew && props.detail.trang_thai !== 'Chưa duyệt')
+              }
             ></InputNumber>
           </div>
         </div>
@@ -41,7 +44,10 @@ const ThongTinGiamLai = (props) => {
                 props.setCalendarValue(e.value ?? null)
                 props.setCanPressSave(true)
               }}
-              disabled={props.role !== 'SHB' || props.detail.trang_thai !== 'Chưa duyệt'}
+              disabled={
+                props.role !== 'SHB' ||
+                (!props.isCreateNew && props.detail.trang_thai !== 'Chưa duyệt')
+              }
             />
           </div>
         </div>
@@ -58,7 +64,10 @@ const ThongTinGiamLai = (props) => {
                 props.setCanPressSave(true)
               }}
               mode="decimal"
-              disabled={props.role !== 'SHB' || props.detail.trang_thai !== 'Chưa duyệt'}
+              disabled={
+                props.role !== 'SHB' ||
+                (!props.isCreateNew && props.detail.trang_thai !== 'Chưa duyệt')
+              }
             />
           </div>
         </div>

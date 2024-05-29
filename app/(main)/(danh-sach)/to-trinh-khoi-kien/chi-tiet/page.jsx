@@ -280,6 +280,7 @@ const ChiTietToTrinhKhoiKien = (props) => {
       />
 
       <DeXuat
+        isCreateNew={isCreateNew}
         suggestion={suggestion}
         setSuggestion={setSuggestion}
         role={props.user.role}
@@ -287,6 +288,7 @@ const ChiTietToTrinhKhoiKien = (props) => {
       />
 
       <DanhGia
+        isCreateNew={isCreateNew}
         evaluations={evaluations}
         setEvaluations={setEvaluations}
         role={props.user.role}
@@ -294,6 +296,7 @@ const ChiTietToTrinhKhoiKien = (props) => {
       />
 
       <TinhHinhXLNQuaHan
+        isCreateNew={isCreateNew}
         xlnSituation={xlnSituation}
         setXlnSituation={setXlnSituation}
         role={props.user.role}

@@ -26,7 +26,7 @@ const DanhGia = (props) => {
               value="Khách hàng chết"
               checked={props.evaluations.indexOf('Khách hàng chết') !== -1}
               onChange={onCheckboxChange}
-              disabled={props.role !== 'SHB' || props.approvedOrRefused}
+              disabled={props.role !== 'SHB' || (!props.isCreateNew && props.approvedOrRefused)}
             />
             <label htmlFor="checkOption1">Khách hàng chết</label>
           </div>
@@ -40,7 +40,7 @@ const DanhGia = (props) => {
               value="Khách hàng đang thi hành án tù"
               checked={props.evaluations.indexOf('Khách hàng đang thi hành án tù') !== -1}
               onChange={onCheckboxChange}
-              disabled={props.role !== 'SHB' || props.approvedOrRefused}
+              disabled={props.role !== 'SHB' || (!props.isCreateNew && props.approvedOrRefused)}
             />
             <label htmlFor="checkOption2">Khách hàng đang thi hành án tù</label>
           </div>
@@ -54,7 +54,7 @@ const DanhGia = (props) => {
               value="Khách hàng không thừa nhận sử dụng thẻ"
               checked={props.evaluations.indexOf('Khách hàng không thừa nhận sử dụng thẻ') !== -1}
               onChange={onCheckboxChange}
-              disabled={props.role !== 'SHB' || props.approvedOrRefused}
+              disabled={props.role !== 'SHB' || (!props.isCreateNew && props.approvedOrRefused)}
             />
             <label htmlFor="checkOption3">Khách hàng không thừa nhận sử dụng thẻ</label>
           </div>
@@ -68,7 +68,7 @@ const DanhGia = (props) => {
               value="Hồ sơ có dấu hiệu giả mạo - sự vụ"
               checked={props.evaluations.indexOf('Hồ sơ có dấu hiệu giả mạo - sự vụ') !== -1}
               onChange={onCheckboxChange}
-              disabled={props.role !== 'SHB' || props.approvedOrRefused}
+              disabled={props.role !== 'SHB' || (!props.isCreateNew && props.approvedOrRefused)}
             />
             <label htmlFor="checkOption4">Hồ sơ có dấu hiệu giả mạo - sự vụ</label>
           </div>
@@ -82,7 +82,7 @@ const DanhGia = (props) => {
               value="Khách hàng đang ở nước ngoài"
               checked={props.evaluations.indexOf('Khách hàng đang ở nước ngoài') !== -1}
               onChange={onCheckboxChange}
-              disabled={props.role !== 'SHB' || props.approvedOrRefused}
+              disabled={props.role !== 'SHB' || (!props.isCreateNew && props.approvedOrRefused)}
             />
             <label htmlFor="checkOption5">Khách hàng đang ở nước ngoài</label>
           </div>
@@ -96,7 +96,7 @@ const DanhGia = (props) => {
               value="Khách hàng không có khả năng trả nợ"
               checked={props.evaluations.indexOf('Khách hàng không có khả năng trả nợ') !== -1}
               onChange={onCheckboxChange}
-              disabled={props.role !== 'SHB' || props.approvedOrRefused}
+              disabled={props.role !== 'SHB' || (!props.isCreateNew && props.approvedOrRefused)}
             />
             <label htmlFor="checkOption6">Khách hàng không có khả năng trả nợ</label>
           </div>
@@ -110,7 +110,7 @@ const DanhGia = (props) => {
               value="Khách hàng không có ý định trả nợ"
               checked={props.evaluations.indexOf('Khách hàng không có ý định trả nợ') !== -1}
               onChange={onCheckboxChange}
-              disabled={props.role !== 'SHB' || props.approvedOrRefused}
+              disabled={props.role !== 'SHB' || (!props.isCreateNew && props.approvedOrRefused)}
             />
             <label htmlFor="checkOption7">Khách hàng không có ý định trả nợ</label>
           </div>
