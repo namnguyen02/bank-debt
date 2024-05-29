@@ -213,15 +213,19 @@ const NonePerformingLoanList = (props) => {
           <Column field="ho_ten" header="Họ và tên" style={{ minWidth: '12rem' }} />
           <Column field="can_cuoc" header="Căn cước công dân" style={{ minWidth: '11rem' }} />
           <Column field="dien_thoai" header="Số điện thoại" style={{ minWidth: '10rem' }} />
-          <Column field="nhom_no" header="Nhóm nợ" style={{ minWidth: '7rem' }} />
-          <Column field="so_ngay_qua_han" header="Số ngày quá hạn" style={{ minWidth: '10rem' }} />
+          <Column field="du_no_the_td.nhom_no" header="Nhóm nợ" style={{ minWidth: '7rem' }} />
           <Column
-            field="tong_du_no_hien_tai"
+            field="du_no_the_td.so_ngay_qua_han"
+            header="Số ngày quá hạn"
+            style={{ minWidth: '10rem' }}
+          />
+          <Column
+            field="du_no_the_td.tong_du_no"
             header="Tổng dư nợ hiện tại"
             style={{ minWidth: '12rem' }}
           />
           <Column
-            field="so_tien_da_thanh_toan"
+            field="du_no_the_td.da_thanh_toan"
             header="Số tiền đã thanh toán"
             style={{ minWidth: '13rem' }}
           />

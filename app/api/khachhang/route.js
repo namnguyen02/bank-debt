@@ -11,7 +11,10 @@ export async function GET(request) {
   const ma_nhan_vien = obj['ma_nhan_vien']
 
   if (obj['offset'] && obj['limit']) {
-    const { data, error } = await supabase.from('khach_hang').select('*').range(offset, limit)
+    const { data, error } = await supabase
+      .from('khach_hang')
+      .select('*, du_no_the_td(id, nhom_no, so_ngay_qua_han, tong_du_no, da_thanh_toan)')
+      .range(offset, limit)
     if (error) {
       return NextResponse.json(
         {
@@ -26,7 +29,11 @@ export async function GET(request) {
       { status: 200 }
     )
   } else {
-    let apiQuery = supabase.from('khach_hang').select('*', { count: 'exact' })
+    let apiQuery = supabase
+      .from('khach_hang')
+      .select('*, du_no_the_td(id, nhom_no, so_ngay_qua_han, tong_du_no, da_thanh_toan)', {
+        count: 'exact',
+      })
     if (ma_nhan_vien && ma_nhan_vien.indexOf('SHB') >= 0) {
       apiQuery = apiQuery.eq('nhan_vien_phu_trach_1', ma_nhan_vien)
     }

@@ -20,7 +20,7 @@ const StaffList = () => {
   const [loading, setLoading] = useState(true)
   const [globalFilterValue1, setGlobalFilterValue1] = useState('')
   const [onAddStaff, setOnAddStaff] = useState(false)
-  const [onConfirm, setOnConfirm] = useState('')
+  const [onConfirm, setOnConfirm] = useState({})
   const [staffForm, setStaffForm] = useState({})
   const [showSuccess, setShowSuccess] = useState(false)
   const [createdEmail, setCreatedEmail] = useState('')
@@ -142,20 +142,26 @@ const StaffList = () => {
         informDeleteSuccessfully()
       }
     })
-    setOnConfirm('')
+    setOnConfirm({})
   }
 
   const renderAction = (rowData) => {
+    console.log(rowData)
     return (
       <React.Fragment>
         <div
           className="cursor-pointer"
-          onClick={() => setOnConfirm(rowData.ma_nhan_vien)}
+          onClick={() =>
+            setOnConfirm({
+              ma_nhan_vien: rowData.user_metadata.ma_nhan_vien,
+              ho_ten: rowData.user_metadata.ho_ten,
+            })
+          }
           style={{ color: 'red' }}
         >
           Xóa
         </div>
-        <Dialog
+        {/* <Dialog
           header="Xóa nhân viên"
           visible={rowData.ma_nhan_vien !== '' && rowData.ma_nhan_vien === onConfirm}
           onHide={() => setOnConfirm('')}
@@ -185,7 +191,7 @@ const StaffList = () => {
               />
             </div>
           </div>
-        </Dialog>
+        </Dialog> */}
       </React.Fragment>
     )
   }
@@ -272,6 +278,7 @@ const StaffList = () => {
             onChange={(e) => {
               setRole(e.value)
               handleChange('permission', rolePermission[e.value.name])
+              setErrorForm({ ...errorForm, PermissionError: false })
             }}
             options={[
               { name: 'Người điều hành' },
@@ -283,6 +290,7 @@ const StaffList = () => {
             ]}
             optionLabel="name"
             placeholder="Chọn vai trò"
+            className={errorForm.PermissionError ? 'p-invalid' : ''}
           />
         </div>
 
@@ -421,6 +429,38 @@ const StaffList = () => {
             {renderAddStaffContent()}
           </Dialog>
           {renderSuccess()}
+          {console.log(onConfirm)}
+          <Dialog
+            header="Xóa nhân viên"
+            visible={onConfirm.ma_nhan_vien}
+            onHide={() => setOnConfirm({})}
+            style={{ width: '350px' }}
+            modal
+          >
+            <div>
+              <div className="flex align-items-center justify-content-center">
+                <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+                <span>
+                  Bạn có chắc chắn muốn xóa nhân viên <b>{onConfirm.ho_ten}</b> không?
+                </span>
+              </div>
+
+              <div className="flex justify-content-center mt-5">
+                <Button
+                  label="Hủy"
+                  severity="primary"
+                  outlined
+                  style={{ width: '80px', height: '36px' }}
+                  onClick={() => setOnConfirm({})}
+                />
+                <Button
+                  label="Xóa"
+                  style={{ width: '80px', height: '36px', marginLeft: '16px' }}
+                  // onClick={() => handleDeleteStaff(rowData.ma_nhan_vien)}
+                />
+              </div>
+            </div>
+          </Dialog>
         </div>
       </div>
       <Toast ref={toast} />

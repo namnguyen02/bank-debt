@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import React, { useState, useEffect, useRef } from 'react'
+import { connect } from 'react-redux'
 
 import { Accordion, AccordionTab } from 'primereact/accordion'
 import { Button } from 'primereact/button'
@@ -13,7 +14,7 @@ import { getListCustomer } from 'actions/customer/Customer'
 import { getListLawsuit, getListLawsuitFilter } from 'actions/tien-do-khoi-kien/tien-do-khoi-kien'
 import { getListStaff } from 'actions/nhan-vien/nhan-vien'
 
-const ManageLawsuit = () => {
+const ManageLawsuit = (props) => {
   const [checkedList, setCheckedList] = useState([])
   const [customers, setCustomers] = useState([])
   const [staffs, setStaffs] = useState([])
@@ -37,8 +38,8 @@ const ManageLawsuit = () => {
     })
   }
 
-  const getListLawsuits = () => {
-    getListLawsuit().then((res) => {
+  const getListLawsuits = (query) => {
+    getListLawsuit(query ? query : `ma_nhan_vien=${props.user.ma_nhan_vien}`).then((res) => {
       if (res && res.count) {
         setLawsuits(res.results)
       }
@@ -46,11 +47,13 @@ const ManageLawsuit = () => {
   }
 
   const getListLawsuitsWithFilter = (filter) => {
-    getListLawsuitFilter({ filter: filter }).then((res) => {
-      if (res && res.count >= 0) {
-        setLawsuits(res.result)
+    getListLawsuitFilter({ filter: { ...filter, ma_nv_uy_quyen: props.user.ma_nhan_vien } }).then(
+      (res) => {
+        if (res && res.count >= 0) {
+          setLawsuits(res.result)
+        }
       }
-    })
+    )
   }
 
   const informAddSuccessfully = () => {
@@ -121,4 +124,10 @@ const ManageLawsuit = () => {
   )
 }
 
-export default ManageLawsuit
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  }
+}
+
+export default connect(mapStateToProps)(ManageLawsuit)
