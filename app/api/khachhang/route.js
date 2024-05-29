@@ -23,7 +23,7 @@ export async function GET(request) {
         { status: 500 }
       )
     }
-
+    data.sort((a, b) => -a.ma_khach_hang + b.ma_khach_hang)
     return NextResponse.json(
       { count: data.length, next: null, previous: null, results: data },
       { status: 200 }
@@ -46,6 +46,7 @@ export async function GET(request) {
         { status: 500 }
       )
     }
+    data.sort((a, b) => -a.ma_khach_hang + b.ma_khach_hang)
 
     return NextResponse.json(
       { count: count, next: null, previous: null, results: data },
