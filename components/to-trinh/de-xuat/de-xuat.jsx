@@ -59,7 +59,7 @@ const DeXuat = (props) => {
             onChange={(e) =>
               props.setSuggestion({ ...props.suggestion, pa_hoa_giai: e.target.value })
             }
-            disabled={props.role !== 'SHB' || props.approvedOrRefused}
+            disabled={props.role !== 'SHB' || (!props.isCreateNew && props.approvedOrRefused)}
           />
         </div>
       </div>
@@ -76,7 +76,7 @@ const DeXuat = (props) => {
             onChange={(e) =>
               props.setSuggestion({ ...props.suggestion, pa_xet_xu: e.target.value })
             }
-            disabled={props.role !== 'SHB' || props.approvedOrRefused}
+            disabled={props.role !== 'SHB' || (!props.isCreateNew && props.approvedOrRefused)}
           />
         </div>
       </div>
