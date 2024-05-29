@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
 import { connect } from 'react-redux'
+import moment from 'moment'
 
 import { FilterMatchMode, FilterOperator } from 'primereact/api'
 
@@ -105,6 +106,17 @@ const NonePerformingLoanList = (props) => {
     })
     setCustomers(customers.filter((item) => item.ma_khach_hang !== id))
     setOnConfirm('')
+  }
+
+  const renderSoNgayQuaHan = (rowData) => {
+    console.log(rowData.du_no_the_td?.ngay_chuyen_nhom_3)
+    if (rowData.du_no_the_td?.ngay_chuyen_nhom_3) {
+      const startDate = new Date(rowData.du_no_the_td?.ngay_chuyen_nhom_3)
+      const endDate = new Date()
+      const diffInTime = endDate.getTime() - startDate.getTime()
+      const diffInDays = Math.floor(diffInTime / (1000 * 3600 * 24))
+      return diffInDays
+    }
   }
 
   const renderAction = (rowData) => {
@@ -215,9 +227,9 @@ const NonePerformingLoanList = (props) => {
           <Column field="dien_thoai" header="Số điện thoại" style={{ minWidth: '10rem' }} />
           <Column field="du_no_the_td.nhom_no" header="Nhóm nợ" style={{ minWidth: '7rem' }} />
           <Column
-            field="du_no_the_td.so_ngay_qua_han"
             header="Số ngày quá hạn"
             style={{ minWidth: '10rem' }}
+            body={renderSoNgayQuaHan}
           />
           <Column
             field="du_no_the_td.tong_du_no"

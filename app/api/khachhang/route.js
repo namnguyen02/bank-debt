@@ -13,7 +13,7 @@ export async function GET(request) {
   if (obj['offset'] && obj['limit']) {
     const { data, error } = await supabase
       .from('khach_hang')
-      .select('*, du_no_the_td(id, nhom_no, so_ngay_qua_han, tong_du_no, da_thanh_toan)')
+      .select('*, du_no_the_td(id, nhom_no, ngay_chuyen_nhom_3, tong_du_no, da_thanh_toan)')
       .range(offset, limit)
     if (error) {
       return NextResponse.json(
@@ -31,7 +31,7 @@ export async function GET(request) {
   } else {
     let apiQuery = supabase
       .from('khach_hang')
-      .select('*, du_no_the_td(id, nhom_no, tong_du_no, da_thanh_toan)', {
+      .select('*, du_no_the_td(id, nhom_no, ngay_chuyen_nhom_3, tong_du_no, da_thanh_toan)', {
         count: 'exact',
       })
     if (ma_nhan_vien && ma_nhan_vien.indexOf('SHB') >= 0) {
