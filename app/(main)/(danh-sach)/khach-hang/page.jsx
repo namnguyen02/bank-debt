@@ -169,6 +169,12 @@ const NonePerformingLoanList = (props) => {
     )
   }
 
+  const renderDaThanhToan = (rowData) => {
+    if (rowData.du_no_the_td?.da_thanh_toan) {
+      return <div>{Math.round(rowData.du_no_the_td?.da_thanh_toan)}</div>
+    }
+  }
+
   const informAddSuccessfully = () => {
     toast.current?.show({
       severity: 'success',
@@ -236,9 +242,10 @@ const NonePerformingLoanList = (props) => {
             style={{ minWidth: '12rem' }}
           />
           <Column
-            field="du_no_the_td.da_thanh_toan"
+            // field="du_no_the_td.da_thanh_toan"
             header="Số tiền đã thanh toán"
             style={{ minWidth: '13rem' }}
+            body={renderDaThanhToan}
           />
           <Column style={{ minWidth: '1rem' }} body={renderAction} />
         </DataTable>
