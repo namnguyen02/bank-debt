@@ -2,7 +2,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
 import { connect } from 'react-redux'
-import moment from 'moment'
 
 import { FilterMatchMode, FilterOperator } from 'primereact/api'
 
