@@ -62,6 +62,9 @@ const DebtRecoveryActions = (props) => {
   const [evaluationPoint, setEvaluationPoint] = useState(0)
   const [dataToPredict, setDataToPredict] = useState([])
   const [searchResult, setSearchResult] = useState('')
+  const [showResultModal, setShowResultModel] = useState(false)
+  const [isTraining, setIsTraining] = useState(false)
+  const [accuracy, setAccuracy] = useState('')
 
   const toast = useRef(null)
   console.log(props.user.ma_nhan_vien)
@@ -356,9 +359,36 @@ const DebtRecoveryActions = (props) => {
   }, [])
 
   const trainModelAI = async () => {
+    setShowResultModel(true)
+    setIsTraining(true)
     getDataToTrain().then((res) => {
       if (res && res.xTrain && res.yTrain) {
-        fetch('https://test-fastapi-7m21.onrender.com/train', {
+        // fetch('https://test-fastapi-7m21.onrender.com/train', {
+        //   method: 'POST',
+        //   headers: {
+        //     'Content-Type': 'application/json',
+        //   },
+        //   body: JSON.stringify(res),
+        // })
+        //   .then((response) => {
+        //     if (response.ok) {
+        //       return response.json()
+        //     } else {
+        //       throw new Error('Request failed')
+        //     }
+        //   })
+        //   .then((data) => {
+        //     if (data && data.result === 'success') {
+        //       informTrainSuccessfully()
+        //     } else {
+        //       informTrainFailed()
+        //     }
+        //   })
+        //   .catch((error) => {
+        //     console.error(error)
+        //     informTrainFailed()
+        //   })
+        fetch('http://127.0.0.1:8000/train', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -373,11 +403,13 @@ const DebtRecoveryActions = (props) => {
             }
           })
           .then((data) => {
-            if (data && data.result === 'success') {
-              informTrainSuccessfully()
-            } else {
-              informTrainFailed()
-            }
+            // if (data && data.result === 'success') {
+            //   informTrainSuccessfully()
+            // } else {
+            //   informTrainFailed()
+            // }
+            setIsTraining(false)
+            setAccuracy(data.accuracy)
           })
           .catch((error) => {
             console.error(error)
@@ -845,6 +877,38 @@ const DebtRecoveryActions = (props) => {
               </div>
             </div>
           </div>
+        </Dialog>
+
+        <Dialog
+          header="Train model"
+          visible={showResultModal}
+          onHide={() => setShowResultModel(false)}
+          style={{ width: '400px' }}
+          modal
+        >
+          {isTraining ? (
+            <div className="flex flex-column align-items-center">
+              <div className="text-center">Đang train model, vui lòng đợi...</div>
+              <div className="mt-3">
+                <i className="pi pi-spin pi-spinner" style={{ fontSize: '2rem' }}></i>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <div className="flex flex-column align-items-center">
+                <div className="text-center">Train model thành công</div>
+                <div className="mt-3">
+                  <i
+                    className="pi pi-check-circle"
+                    style={{ fontSize: '2rem', color: 'green' }}
+                  ></i>
+                </div>
+                <div className="mt-3">
+                  <b>Độ chính xác: {accuracy}</b>
+                </div>
+              </div>
+            </div>
+          )}
         </Dialog>
 
         <Dialog
