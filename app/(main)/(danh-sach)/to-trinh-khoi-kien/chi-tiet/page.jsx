@@ -237,32 +237,28 @@ const ChiTietToTrinhKhoiKien = (props) => {
             Quay lại
           </div>
         </div>
-        {isCreateNew ? (
+        {isCreateNew && (
           <Button
             label="Thêm"
             style={{ height: '36px', width: '100px' }}
             onClick={() => handleAdd()}
           />
-        ) : props.user.role === 'SHB' && detail.trang_thai === 'Chưa duyệt' ? (
+        )}
+        {props.user.role === 'SHB' && detail.trang_thai === 'Chưa duyệt' && (
           <Button label="Lưu thay đổi" style={{ height: '36px' }} onClick={() => handleUpdate()} />
-        ) : (
-          detail.trang_thai?.toLowerCase() === 'chưa duyệt' && (
-            <div>
-              <Button
-                label="Từ chối"
-                severity="danger"
-                outlined
-                style={{ height: '36px' }}
-                onClick={() => handleDecline()}
-                className="mr-3"
-              />
-              <Button
-                label="Phê duyệt"
-                style={{ height: '36px' }}
-                onClick={() => handleApprove()}
-              />
-            </div>
-          )
+        )}
+        {props.user.role === 'NPD' && detail.trang_thai === 'Chưa duyệt' && (
+          <div>
+            <Button
+              label="Từ chối"
+              severity="danger"
+              outlined
+              style={{ height: '36px' }}
+              onClick={() => handleDecline()}
+              className="mr-3"
+            />
+            <Button label="Phê duyệt" style={{ height: '36px' }} onClick={() => handleApprove()} />
+          </div>
         )}
       </div>
 

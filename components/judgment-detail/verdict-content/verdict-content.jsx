@@ -37,7 +37,10 @@ const VerdictContent = (props) => {
             <InputText
               value={props.form.so_ban_an}
               onChange={(e) => props.setForm({ ...props.form, so_ban_an: e.target.value })}
-              disabled={['Đang THA', 'Kết thúc THA'].includes(props.data.trang_thai_tha)}
+              disabled={
+                ['Đang THA', 'Kết thúc THA'].includes(props.data.trang_thai_tha) ||
+                props.role !== 'SHB'
+              }
             />
           </div>
         </div>
@@ -49,7 +52,8 @@ const VerdictContent = (props) => {
             </label>
           </div>
           <div className={styles.inputContainer}>
-            {['Đang THA', 'Kết thúc THA'].includes(props.data.trang_thai_tha) ? (
+            {['Đang THA', 'Kết thúc THA'].includes(props.data.trang_thai_tha) ||
+            props.role !== 'SHB' ? (
               <InputText value={changeObjToStr(props.form.ngay_ra_ban_an)} disabled />
             ) : (
               <Calendar
@@ -81,7 +85,10 @@ const VerdictContent = (props) => {
               value={props.form.so_tien_ban_an}
               onChange={(e) => props.setForm({ ...props.form, so_tien_ban_an: e.value })}
               mode="decimal"
-              disabled={['Đang THA', 'Kết thúc THA'].includes(props.data.trang_thai_tha)}
+              disabled={
+                ['Đang THA', 'Kết thúc THA'].includes(props.data.trang_thai_tha) ||
+                props.role !== 'SHB'
+              }
             ></InputNumber>
           </div>
         </div>
@@ -94,11 +101,13 @@ const VerdictContent = (props) => {
         </div>
         <InputTextarea
           type="text"
-          placeholder="Nội dung bản án"
+          placeholder={props.isCreateNew ? 'Nội dung bản án' : ''}
           rows={12}
           value={props.form.noi_dung_ban_an}
           onChange={(e) => props.setForm({ ...props.form, noi_dung_ban_an: e.target.value })}
-          disabled={['Đang THA', 'Kết thúc THA'].includes(props.data.trang_thai_tha)}
+          disabled={
+            ['Đang THA', 'Kết thúc THA'].includes(props.data.trang_thai_tha) || props.role !== 'SHB'
+          }
         />
       </div>
     </div>

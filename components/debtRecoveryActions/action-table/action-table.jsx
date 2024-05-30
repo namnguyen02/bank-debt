@@ -30,11 +30,11 @@ const ActionTable = (props) => {
   const renderBtn = (rowData) => {
     return (
       <div style={{ display: 'flex' }}>
-        <Button
+        {/* <Button
           label="Xem thông báo"
           severity="primary"
           style={{ width: '140px', height: '36px' }}
-        />
+        /> */}
         <Button
           label="Cập nhật"
           severity="primary"
@@ -98,7 +98,7 @@ const ActionTable = (props) => {
         />
         <Column header="Ngày thực hiện" style={{ minWidth: '10rem' }} body={renderDate} />
         {props.role === 'SHB' && (
-          <Column header="" style={{ minWidth: '14rem' }} body={renderBtn} />
+          <Column header="" style={{ minWidth: '12rem' }} body={renderBtn} />
         )}
       </DataTable>
     </div>

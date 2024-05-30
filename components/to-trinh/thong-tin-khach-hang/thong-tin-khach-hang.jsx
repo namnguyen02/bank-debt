@@ -1,5 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
+
 import { InputText } from 'primereact/inputtext'
 import { AutoComplete } from 'primereact/autocomplete'
 import { Dropdown } from 'primereact/dropdown'
@@ -30,7 +32,7 @@ const ThongTinKhachHang = (props) => {
   }
 
   const getListCustomers = () => {
-    getListCustomer('queryAll=true').then((res) => {
+    getListCustomer(`queryAll=true&ma_nhan_vien=${props.user.ma_nhan_vien}`).then((res) => {
       if (res && res.count) {
         setCustomers(res.results)
       }
@@ -38,7 +40,9 @@ const ThongTinKhachHang = (props) => {
   }
 
   useEffect(() => {
-    getListCustomers()
+    if (props.isCreateNew) {
+      getListCustomers()
+    }
   }, [])
 
   return (
@@ -188,4 +192,10 @@ const ThongTinKhachHang = (props) => {
   )
 }
 
-export default ThongTinKhachHang
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  }
+}
+
+export default connect(mapStateToProps)(ThongTinKhachHang)

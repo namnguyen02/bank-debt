@@ -1,5 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
+
 import { InputText } from 'primereact/inputtext'
 import { AutoComplete } from 'primereact/autocomplete'
 import { Dropdown } from 'primereact/dropdown'
@@ -16,7 +18,6 @@ const LawsuitFileCustomerInfo = (props) => {
   const [selectedAutoValue2, setSelectedAutoValue2] = useState(null)
   const [selectedAutoValue3, setSelectedAutoValue3] = useState(null)
   const [autoFilteredValue, setAutoFilteredValue] = useState([])
-
   const [province, setProvince] = useState({})
   const [district, setDistrict] = useState({})
 
@@ -35,13 +36,15 @@ const LawsuitFileCustomerInfo = (props) => {
   }
 
   const getListCustomers = () => {
-    getListCustomer('queryAll=true').then((res) => {
+    getListCustomer(`ma_nhan_vien=${props.user.ma_nhan_vien}`).then((res) => {
       setCustomers(res.results)
     })
   }
 
   useEffect(() => {
-    getListCustomers()
+    if (props.isCreateNew) {
+      getListCustomers()
+    }
   }, [])
 
   return (
@@ -222,4 +225,10 @@ const LawsuitFileCustomerInfo = (props) => {
   )
 }
 
-export default LawsuitFileCustomerInfo
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  }
+}
+
+export default connect(mapStateToProps)(LawsuitFileCustomerInfo)

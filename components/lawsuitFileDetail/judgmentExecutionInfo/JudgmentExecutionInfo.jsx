@@ -36,6 +36,7 @@ const JudgmentExecutionInfo = (props) => {
             <InputText
               value={props.form.chap_hanh_vien}
               onChange={(e) => props.setForm({ ...props.form, chap_hanh_vien: e.target.value })}
+              disabled={props.role !== 'SHB'}
             />
           </div>
         </div>
@@ -50,6 +51,7 @@ const JudgmentExecutionInfo = (props) => {
             <InputText
               value={props.form.so_quyet_dinh}
               onChange={(e) => props.setForm({ ...props.form, so_quyet_dinh: e.target.value })}
+              disabled={props.role !== 'SHB'}
             />
           </div>
         </div>
@@ -74,6 +76,7 @@ const JudgmentExecutionInfo = (props) => {
                   ngay_ra_quyet_dinh: e.value.toString() ?? '',
                 })
               }}
+              disabled={props.role !== 'SHB'}
             />
           </div>
         </div>
@@ -89,6 +92,7 @@ const JudgmentExecutionInfo = (props) => {
               value={props.form.so_tien_quyet_dinh}
               onChange={(e) => props.setForm({ ...props.form, so_tien_quyet_dinh: e.value })}
               mode="decimal"
+              disabled={props.role !== 'SHB'}
             ></InputNumber>
           </div>
         </div>
