@@ -1,10 +1,19 @@
 import adminAuthClient from 'utils/supabase/admin'
 import supabase from 'utils/supabase/client'
 
-export async function GET() {
-  const { data, error } = await adminAuthClient.listUsers()
+export async function GET(request) {
+  const searchParams = request.nextUrl.searchParams
+  const getSHB = searchParams.get('getSHB')
 
+  const { data, error } = await adminAuthClient.listUsers()
   if (error) return Response.json(error, { status: error.status || 400 })
+
+  if (getSHB === 'true') {
+    const shbStaffs = data.users.filter(
+      (item) => item.user_metadata?.ma_nhan_vien?.indexOf('SHB') === 0
+    )
+    return Response.json({ count: null, next: null, previous: null, results: shbStaffs })
+  }
 
   return Response.json({ count: null, next: null, previous: null, results: data.users })
 }

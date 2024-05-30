@@ -199,11 +199,14 @@ const NonePerformingLoanList = (props) => {
       <div className="flex justify-content-between align-items-center mb-3">
         <div className="font-bold text-xl">Danh sách khách hàng nợ xấu</div>
         <div className="flex">
-          <div>
-            <Link href="/khach-hang/them-moi">
-              <Button label="Thêm khách hàng nợ xấu" outlined />
-            </Link>
-          </div>
+          {props.user.role === 'NDH' && (
+            <div>
+              <Link href="/khach-hang/them-moi">
+                <Button label="Thêm khách hàng nợ xấu" outlined />
+              </Link>
+            </div>
+          )}
+
           <div className="ml-3">
             <Button label="Xuất excel" severity="success" />
           </div>
@@ -247,7 +250,7 @@ const NonePerformingLoanList = (props) => {
             style={{ minWidth: '13rem' }}
             body={renderDaThanhToan}
           />
-          <Column style={{ minWidth: '1rem' }} body={renderAction} />
+          {props.user.role === 'NDH' && <Column style={{ minWidth: '1rem' }} body={renderAction} />}
         </DataTable>
       </div>
     </div>

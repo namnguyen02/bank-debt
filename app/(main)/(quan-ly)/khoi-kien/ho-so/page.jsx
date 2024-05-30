@@ -30,7 +30,6 @@ import 'primeicons/primeicons.css'
 
 const LawsuitFile = (props) => {
   const toast = useRef(null)
-  const [checkedList, setCheckedList] = useState([])
   const [form, setForm] = useState({})
   const [data, setData] = useState({})
   const [operation, setOperation] = useState('')
@@ -61,7 +60,7 @@ const LawsuitFile = (props) => {
 
     if (isCreateNew) {
       addLawsuit(bodyToCreate).then((res) => {
-        if (res && res.body === 'Inserted') {
+        if (res && res.ma_khoi_kien) {
           localStorage.setItem('addLawsuit', 'success')
           router.push('/khoi-kien')
         }
@@ -252,7 +251,7 @@ const LawsuitFile = (props) => {
           <div className="font-bold text-xl mr-2">Trạng thái hồ sơ: </div>
           <div className="font-bold text-xl text-primary">{getState()}</div>
         </div>
-        {Object.keys(form).length > 0 ||
+        {/* {Object.keys(form).length > 0 ||
         operation ||
         appointments.length > 0 ||
         tuapForm.length > 0 ? (
@@ -260,9 +259,32 @@ const LawsuitFile = (props) => {
             label={isCreateNew ? 'Thêm' : 'Lưu thay đổi'}
             style={isCreateNew ? { height: '36px', width: '100px' } : { height: '36px' }}
             onClick={() => handleSave()}
+            disabled={
+              !(
+                Object.keys(form).length > 0 ||
+                operation ||
+                appointments.length > 0 ||
+                tuapForm.length > 0
+              )
+            }
           />
         ) : (
           <Button label="Lưu thay đổi" style={{ height: '36px' }} disabled />
+        )} */}
+        {props.user.role === 'SHB' && (
+          <Button
+            label={isCreateNew ? 'Thêm' : 'Lưu thay đổi'}
+            style={isCreateNew ? { height: '36px', width: '100px' } : { height: '36px' }}
+            onClick={() => handleSave()}
+            disabled={
+              !(
+                Object.keys(form).length > 0 ||
+                operation ||
+                appointments.length > 0 ||
+                tuapForm.length > 0
+              )
+            }
+          />
         )}
       </div>
       <LawsuitFileCustomerInfo
@@ -279,7 +301,7 @@ const LawsuitFile = (props) => {
       )}
 
       <AuthorizedStaffInfo form={form} setForm={setForm} isCreateNew={isCreateNew} data={data} />
-      {!isCreateNew && (
+      {!isCreateNew && props.user.role === 'SHB' && (
         <LawsuitFileActions
           data={data}
           state={state}

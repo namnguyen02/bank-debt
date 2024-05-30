@@ -179,7 +179,9 @@ const JudgmentAppointments = (props) => {
       <div className="flex mb-3 justify-content-between align-items-end">
         <div className="font-bold text-xl ">Lịch hẹn</div>
         <div className="flex">
-          <Button label="Tạo lịch hẹn" onClick={() => setShowDialog(true)} />
+          {props.user.role === 'SHB' && (
+            <Button label="Tạo lịch hẹn" onClick={() => setShowDialog(true)} />
+          )}
           <Button label="Xuất Excel" className="ml-4" severity="success" />
         </div>
       </div>

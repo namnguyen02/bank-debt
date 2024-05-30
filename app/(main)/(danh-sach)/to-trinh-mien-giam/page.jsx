@@ -8,7 +8,6 @@ import { Button } from 'primereact/button'
 import { Column } from 'primereact/column'
 import { DataTable } from 'primereact/datatable'
 import { Dialog } from 'primereact/dialog'
-import { FileUpload } from 'primereact/fileupload'
 import { InputNumber } from 'primereact/inputnumber'
 import { InputText } from 'primereact/inputtext'
 import { InputTextarea } from 'primereact/inputtextarea'
@@ -305,16 +304,6 @@ const ToTrinhMienGiam = (props) => {
               <Button label="Thêm" icon="pi pi-plus" severity="success" className="mr-2" />
             </Link>
           )}
-
-          {(props.user.role === 'SHB' || props.user.role === 'NDH') && (
-            <Button
-              label="Xóa"
-              icon="pi pi-trash"
-              severity="danger"
-              onClick={confirmDeleteSelected}
-              disabled={!selectedTTKKs || !selectedTTKKs.length}
-            />
-          )}
         </div>
       </React.Fragment>
     )
@@ -547,7 +536,6 @@ const ToTrinhMienGiam = (props) => {
             header={header}
             responsiveLayout="scroll"
           >
-            <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
             <Column
               header="Mã tờ trình"
               sortable

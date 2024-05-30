@@ -1,5 +1,6 @@
 'use client'
 import React, { useRef, useEffect, useState } from 'react'
+import { connect } from 'react-redux'
 
 import { Dialog } from 'primereact/dialog'
 import { Button } from 'primereact/button'
@@ -52,7 +53,7 @@ const actionTypes = [
   },
 ]
 
-const DanhMucHanhDongThuHoiNo = () => {
+const DanhMucHanhDongThuHoiNo = (props) => {
   const [actionsList, setActionsList] = useState([])
   const [actionResultList, setActionResultList] = useState([])
   const [data, setData] = useState([])
@@ -801,12 +802,13 @@ const DanhMucHanhDongThuHoiNo = () => {
                 outlined
               />
             )}
-
-            <Button
-              label="Thêm"
-              style={{ width: '80px', height: '36px', marginLeft: '16px' }}
-              onClick={() => setShowAddDialog(true)}
-            />
+            {props.user.role === 'NDH' && (
+              <Button
+                label="Thêm"
+                style={{ width: '80px', height: '36px', marginLeft: '16px' }}
+                onClick={() => setShowAddDialog(true)}
+              />
+            )}
           </div>
         </div>
         <Toast ref={toast} />
@@ -846,7 +848,7 @@ const DanhMucHanhDongThuHoiNo = () => {
         <div>
           <TreeTable
             value={data}
-            selectionMode="checkbox"
+            selectionMode={props.user.role === 'NDH' ? 'checkbox' : ''}
             selectionKeys={selectedFileKeys}
             onSelectionChange={(e) => setSelectedFileKeys(e.value)}
           >
@@ -864,7 +866,9 @@ const DanhMucHanhDongThuHoiNo = () => {
               style={{ textAlign: 'center' }}
             />
             <Column field="ty_trong" header="Tỷ trọng (%)" style={{ textAlign: 'center' }} />
-            <Column style={{ textAlign: 'center' }} body={renderColumnAction} />
+            {props.user.role === 'NDH' && (
+              <Column style={{ textAlign: 'center' }} body={renderColumnAction} />
+            )}
           </TreeTable>
         </div>
       </div>
@@ -872,4 +876,10 @@ const DanhMucHanhDongThuHoiNo = () => {
   )
 }
 
-export default DanhMucHanhDongThuHoiNo
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  }
+}
+
+export default connect(mapStateToProps)(DanhMucHanhDongThuHoiNo)

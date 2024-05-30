@@ -96,7 +96,9 @@ const LawsuitSearch = (props) => {
       props.setFilterBody(filter)
     } else {
       props.setFilterBody({})
-      props.getListLawsuits(`ma_nhan_vien=${props.user.ma_nhan_vien}`)
+      props.getListLawsuits(
+        props.user.role === 'SHB' ? `ma_nhan_vien=${props.user.ma_nhan_vien}` : ''
+      )
     }
   }
 

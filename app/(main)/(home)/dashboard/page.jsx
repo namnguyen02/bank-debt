@@ -21,14 +21,14 @@ const ThongKe = (props) => {
 
   const todayInfos = () => {
     if (props.user.role === 'SHB') {
-      getTodayInfoSHB().then((res) => {
+      getTodayInfoSHB(`ma_nhan_vien=${props.user.ma_nhan_vien}`).then((res) => {
         if (res && res.result) {
           setSHBTodayInfo(res.result)
         }
       })
     }
     if (props.user.role === 'NPD') {
-      getTodayInfoNPD().then((res) => {
+      getTodayInfoNPD(`ma_nhan_vien=${props.user.ma_nhan_vien}`).then((res) => {
         if (res && res.result) {
           setNPDTodayInfo(res.result)
         }

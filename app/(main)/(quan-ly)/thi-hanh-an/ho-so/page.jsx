@@ -276,11 +276,12 @@ const JudgmentExecutionFile = (props) => {
           <div className="font-bold text-xl mr-2">Trạng thái hồ sơ: </div>
           <div className="font-bold text-xl text-primary">{getState()}</div>
         </div>
-        {!isCreateNew ? (
-          <Button label="Lưu thay đổi" onClick={() => setConfirm(true)} />
-        ) : (
-          <Button label="Tạo hồ sơ" onClick={() => handleCreateOrUpdate()} />
-        )}
+        {props.user.role === 'SHB' &&
+          (!isCreateNew ? (
+            <Button label="Lưu thay đổi" onClick={() => setConfirm(true)} />
+          ) : (
+            <Button label="Tạo hồ sơ" onClick={() => handleCreateOrUpdate()} />
+          ))}
 
         <Dialog
           header="Lưu thay đổi"
@@ -319,19 +320,24 @@ const JudgmentExecutionFile = (props) => {
         isCreateNew={isCreateNew}
         data={data}
       />
-      {!isCreateNew && <VerdictContent form={form} setForm={setForm} data={data} />}
+      {!isCreateNew && (
+        <VerdictContent form={form} setForm={setForm} data={data} role={props.user.role} />
+      )}
 
       <AuthorizedStaffInfo form={form} setForm={setForm} isCreateNew={isCreateNew} data={data} />
 
       {!isCreateNew && (
         <>
-          <JudgmentActions
-            data={data}
-            state={state}
-            form={form}
-            setState={setState}
-            setForm={setForm}
-          />
+          {props.user.role === 'SHB' && (
+            <JudgmentActions
+              data={data}
+              state={state}
+              form={form}
+              setState={setState}
+              setForm={setForm}
+            />
+          )}
+
           <LogInfo data={data} />
           <JudgmentAppointments
             state={state}
@@ -340,8 +346,14 @@ const JudgmentExecutionFile = (props) => {
             id={id}
             data={data}
           />
-          <JudgmentExecutionInfo form={form} setForm={setForm} data={data} state={state} />
-          <UpdateDecision />
+          <JudgmentExecutionInfo
+            form={form}
+            setForm={setForm}
+            data={data}
+            state={state}
+            role={props.user.role}
+          />
+          {/* <UpdateDecision /> */}
         </>
       )}
     </div>

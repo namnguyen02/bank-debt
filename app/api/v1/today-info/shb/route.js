@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server'
 import supabase from 'utils/supabase/client'
 
 export async function GET(request) {
+  const searchParams = request.nextUrl.searchParams
+  const ma_nhan_vien = searchParams.get('ma_nhan_vien')
+
   const result = {}
   const dateFormToday = new Date()
   const today = dateFormToday.toISOString()
@@ -15,7 +18,10 @@ export async function GET(request) {
 
   // Get customers
   if (true) {
-    const { data, error } = await supabase.from('khach_hang').select('*')
+    const { data, error } = await supabase
+      .from('khach_hang')
+      .select('*')
+      .eq('nhan_vien_phu_trach_1', ma_nhan_vien)
     if (error)
       return NextResponse.json(
         {
@@ -48,6 +54,7 @@ export async function GET(request) {
       .select(
         'ma_to_trinh, created_at, updated_at, trang_thai, khach_hang (ho_ten, ma_khach_hang), nhan_vien (ho_ten, ma_nhan_vien)'
       )
+      .eq('ma_nhan_vien', ma_nhan_vien)
     if (error)
       return NextResponse.json(
         {
@@ -65,6 +72,7 @@ export async function GET(request) {
       .select(
         'ma_to_trinh, created_at, updated_at, trang_thai, khach_hang (ho_ten, ma_khach_hang), nhan_vien (ho_ten, ma_nhan_vien)'
       )
+      .eq('ma_nhan_vien', ma_nhan_vien)
     if (error)
       return NextResponse.json(
         {
@@ -97,6 +105,7 @@ export async function GET(request) {
       .select(
         'ma_khoi_kien, ma_khach_hang, so_tien_kk, trang_thai, tinh_tp, quan_huyen, created_at, khach_hang (ho_ten, ma_khach_hang), nhan_vien (ho_ten, ma_nhan_vien)'
       )
+      .eq('id_nguoi_duoc_uq', ma_nhan_vien)
     if (error)
       return NextResponse.json(
         {
@@ -105,6 +114,7 @@ export async function GET(request) {
         { status: 500 }
       )
     lawsuits = data
+    console.log(data)
   }
 
   // Get thi_hanh_an
@@ -114,6 +124,7 @@ export async function GET(request) {
       .select(
         'ma_thi_hanh_an, ma_khach_hang, trang_thai, tinh_tp, quan_huyen, created_at, khach_hang (ho_ten, ma_khach_hang), nhan_vien (ho_ten, ma_nhan_vien)'
       )
+      .eq('id_nguoi_duoc_uq', ma_nhan_vien)
     if (error)
       return NextResponse.json(
         {
@@ -190,23 +201,15 @@ export async function GET(request) {
   result.next3DaysApointments = next3DaysApointments.filter((item) => item)
 
   // Get list of customers is in lawsuit
-  const tempIdOfCustomers = customers.map((item) => {
-    return item.ma_khach_hang
-  })
   const customersInLawsuit = lawsuits.map((item) => {
-    if (tempIdOfCustomers.includes(item.ma_khach_hang)) {
-      if (!['Hòa giải thành', 'Đình chỉ', 'Rút đơn', 'Trả đơn'].includes(item.trang_thai))
-        return item
-    }
+    if (!['Hòa giải thành', 'Đình chỉ', 'Rút đơn', 'Trả đơn'].includes(item.trang_thai)) return item
   })
   result.customersInLawsuit = customersInLawsuit.filter((item) => item)
 
   // Get list of customers is in judgment lawsuit
   const customersInJudgmentExecution = judgmentExecute.map((item) => {
-    if (tempIdOfCustomers.includes(item.ma_khach_hang)) {
-      if (item.trang_thai !== 'Kết thúc THA') {
-        return item
-      }
+    if (item.trang_thai !== 'Kết thúc THA') {
+      return item
     }
   })
   result.customersInJudgmentExecution = customersInJudgmentExecution.filter((item) => item)

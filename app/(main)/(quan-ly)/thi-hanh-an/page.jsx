@@ -22,7 +22,7 @@ const ManageJudgmentExecution = (props) => {
   const toast = useRef(null)
 
   const getListJudgments = (query) => {
-    getJudgments(query ? query : `ma_nhan_vien=${props.user.ma_nhan_vien}`).then((res) => {
+    getJudgments(query ? query : '').then((res) => {
       if (res && !res.error) {
         setData(res.results)
       }
@@ -60,7 +60,7 @@ const ManageJudgmentExecution = (props) => {
     }
     getStaffList()
     getListCustomers()
-    getListJudgments()
+    getListJudgments(props.user.role === 'SHB' ? `ma_nhan_vien=${props.user.ma_nhan_vien}` : '')
   }, [])
 
   return (
@@ -90,9 +90,11 @@ const ManageJudgmentExecution = (props) => {
                 className="mt-3"
               />
             )}
-            <Link href={{ pathname: 'thi-hanh-an/ho-so', query: { createNew: true } }}>
-              <Button label="Thêm" style={{ height: '36px', width: '100px' }} className="mt-3" />
-            </Link>
+            {props.user.role === 'SHB' && (
+              <Link href={{ pathname: 'thi-hanh-an/ho-so', query: { createNew: true } }}>
+                <Button label="Thêm" style={{ height: '36px', width: '100px' }} className="mt-3" />
+              </Link>
+            )}
           </div>
         </div>
 

@@ -7,7 +7,7 @@ import { Checkbox } from 'primereact/checkbox'
 
 const ManageLawsuitTable = (props) => {
   const renderCustomerId = (rowData) => {
-    return <Link href="/khach-hang/chi-tiet">{rowData.ma_khach_hang}</Link>
+    return <div>{rowData.ma_khach_hang}</div>
   }
 
   const renderCustomerName = (rowData) => {

@@ -342,7 +342,9 @@ const LawsuitFileTUAP = (props) => {
       <div className="flex mb-3 justify-content-between align-items-end">
         <div className="font-bold text-xl ">Tạm ứng án phí</div>
         <div className="flex">
-          <Button label="Tạo TUAP" onClick={() => setShowDialog(true)} />
+          {props.user.role === 'SHB' && (
+            <Button label="Tạo TUAP" onClick={() => setShowDialog(true)} />
+          )}
           <Button label="Xuất Excel" className="ml-4" severity="success" />
         </div>
       </div>

@@ -27,7 +27,7 @@ const AuthorizedStaffInfo = (props) => {
   }
 
   const getStaffList = () => {
-    getListStaff('queryAll=true').then((res) => {
+    getListStaff('getSHB=true').then((res) => {
       setStaffs(res.results)
     })
   }

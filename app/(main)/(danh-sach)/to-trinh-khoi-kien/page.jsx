@@ -423,15 +423,6 @@ const ToTrinhKhoiKien = (props) => {
               <Button label="Thêm" icon="pi pi-plus" severity="success" className="mr-2" />
             </Link>
           )}
-          {['SHB', 'NPD'].includes(props.user.role) && (
-            <Button
-              label="Xóa"
-              icon="pi pi-trash"
-              severity="danger"
-              onClick={confirmDeleteSelected}
-              disabled={!selectedTTKKs || !selectedTTKKs.length}
-            />
-          )}
         </div>
       </React.Fragment>
     )
@@ -692,7 +683,6 @@ const ToTrinhKhoiKien = (props) => {
             header={header}
             responsiveLayout="scroll"
           >
-            <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
             <Column
               field="ma_to_trinh"
               header="Mã tờ trình"

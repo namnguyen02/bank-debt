@@ -39,7 +39,7 @@ const ManageLawsuit = (props) => {
   }
 
   const getListLawsuits = (query) => {
-    getListLawsuit(query ? query : `ma_nhan_vien=${props.user.ma_nhan_vien}`).then((res) => {
+    getListLawsuit(query ? query : '').then((res) => {
       if (res && res.count) {
         setLawsuits(res.results)
       }
@@ -71,7 +71,7 @@ const ManageLawsuit = (props) => {
     }
     getStaffList()
     getListCustomers()
-    getListLawsuits()
+    getListLawsuits(props.user.role === 'SHB' ? `ma_nhan_vien=${props.user.ma_nhan_vien}` : '')
   }, [])
 
   return (
@@ -108,9 +108,11 @@ const ManageLawsuit = (props) => {
                 className="mt-3"
               />
             )}
-            <Link href={{ pathname: 'khoi-kien/ho-so', query: { createNew: true } }}>
-              <Button label="Thêm" style={{ height: '36px', width: '100px' }} className="mt-3" />
-            </Link>
+            {props.user.role === 'SHB' && (
+              <Link href={{ pathname: 'khoi-kien/ho-so', query: { createNew: true } }}>
+                <Button label="Thêm" style={{ height: '36px', width: '100px' }} className="mt-3" />
+              </Link>
+            )}
           </div>
         </div>
         <ManageLawsuitTable
